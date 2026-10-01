@@ -12,6 +12,7 @@ Bu proje; Kur'an-ı Kerim elifbasının ilk harfleri olan **Elif (ا)**, **Be (�
 
 2. **Harekeler Treni (Üstün, Esre, Ötre):**
    - 4 harf için 3 vagonlu renkli trenler (🎩 Üstün, 🛝 Esre, 🎀 Ötre).
+   - Her hareke için özel olarak ayrıştırılmış bağımsız, tertemiz ses dosyaları (Örn: Sadece "E", sadece "İ", sadece "Ü").
    - Tek tek vagon dinleme ve treni baştan sona otomatik sürme özelliği.
 
 3. **İki Harfli Hece Birleştirme Laboratuvarı:**

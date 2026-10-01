@@ -353,6 +353,55 @@
       transform: scale(1.06);
     }
 
+    /* Kart Üzerinde Tekil Harekeler */
+    .card-hareke-title {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      margin-top: 12px;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .card-hareke-row {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+
+    .hareke-pill {
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      padding: 5px 9px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #334155;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .hareke-pill .arabic-mini {
+      font-family: 'Amiri', 'Traditional Arabic', serif;
+      font-size: 1.25rem;
+      line-height: 1;
+      font-weight: bold;
+    }
+
+    .hareke-pill:hover, .hareke-pill.active {
+      transform: translateY(-2px) scale(1.06);
+      background: var(--card-color, var(--primary));
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
     /* =========================================================
        OKUMA YAZMA BİLMEYEN ÇOCUKLAR İÇİN ÖZEL KARAOKE & İŞARETLİ SİSTEM
        ========================================================= */
@@ -1485,7 +1534,23 @@
           <div class="letter-mnemonic">
             🌲 <strong>İpucu:</strong> Dimdik ayakta duran tek bir çizgi! Hiç noktası yoktur.
           </div>
-          <button class="btn-play-sound">🔊 Harf Sesini Dinle</button>
+          <button class="btn-play-sound">🔊 Harf Adı: Elif Dinle</button>
+          
+          <div class="card-hareke-title">✨ Ayrı Ayrı Harekeli Okunuşları:</div>
+          <div class="card-hareke-row" onclick="event.stopPropagation()">
+            <div class="hareke-pill" onclick="playAudioFile('dosyalar/elif-ustun.mp3', this)" title="Üstün">
+              <span class="arabic-mini">أَ</span> <span>E</span>
+            </div>
+            <div class="hareke-pill" onclick="playAudioFile('dosyalar/elif-esre.mp3', this)" title="Esre">
+              <span class="arabic-mini">إِ</span> <span>İ</span>
+            </div>
+            <div class="hareke-pill" onclick="playAudioFile('dosyalar/elif-otre.mp3', this)" title="Ötre">
+              <span class="arabic-mini">أُ</span> <span>Ü</span>
+            </div>
+            <div class="hareke-pill" onclick="playAudioFile('dosyalar/1-1.mp3', this)" title="3'ü Bir Arada" style="background:#eff6ff;">
+              <span>🚂 E-İ-Ü</span>
+            </div>
+          </div>
         </div>
 
         <!-- BE -->
@@ -1499,7 +1564,23 @@
           <div class="letter-mnemonic">
             🍎 <strong>İpucu:</strong> Bir tabak, <strong>ALTINDA 1 NOKTA</strong> var! (Bebeğin beşiği altta).
           </div>
-          <button class="btn-play-sound">🔊 Harf Sesini Dinle</button>
+          <button class="btn-play-sound">🔊 Harf Adı: Be Dinle</button>
+          
+          <div class="card-hareke-title">✨ Ayrı Ayrı Harekeli Okunuşları:</div>
+          <div class="card-hareke-row" onclick="event.stopPropagation()">
+            <div class="hareke-pill" onclick="playAudioFile('dosyalar/be-ustun.mp3', this)" title="Üstün">
+              <span class="arabic-mini">بَ</span> <span>BE</span>
+            </div>
+            <div class="hareke-pill" onclick="playAudioFile('dosyalar/be-esre.mp3', this)" title="Esre">
+              <span class="arabic-mini">بِ</span> <span>Bİ</span>
+            </div>
+            <div class="hareke-pill" onclick="playAudioFile('dosyalar/be-otre.mp3', this)" title="Ötre">
+              <span class="arabic-mini">بُ</span> <span>BÜ</span>
+            </div>
+            <div class="hareke-pill" onclick="playAudioFile('dosyalar/2-1.mp3', this)" title="3'ü Bir Arada" style="background:#ecfdf5;">
+              <span>🚂 Be-Bi-Bü</span>
+            </div>
+          </div>
         </div>
 
         <!-- TE -->
@@ -1513,7 +1594,23 @@
           <div class="letter-mnemonic">
             😊 <strong>İpucu:</strong> Gülen sevimli yüz! <strong>ÜSTÜNDE 2 GÖZ/NOKTA</strong> var!
           </div>
-          <button class="btn-play-sound">🔊 Harf Sesini Dinle</button>
+          <button class="btn-play-sound">🔊 Harf Adı: Te Dinle</button>
+          
+          <div class="card-hareke-title">✨ Ayrı Ayrı Harekeli Okunuşları:</div>
+          <div class="card-hareke-row" onclick="event.stopPropagation()">
+            <div class="hareke-pill" onclick="playAudioFile('dosyalar/te-ustun.mp3', this)" title="Üstün">
+              <span class="arabic-mini">تَ</span> <span>TE</span>
+            </div>
+            <div class="hareke-pill" onclick="playAudioFile('dosyalar/te-esre.mp3', this)" title="Esre">
+              <span class="arabic-mini">تِ</span> <span>Tİ</span>
+            </div>
+            <div class="hareke-pill" onclick="playAudioFile('dosyalar/te-otre.mp3', this)" title="Ötre">
+              <span class="arabic-mini">تُ</span> <span>TÜ</span>
+            </div>
+            <div class="hareke-pill" onclick="playAudioFile('dosyalar/3-1.mp3', this)" title="3'ü Bir Arada" style="background:#fffbeb;">
+              <span>🚂 Te-Ti-Tü</span>
+            </div>
+          </div>
         </div>
 
         <!-- PELTEK SE -->
@@ -1527,7 +1624,23 @@
           <div class="letter-mnemonic">
             👅 <strong>İpucu:</strong> <strong>ÜSTÜNDE 3 NOKTA</strong> var! Dilinin ucunu dişlerinin arasına hafifçe koyup söyle.
           </div>
-          <button class="btn-play-sound">🔊 Harf Sesini Dinle</button>
+          <button class="btn-play-sound">🔊 Harf Adı: Se Dinle</button>
+          
+          <div class="card-hareke-title">✨ Ayrı Ayrı Harekeli Okunuşları:</div>
+          <div class="card-hareke-row" onclick="event.stopPropagation()">
+            <div class="hareke-pill" onclick="playAudioFile('dosyalar/se-ustun.mp3', this)" title="Üstün">
+              <span class="arabic-mini">ثَ</span> <span>SE</span>
+            </div>
+            <div class="hareke-pill" onclick="playAudioFile('dosyalar/se-esre.mp3', this)" title="Esre">
+              <span class="arabic-mini">ثِ</span> <span>Sİ</span>
+            </div>
+            <div class="hareke-pill" onclick="playAudioFile('dosyalar/se-otre.mp3', this)" title="Ötre">
+              <span class="arabic-mini">ثُ</span> <span>SÜ</span>
+            </div>
+            <div class="hareke-pill" onclick="playAudioFile('dosyalar/4-1.mp3', this)" title="3'ü Bir Arada" style="background:#fef2f2;">
+              <span>🚂 Se-Si-Sü</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1666,15 +1779,15 @@
               <button class="btn-play-sound" style="padding:4px 14px; font-size:0.85rem; margin:0;" onclick="playTrainSeries('elif')">🚂 Treni Sür & Oku</button>
             </div>
             <div class="train-track-row" id="trainRow-elif">
-              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/1-1.mp3', this)">
+              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/elif-ustun.mp3', this)">
                 <div class="wagon-arabic">أَ</div>
                 <div class="wagon-badge" style="color:#2563eb;">🎩 Üstün: E</div>
               </div>
-              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/1-1.mp3', this)">
+              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/elif-esre.mp3', this)">
                 <div class="wagon-arabic">إِ</div>
                 <div class="wagon-badge" style="color:#059669;">🛝 Esre: İ</div>
               </div>
-              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/1-1.mp3', this)">
+              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/elif-otre.mp3', this)">
                 <div class="wagon-arabic">أُ</div>
                 <div class="wagon-badge" style="color:#d97706;">🎀 Ötre: Ü</div>
               </div>
@@ -1688,15 +1801,15 @@
               <button class="btn-play-sound" style="padding:4px 14px; font-size:0.85rem; margin:0; background:linear-gradient(135deg,#059669,#10b981);" onclick="playTrainSeries('be')">🚂 Treni Sür & Oku</button>
             </div>
             <div class="train-track-row" id="trainRow-be">
-              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/2-1.mp3', this)">
+              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/be-ustun.mp3', this)">
                 <div class="wagon-arabic">بَ</div>
                 <div class="wagon-badge" style="color:#059669;">🎩 Üstün: BE</div>
               </div>
-              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/2-1.mp3', this)">
+              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/be-esre.mp3', this)">
                 <div class="wagon-arabic">بِ</div>
                 <div class="wagon-badge" style="color:#2563eb;">🛝 Esre: Bİ</div>
               </div>
-              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/2-1.mp3', this)">
+              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/be-otre.mp3', this)">
                 <div class="wagon-arabic">بُ</div>
                 <div class="wagon-badge" style="color:#d97706;">🎀 Ötre: BÜ</div>
               </div>
@@ -1710,15 +1823,15 @@
               <button class="btn-play-sound" style="padding:4px 14px; font-size:0.85rem; margin:0; background:linear-gradient(135deg,#d97706,#f59e0b);" onclick="playTrainSeries('te')">🚂 Treni Sür & Oku</button>
             </div>
             <div class="train-track-row" id="trainRow-te">
-              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/3-1.mp3', this)">
+              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/te-ustun.mp3', this)">
                 <div class="wagon-arabic"> تَ</div>
                 <div class="wagon-badge" style="color:#d97706;">🎩 Üstün: TE</div>
               </div>
-              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/3-1.mp3', this)">
+              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/te-esre.mp3', this)">
                 <div class="wagon-arabic"> تِ</div>
                 <div class="wagon-badge" style="color:#2563eb;">🛝 Esre: Tİ</div>
               </div>
-              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/3-1.mp3', this)">
+              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/te-otre.mp3', this)">
                 <div class="wagon-arabic"> تُ</div>
                 <div class="wagon-badge" style="color:#059669;">🎀 Ötre: TÜ</div>
               </div>
@@ -1732,15 +1845,15 @@
               <button class="btn-play-sound" style="padding:4px 14px; font-size:0.85rem; margin:0; background:linear-gradient(135deg,#dc2626,#ef4444);" onclick="playTrainSeries('se')">🚂 Treni Sür & Oku</button>
             </div>
             <div class="train-track-row" id="trainRow-se">
-              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/4-1.mp3', this)">
+              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/se-ustun.mp3', this)">
                 <div class="wagon-arabic"> ثَ</div>
                 <div class="wagon-badge" style="color:#dc2626;">🎩 Üstün: SE</div>
               </div>
-              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/4-1.mp3', this)">
+              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/se-esre.mp3', this)">
                 <div class="wagon-arabic"> ثِ</div>
                 <div class="wagon-badge" style="color:#2563eb;">🛝 Esre: Sİ</div>
               </div>
-              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/4-1.mp3', this)">
+              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/se-otre.mp3', this)">
                 <div class="wagon-arabic"> ثُ</div>
                 <div class="wagon-badge" style="color:#d97706;">🎀 Ötre: SÜ</div>
               </div>
@@ -1763,19 +1876,19 @@
           <div style="background:#f8fafc; border-radius:20px; padding:20px; margin-bottom:20px; border:2px solid #e2e8f0;">
             <div style="font-weight:900; color:#334155; margin-bottom:10px;">1. Alıştırma: Be (بَ) ile Te (تَ) Birleşiyor</div>
             <div class="syllable-assembly">
-              <div class="assembly-part" onclick="playPartAudio('dosyalar/2.mp3', this)">
+              <div class="assembly-part" onclick="playPartAudio('dosyalar/be-ustun.mp3', this)">
                 بَ
                 <div style="font-size:0.8rem; font-family:'Nunito'; font-weight:800; color:#059669;">1. Be (Altta 1)</div>
               </div>
               <div class="assembly-sign">+</div>
-              <div class="assembly-part" onclick="playPartAudio('dosyalar/3.mp3', this)">
+              <div class="assembly-part" onclick="playPartAudio('dosyalar/te-ustun.mp3', this)">
                 تَ
                 <div style="font-size:0.8rem; font-family:'Nunito'; font-weight:800; color:#d97706;">2. Te (Üstte 2)</div>
               </div>
               <div class="assembly-sign">=</div>
-              <div class="assembly-result" onclick="playAudioFile('dosyalar/2.mp3', this)">
+              <div class="assembly-result" onclick="playAudioFile('dosyalar/bete.mp3', this)">
                 بَتَ
-                <div style="font-size:0.85rem; font-family:'Nunito'; font-weight:900; color:#4361ee;">🤝 Be - Te</div>
+                <div style="font-size:0.85rem; font-family:'Nunito'; font-weight:900; color:#4361ee;">🤝 Be - Te (Tıkla & Dinle)</div>
               </div>
             </div>
           </div>
@@ -1784,19 +1897,19 @@
           <div style="background:#f8fafc; border-radius:20px; padding:20px; margin-bottom:20px; border:2px solid #e2e8f0;">
             <div style="font-weight:900; color:#334155; margin-bottom:10px;">2. Alıştırma: Te (تَ) ile Be (بَ) Birleşiyor</div>
             <div class="syllable-assembly">
-              <div class="assembly-part" onclick="playPartAudio('dosyalar/3.mp3', this)">
+              <div class="assembly-part" onclick="playPartAudio('dosyalar/te-ustun.mp3', this)">
                 تَ
                 <div style="font-size:0.8rem; font-family:'Nunito'; font-weight:800; color:#d97706;">1. Te (Üstte 2)</div>
               </div>
               <div class="assembly-sign">+</div>
-              <div class="assembly-part" onclick="playPartAudio('dosyalar/2.mp3', this)">
+              <div class="assembly-part" onclick="playPartAudio('dosyalar/be-ustun.mp3', this)">
                 بَ
                 <div style="font-size:0.8rem; font-family:'Nunito'; font-weight:800; color:#059669;">2. Be (Altta 1)</div>
               </div>
               <div class="assembly-sign">=</div>
-              <div class="assembly-result" onclick="playAudioFile('dosyalar/3.mp3', this)">
+              <div class="assembly-result" onclick="playAudioFile('dosyalar/tebe.mp3', this)">
                 تَبَ
-                <div style="font-size:0.85rem; font-family:'Nunito'; font-weight:900; color:#4361ee;">🤝 Te - Be</div>
+                <div style="font-size:0.85rem; font-family:'Nunito'; font-weight:900; color:#4361ee;">🤝 Te - Be (Tıkla & Dinle)</div>
               </div>
             </div>
           </div>
@@ -1896,6 +2009,7 @@
         </div>
 
         <div class="piano-board">
+          <!-- 1. SIRA: HARF ADLARI -->
           <div class="piano-key" style="border-color:#bfdbfe;" onclick="playPianoKey('dosyalar/1.mp3', this)">
             <div class="piano-arabic" style="color:#2563eb;">ا</div>
             <div class="piano-subtext">Elif</div>
@@ -1912,37 +2026,85 @@
             <div class="piano-arabic" style="color:#dc2626;">ث</div>
             <div class="piano-subtext">Se</div>
           </div>
-          <div class="piano-key" style="border-color:#bfdbfe;" onclick="playPianoKey('dosyalar/1-1.mp3', this)">
+
+          <!-- 2. SIRA: ÜSTÜN (E - BE - TE - SE) -->
+          <div class="piano-key" style="border-color:#bfdbfe;" onclick="playPianoKey('dosyalar/elif-ustun.mp3', this)">
             <div class="piano-arabic" style="color:#2563eb;">أَ</div>
-            <div class="piano-subtext">E</div>
+            <div class="piano-subtext">🎩 E</div>
           </div>
-          <div class="piano-key" style="border-color:#a7f3d0;" onclick="playPianoKey('dosyalar/2-1.mp3', this)">
+          <div class="piano-key" style="border-color:#a7f3d0;" onclick="playPianoKey('dosyalar/be-ustun.mp3', this)">
             <div class="piano-arabic" style="color:#059669;">بَ</div>
-            <div class="piano-subtext">Be</div>
+            <div class="piano-subtext">🎩 Be</div>
           </div>
-          <div class="piano-key" style="border-color:#fde68a;" onclick="playPianoKey('dosyalar/3-1.mp3', this)">
+          <div class="piano-key" style="border-color:#fde68a;" onclick="playPianoKey('dosyalar/te-ustun.mp3', this)">
             <div class="piano-arabic" style="color:#d97706;">تَ</div>
-            <div class="piano-subtext">Te</div>
+            <div class="piano-subtext">🎩 Te</div>
           </div>
-          <div class="piano-key" style="border-color:#fecaca;" onclick="playPianoKey('dosyalar/4-1.mp3', this)">
+          <div class="piano-key" style="border-color:#fecaca;" onclick="playPianoKey('dosyalar/se-ustun.mp3', this)">
             <div class="piano-arabic" style="color:#dc2626;">ثَ</div>
-            <div class="piano-subtext">Se</div>
+            <div class="piano-subtext">🎩 Se</div>
           </div>
+
+          <!-- 3. SIRA: ESRE (İ - Bİ - Tİ - Sİ) -->
+          <div class="piano-key" style="border-color:#bfdbfe;" onclick="playPianoKey('dosyalar/elif-esre.mp3', this)">
+            <div class="piano-arabic" style="color:#2563eb;">إِ</div>
+            <div class="piano-subtext">🛝 İ</div>
+          </div>
+          <div class="piano-key" style="border-color:#a7f3d0;" onclick="playPianoKey('dosyalar/be-esre.mp3', this)">
+            <div class="piano-arabic" style="color:#059669;">بِ</div>
+            <div class="piano-subtext">🛝 Bi</div>
+          </div>
+          <div class="piano-key" style="border-color:#fde68a;" onclick="playPianoKey('dosyalar/te-esre.mp3', this)">
+            <div class="piano-arabic" style="color:#d97706;">تِ</div>
+            <div class="piano-subtext">🛝 Ti</div>
+          </div>
+          <div class="piano-key" style="border-color:#fecaca;" onclick="playPianoKey('dosyalar/se-esre.mp3', this)">
+            <div class="piano-arabic" style="color:#dc2626;">ثِ</div>
+            <div class="piano-subtext">🛝 Si</div>
+          </div>
+
+          <!-- 4. SIRA: ÖTRE (Ü - BÜ - TÜ - SÜ) -->
+          <div class="piano-key" style="border-color:#bfdbfe;" onclick="playPianoKey('dosyalar/elif-otre.mp3', this)">
+            <div class="piano-arabic" style="color:#2563eb;">أُ</div>
+            <div class="piano-subtext">🎀 Ü</div>
+          </div>
+          <div class="piano-key" style="border-color:#a7f3d0;" onclick="playPianoKey('dosyalar/be-otre.mp3', this)">
+            <div class="piano-arabic" style="color:#059669;">بُ</div>
+            <div class="piano-subtext">🎀 Bü</div>
+          </div>
+          <div class="piano-key" style="border-color:#fde68a;" onclick="playPianoKey('dosyalar/te-otre.mp3', this)">
+            <div class="piano-arabic" style="color:#d97706;">تُ</div>
+            <div class="piano-subtext">🎀 Tü</div>
+          </div>
+          <div class="piano-key" style="border-color:#fecaca;" onclick="playPianoKey('dosyalar/se-otre.mp3', this)">
+            <div class="piano-arabic" style="color:#dc2626;">ثُ</div>
+            <div class="piano-subtext">🎀 Sü</div>
+          </div>
+
+          <!-- 5. SIRA: CEZİM, ŞEDDE & HECELER -->
           <div class="piano-key" style="border-color:#e0e7ff;" onclick="playPianoKey('dosyalar/1-7.mp3', this)">
             <div class="piano-arabic" style="color:#4361ee;">أَبْ</div>
-            <div class="piano-subtext">Eb</div>
+            <div class="piano-subtext">🛑 Eb</div>
           </div>
           <div class="piano-key" style="border-color:#e0e7ff;" onclick="playPianoKey('dosyalar/2-7.mp3', this)">
             <div class="piano-arabic" style="color:#4361ee;">أَتْ</div>
-            <div class="piano-subtext">Et</div>
+            <div class="piano-subtext">🛑 Et</div>
           </div>
           <div class="piano-key" style="border-color:#e0e7ff;" onclick="playPianoKey('dosyalar/3-7.mp3', this)">
             <div class="piano-arabic" style="color:#4361ee;">أَثْ</div>
-            <div class="piano-subtext">Es</div>
+            <div class="piano-subtext">🛑 Es</div>
           </div>
           <div class="piano-key" style="border-color:#fdf2f8;" onclick="playPianoKey('dosyalar/1-15.mp3', this)">
             <div class="piano-arabic" style="color:#f72585;">أَبَّ</div>
-            <div class="piano-subtext">Ebbe</div>
+            <div class="piano-subtext">⚡ Ebbe</div>
+          </div>
+          <div class="piano-key" style="border-color:#ecfdf5;" onclick="playPianoKey('dosyalar/bete.mp3', this)">
+            <div class="piano-arabic" style="color:#059669;">بَتَ</div>
+            <div class="piano-subtext">🤝 Bete</div>
+          </div>
+          <div class="piano-key" style="border-color:#fffbeb;" onclick="playPianoKey('dosyalar/tebe.mp3', this)">
+            <div class="piano-arabic" style="color:#d97706;">تَبَ</div>
+            <div class="piano-subtext">🤝 Tebe</div>
           </div>
         </div>
       </div>
@@ -2114,6 +2276,9 @@
         dots: '0',
         dotDesc: 'Noktasız, dimdik çizgi',
         sound: 'dosyalar/1.mp3',
+        ustunSound: 'dosyalar/elif-ustun.mp3',
+        esreSound: 'dosyalar/elif-esre.mp3',
+        otreSound: 'dosyalar/elif-otre.mp3',
         harekeSound: 'dosyalar/1-1.mp3',
         cezimSound: 'dosyalar/1-7.mp3',
         cezimText: 'أَبْ (Eb)',
@@ -2127,6 +2292,9 @@
         dots: '1-bottom',
         dotDesc: 'Altta 1 Nokta',
         sound: 'dosyalar/2.mp3',
+        ustunSound: 'dosyalar/be-ustun.mp3',
+        esreSound: 'dosyalar/be-esre.mp3',
+        otreSound: 'dosyalar/be-otre.mp3',
         harekeSound: 'dosyalar/2-1.mp3',
         cezimSound: 'dosyalar/1-7.mp3',
         cezimText: 'أَبْ (Eb)',
@@ -2140,6 +2308,9 @@
         dots: '2-top',
         dotDesc: 'Üstte 2 Nokta',
         sound: 'dosyalar/3.mp3',
+        ustunSound: 'dosyalar/te-ustun.mp3',
+        esreSound: 'dosyalar/te-esre.mp3',
+        otreSound: 'dosyalar/te-otre.mp3',
         harekeSound: 'dosyalar/3-1.mp3',
         cezimSound: 'dosyalar/2-7.mp3',
         cezimText: 'أَتْ (Et)',
@@ -2153,6 +2324,9 @@
         dots: '3-top',
         dotDesc: 'Üstte 3 Nokta',
         sound: 'dosyalar/4.mp3',
+        ustunSound: 'dosyalar/se-ustun.mp3',
+        esreSound: 'dosyalar/se-esre.mp3',
+        otreSound: 'dosyalar/se-otre.mp3',
         harekeSound: 'dosyalar/4-1.mp3',
         cezimSound: 'dosyalar/3-7.mp3',
         cezimText: 'أَثْ (Es)',
@@ -2171,9 +2345,9 @@
         audio: 'dosyalar/1-2.mp3',
         // Arapça sağdan sola okunur: 1. Harf Elif, 2. Harf Dal, 3. Harf Be
         letters: [
-          { char: 'أَ', name: 'Elif', tip: '🌲 Elif', color: '#2563eb', sound: 'dosyalar/1.mp3' },
+          { char: 'أَ', name: 'Elif', tip: '🌲 Elif (Üstünlü: E)', color: '#2563eb', sound: 'dosyalar/elif-ustun.mp3' },
           { char: 'دَ', name: 'Dal', tip: 'Dal', color: '#475569', sound: 'dosyalar/1-2.mp3' },
-          { char: 'بَ', name: 'Be', tip: '🍏 Altta 1 Nokta', color: '#059669', sound: 'dosyalar/2.mp3' }
+          { char: 'بَ', name: 'Be', tip: '🍏 Altta 1 Nokta (Be)', color: '#059669', sound: 'dosyalar/be-ustun.mp3' }
         ]
       },
       {
@@ -2182,7 +2356,7 @@
         fullArabic: 'تَرَكَ',
         audio: 'dosyalar/2-3.mp3',
         letters: [
-          { char: 'تَـ', name: 'Te', tip: '👀 Üstte 2 Nokta', color: '#d97706', sound: 'dosyalar/3.mp3' },
+          { char: 'تَـ', name: 'Te', tip: '👀 Üstte 2 Nokta (Te)', color: '#d97706', sound: 'dosyalar/te-ustun.mp3' },
           { char: 'رَ', name: 'Ra', tip: 'Ra', color: '#475569', sound: 'dosyalar/2-3.mp3' },
           { char: 'كَ', name: 'Kef', tip: 'Kef', color: '#475569', sound: 'dosyalar/2-3.mp3' }
         ]
@@ -2195,7 +2369,7 @@
         letters: [
           { char: 'وَ', name: 'Vav', tip: 'Vav', color: '#475569', sound: 'dosyalar/3-5.mp3' },
           { char: 'رِ', name: 'Ra', tip: '🛝 Esreli Ra', color: '#475569', sound: 'dosyalar/3-5.mp3' },
-          { char: 'ـثَ', name: 'Peltek Se', tip: '👅 Üstte 3 Nokta', color: '#dc2626', sound: 'dosyalar/4.mp3' }
+          { char: 'ـثَ', name: 'Peltek Se', tip: '👅 Üstte 3 Nokta (Se)', color: '#dc2626', sound: 'dosyalar/se-ustun.mp3' }
         ]
       },
       {
@@ -2204,8 +2378,8 @@
         fullArabic: 'أَبَدًا',
         audio: 'dosyalar/2-19.mp3',
         letters: [
-          { char: 'أَ', name: 'Elif', tip: '🌲 Elif', color: '#2563eb', sound: 'dosyalar/1.mp3' },
-          { char: 'ـبَـ', name: 'Be', tip: '🍏 Ortada Be (Altta 1)', color: '#059669', sound: 'dosyalar/2.mp3' },
+          { char: 'أَ', name: 'Elif', tip: '🌲 Elif (E)', color: '#2563eb', sound: 'dosyalar/elif-ustun.mp3' },
+          { char: 'ـبَـ', name: 'Be', tip: '🍏 Ortada Be (Altta 1)', color: '#059669', sound: 'dosyalar/be-ustun.mp3' },
           { char: 'دًا', name: 'Den', tip: 'Dal + Tenvin', color: '#475569', sound: 'dosyalar/2-19.mp3' }
         ]
       },
@@ -2216,7 +2390,7 @@
         audio: 'dosyalar/3-19.mp3',
         letters: [
           { char: 'مَـ', name: 'Mim', tip: 'Mim', color: '#475569', sound: 'dosyalar/3-19.mp3' },
-          { char: 'ـثَـ', name: 'Peltek Se', tip: '👅 Ortada Se (Üstte 3)', color: '#dc2626', sound: 'dosyalar/4.mp3' },
+          { char: 'ـثَـ', name: 'Peltek Se', tip: '👅 Ortada Se (Üstte 3)', color: '#dc2626', sound: 'dosyalar/se-ustun.mp3' },
           { char: 'لًا', name: 'Len', tip: 'Lam-Elif', color: '#475569', sound: 'dosyalar/3-19.mp3' }
         ]
       },
@@ -2226,7 +2400,7 @@
         fullArabic: 'بَيْنَ',
         audio: 'dosyalar/1-9.mp3',
         letters: [
-          { char: 'بَـ', name: 'Be', tip: '🍏 Başta Be (Altta 1)', color: '#059669', sound: 'dosyalar/2.mp3' },
+          { char: 'بَـ', name: 'Be', tip: '🍏 Başta Be (Altta 1)', color: '#059669', sound: 'dosyalar/be-ustun.mp3' },
           { char: 'ـيْـ', name: 'Ya', tip: 'Cezimli Ya', color: '#475569', sound: 'dosyalar/1-9.mp3' },
           { char: 'نَ', name: 'Nun', tip: 'Nun', color: '#475569', sound: 'dosyalar/1-9.mp3' }
         ]
