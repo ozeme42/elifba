@@ -1,0 +1,3254 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elif - Be - Te - Se Öğrenme & Oyun Dünyası</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,700;1,700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a0ca3;
+      --secondary: #f72585;
+      --accent: #4cc9f0;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --purple: #7209b7;
+      --bg: #f0f4fd;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --radius: 20px;
+      --shadow: 0 10px 25px -5px rgba(67, 97, 238, 0.15), 0 8px 10px -6px rgba(0,0,0,0.05);
+      --shadow-lg: 0 20px 35px -10px rgba(67, 97, 238, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 50%, #fdf2f8 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Üst Başlık & Skor Tablosu */
+    header {
+      background: white;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      padding: 14px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #f72585, #7209b7);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      color: white;
+      box-shadow: 0 4px 12px rgba(247, 37, 133, 0.35);
+      font-family: 'Amiri', serif;
+    }
+
+    .logo-text h1 {
+      font-size: 1.35rem;
+      font-weight: 900;
+      background: linear-gradient(90deg, #3a0ca3, #f72585);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.2;
+    }
+
+    .logo-text p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .stats-bar {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .stat-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f8fafc;
+      padding: 8px 16px;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      border: 2px solid #e2e8f0;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+    }
+
+    .stat-badge.star-badge {
+      color: #b45309;
+      background: #fffbeb;
+      border-color: #fde68a;
+    }
+
+    .stat-badge.streak-badge {
+      color: #be185d;
+      background: #fdf2f8;
+      border-color: #fbcfe8;
+    }
+
+    .btn-sound-toggle {
+      background: #f1f5f9;
+      border: 2px solid #cbd5e1;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      transition: all 0.2s;
+    }
+    .btn-sound-toggle:hover {
+      transform: scale(1.08);
+      background: #e2e8f0;
+    }
+
+    /* Navigasyon Sekmeleri */
+    .tabs-nav {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding: 16px 20px;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tabs-nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab-btn {
+      padding: 10px 20px;
+      border: none;
+      background: white;
+      border-radius: 50px;
+      font-family: inherit;
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border: 2px solid transparent;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      transform: translateY(-2px);
+      color: var(--primary);
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--primary), var(--purple));
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 6px 16px rgba(67, 97, 238, 0.35);
+      transform: translateY(-2px) scale(1.02);
+    }
+
+    /* Ana Konteyner */
+    main {
+      flex: 1;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 20px 60px;
+    }
+
+    .view-section {
+      display: none;
+      animation: fadeIn 0.35s ease;
+    }
+    .view-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Başlık Blokları */
+    .section-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .section-header h2 {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--primary-dark);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    .section-header p {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 650px;
+      margin: 0 auto;
+      font-weight: 600;
+    }
+
+    /* 4 Harf Tanıtım Kartları */
+    .letters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 22px;
+      margin-bottom: 30px;
+    }
+
+    .letter-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      border: 3px solid transparent;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .letter-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 8px;
+      background: var(--card-color, var(--primary));
+    }
+
+    .letter-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--card-color, var(--primary));
+    }
+
+    .letter-card:active {
+      transform: scale(0.98);
+    }
+
+    .card-badge {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: #f1f5f9;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    .arabic-display {
+      font-family: 'Amiri', 'Traditional Arabic', serif;
+      font-size: 5rem;
+      line-height: 1.2;
+      color: #0f172a;
+      margin: 10px 0;
+      transition: transform 0.2s;
+    }
+
+    .letter-card:hover .arabic-display {
+      transform: scale(1.15);
+      color: var(--card-color, var(--primary));
+    }
+
+    .letter-info h3 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .letter-info .sound-guide {
+      font-size: 0.95rem;
+      color: var(--card-color, var(--primary));
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .letter-mnemonic {
+      background: #f8fafc;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #475569;
+      border: 1px dashed #cbd5e1;
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .btn-play-sound {
+      margin-top: 16px;
+      background: linear-gradient(135deg, var(--card-color, var(--primary)), var(--purple));
+      color: white;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: all 0.2s;
+    }
+    .btn-play-sound:hover {
+      transform: scale(1.06);
+    }
+
+    /* =========================================================
+       OKUMA YAZMA BİLMEYEN ÇOCUKLAR İÇİN ÖZEL KARAOKE & İŞARETLİ SİSTEM
+       ========================================================= */
+    .reading-subtabs {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .read-subtab-btn {
+      padding: 10px 22px;
+      border: 3px solid #cbd5e1;
+      background: white;
+      border-radius: 50px;
+      font-family: inherit;
+      font-weight: 900;
+      font-size: 1rem;
+      color: #475569;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .read-subtab-btn:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .read-subtab-btn.active {
+      background: linear-gradient(135deg, #f72585, #7209b7);
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 8px 20px rgba(247, 37, 133, 0.35);
+      transform: translateY(-2px) scale(1.03);
+    }
+
+    /* Büyük Karaoke Ekranı */
+    .karaoke-stage {
+      background: white;
+      border-radius: 28px;
+      padding: 34px 24px;
+      box-shadow: var(--shadow-lg);
+      border: 4px solid #e0e7ff;
+      margin-bottom: 30px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .karaoke-top-controller {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 18px;
+      border-bottom: 2px dashed #e2e8f0;
+    }
+
+    .speed-toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f1f5f9;
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 0.9rem;
+    }
+
+    .btn-speed-opt {
+      border: none;
+      background: transparent;
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-speed-opt.active {
+      background: white;
+      color: var(--primary);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    /* Kelime & Harf Kutusu (Sağdan Sola) */
+    .kara-word-box {
+      display: inline-flex;
+      direction: rtl;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      background: #f8fafc;
+      padding: 24px 34px;
+      border-radius: 24px;
+      border: 3px solid #cbd5e1;
+      margin: 15px auto 25px;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.04);
+      min-height: 180px;
+    }
+
+    /* Tekil Harf Elemanı */
+    .kara-char-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      cursor: pointer;
+      padding: 8px 18px 22px;
+      border-radius: 20px;
+      border: 3px solid transparent;
+      background: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .kara-char-item:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+      border-color: #93c5fd;
+    }
+
+    .kara-arabic {
+      font-family: 'Amiri', serif;
+      font-size: 5rem;
+      line-height: 1.1;
+      color: #1e293b;
+      transition: transform 0.2s;
+    }
+
+    .kara-pointer {
+      position: absolute;
+      bottom: -10px;
+      font-size: 2.2rem;
+      line-height: 1;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));
+    }
+
+    .kara-tip-bubble {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: #64748b;
+      margin-top: 4px;
+      background: #f1f5f9;
+      padding: 2px 10px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Aktif Okunan Harf Işıklandırması */
+    .kara-char-item.active {
+      transform: translateY(-16px) scale(1.22);
+      background: #fef08a !important; /* Parlak Sarı Vurgu */
+      border-color: #f59e0b !important;
+      box-shadow: 0 20px 35px rgba(245, 158, 11, 0.45);
+      z-index: 10;
+    }
+
+    .kara-char-item.active .kara-arabic {
+      color: #000;
+    }
+
+    .kara-char-item.active .kara-pointer {
+      opacity: 1;
+      transform: translateY(0);
+      animation: fingerBounce 0.5s infinite alternate;
+    }
+
+    @keyframes fingerBounce {
+      from { transform: translateY(0); }
+      to { transform: translateY(-8px); }
+    }
+
+    /* Kelime Bittiğinde Kutlama Parlaması */
+    .kara-word-box.word-success {
+      border-color: #10b981;
+      background: #ecfdf5;
+      animation: popSuccess 0.4s ease;
+    }
+
+    /* Karaoke Eylem Butonları */
+    .kara-actions-bar {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+
+    .btn-kara-play {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: none;
+      padding: 14px 34px;
+      border-radius: 50px;
+      font-size: 1.15rem;
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
+      transition: all 0.25s;
+    }
+    .btn-kara-play:hover {
+      transform: scale(1.07);
+    }
+
+    .btn-kara-slow {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 50px;
+      font-size: 1.05rem;
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 8px 20px rgba(245, 158, 11, 0.35);
+      transition: all 0.25s;
+    }
+    .btn-kara-slow:hover {
+      transform: scale(1.07);
+    }
+
+    /* Kelime Seçim Çubuğu (Film Şeridi Gibi) */
+    .words-filmstrip {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      padding: 12px 6px;
+      margin-top: 24px;
+      scrollbar-width: thin;
+    }
+
+    .word-strip-card {
+      flex: 0 0 160px;
+      background: white;
+      border: 3px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 14px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .word-strip-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--primary);
+      box-shadow: var(--shadow);
+    }
+
+    .word-strip-card.active {
+      border-color: #f72585;
+      background: #fdf2f8;
+      box-shadow: 0 8px 20px rgba(247, 37, 133, 0.25);
+      transform: scale(1.05);
+    }
+
+    .word-strip-arabic {
+      font-family: 'Amiri', serif;
+      font-size: 2.2rem;
+      direction: rtl;
+      line-height: 1.1;
+      color: #1e293b;
+    }
+
+    .word-strip-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #334155;
+    }
+
+    /* =========================================================
+       SEVİYE 1: HAREKELİ HARFLER TRENİ 🚂
+       ========================================================= */
+    .train-container {
+      background: white;
+      border-radius: 24px;
+      padding: 26px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      border: 2px solid #e2e8f0;
+    }
+
+    .train-track-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      direction: rtl;
+      flex-wrap: wrap;
+      margin: 18px 0;
+    }
+
+    .train-engine {
+      background: linear-gradient(135deg, #3a0ca3, #4361ee);
+      color: white;
+      padding: 16px 22px;
+      border-radius: 22px;
+      font-size: 1.8rem;
+      font-weight: 900;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 8px 18px rgba(67, 97, 238, 0.3);
+    }
+
+    .train-wagon {
+      background: #f8fafc;
+      border: 3px solid #cbd5e1;
+      border-radius: 20px;
+      padding: 14px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      min-width: 110px;
+    }
+
+    .train-wagon:hover {
+      transform: translateY(-6px);
+      border-color: var(--primary);
+      box-shadow: var(--shadow);
+    }
+
+    .train-wagon.active {
+      transform: translateY(-12px) scale(1.18);
+      background: #fef08a !important;
+      border-color: #f59e0b !important;
+      box-shadow: 0 15px 30px rgba(245, 158, 11, 0.4);
+    }
+
+    .wagon-arabic {
+      font-family: 'Amiri', serif;
+      font-size: 3.8rem;
+      line-height: 1;
+      color: #1e293b;
+    }
+
+    .wagon-badge {
+      font-size: 0.85rem;
+      font-weight: 900;
+      margin-top: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+    }
+
+    /* =========================================================
+       SEVİYE 2: HARF BİRLEŞTİRME ATÖLYESİ (SYLLABLE WORKSHOP)
+       ========================================================= */
+    .workshop-card {
+      background: white;
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      border: 2px solid #e2e8f0;
+      margin-bottom: 24px;
+    }
+
+    .syllable-assembly {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      direction: rtl;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin: 22px 0;
+    }
+
+    .assembly-part {
+      background: #f8fafc;
+      border: 3px solid #cbd5e1;
+      border-radius: 20px;
+      padding: 16px 26px;
+      font-family: 'Amiri', serif;
+      font-size: 4rem;
+      color: #1e293b;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+    }
+
+    .assembly-part:hover {
+      transform: translateY(-6px);
+      border-color: var(--primary);
+    }
+
+    .assembly-part.active {
+      transform: scale(1.15);
+      background: #fef08a;
+      border-color: #f59e0b;
+      box-shadow: 0 12px 25px rgba(245, 158, 11, 0.4);
+    }
+
+    .assembly-sign {
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: #94a3b8;
+    }
+
+    .assembly-result {
+      background: linear-gradient(135deg, #eff6ff, #fdf2f8);
+      border: 4px solid var(--primary);
+      border-radius: 24px;
+      padding: 18px 34px;
+      font-family: 'Amiri', serif;
+      font-size: 4.5rem;
+      color: var(--primary-dark);
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(67, 97, 238, 0.2);
+      transition: all 0.25s;
+    }
+
+    .assembly-result:hover {
+      transform: scale(1.08);
+      border-color: var(--secondary);
+    }
+
+    /* =========================================================
+       SEVİYE 4: NOKTALARI KARŞILAŞTIRMA (BE - TE - SE)
+       ========================================================= */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      margin: 24px 0;
+    }
+
+    .compare-card {
+      background: white;
+      border-radius: 24px;
+      padding: 24px 18px;
+      text-align: center;
+      border: 4px solid #e2e8f0;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+    }
+
+    .compare-card:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .compare-arabic {
+      font-family: 'Amiri', serif;
+      font-size: 5rem;
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+
+    .dot-highlight-box {
+      background: #f8fafc;
+      padding: 12px;
+      border-radius: 16px;
+      font-weight: 800;
+      font-size: 1rem;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* =========================================================
+       SEVİYE 5: SESLİ OKUMA PİYANOSU (SES TAHTASI)
+       ========================================================= */
+    .piano-board {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 14px;
+      direction: rtl;
+      margin: 24px 0;
+    }
+
+    .piano-key {
+      background: white;
+      border: 3px solid #cbd5e1;
+      border-radius: 20px;
+      padding: 20px 10px;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+    }
+
+    .piano-key:active, .piano-key.active {
+      transform: translateY(6px) scale(0.96);
+      background: #fef08a !important;
+      border-color: #f59e0b !important;
+      box-shadow: 0 2px 6px rgba(245, 158, 11, 0.4);
+    }
+
+    .piano-arabic {
+      font-family: 'Amiri', serif;
+      font-size: 3.5rem;
+      line-height: 1.1;
+      color: #1e293b;
+    }
+
+    .piano-subtext {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    /* =========================================================
+       DİĞER OYUNLARIN STİLLERİ (QUIZ, DOT, BALLOON, MEMORY, WHEEL)
+       ========================================================= */
+    .quiz-container {
+      max-width: 750px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 24px;
+      padding: 36px 30px;
+      box-shadow: var(--shadow-lg);
+      text-align: center;
+      position: relative;
+    }
+
+    .quiz-audio-box {
+      background: linear-gradient(135deg, #eef2ff, #fdf2f8);
+      border-radius: 20px;
+      padding: 26px;
+      margin-bottom: 30px;
+      border: 3px dashed #c7d2fe;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .big-sound-btn {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f72585, #7209b7);
+      border: none;
+      color: white;
+      font-size: 40px;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(247, 37, 133, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(247, 37, 133, 0.6); }
+      70% { transform: scale(1.06); box-shadow: 0 0 0 16px rgba(247, 37, 133, 0); }
+      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(247, 37, 133, 0); }
+    }
+
+    .big-sound-btn:hover {
+      transform: scale(1.12);
+    }
+
+    .quiz-prompt {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #334155;
+    }
+
+    .quiz-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+
+    .quiz-card {
+      background: #f8fafc;
+      border: 3px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 24px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+    }
+
+    .quiz-card:hover {
+      transform: translateY(-6px) scale(1.03);
+      border-color: var(--primary);
+      background: white;
+      box-shadow: var(--shadow);
+    }
+
+    .quiz-card .arabic-letter {
+      font-family: 'Amiri', serif;
+      font-size: 4.5rem;
+      line-height: 1;
+      color: #1e293b;
+    }
+
+    .quiz-card .name-label {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #475569;
+    }
+
+    .quiz-card.correct {
+      background: #ecfdf5 !important;
+      border-color: #10b981 !important;
+      transform: scale(1.05);
+      animation: popSuccess 0.4s ease;
+    }
+
+    .quiz-card.wrong {
+      background: #fef2f2 !important;
+      border-color: #ef4444 !important;
+      animation: shake 0.4s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-10px); }
+      40%, 80% { transform: translateX(10px); }
+    }
+
+    @keyframes popSuccess {
+      0% { transform: scale(0.95); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1.05); }
+    }
+
+    .quiz-feedback {
+      margin-top: 24px;
+      font-size: 1.3rem;
+      font-weight: 900;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    /* Nokta Avcısı */
+    .dot-hunter-box {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 24px;
+      padding: 36px 30px;
+      box-shadow: var(--shadow-lg);
+      text-align: center;
+    }
+
+    .dot-question-card {
+      background: #f8fafc;
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 28px;
+      border: 2px solid #e2e8f0;
+    }
+
+    .target-mission-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--secondary), var(--purple));
+      color: white;
+      padding: 6px 18px;
+      border-radius: 30px;
+      font-weight: 800;
+      font-size: 1rem;
+      margin-bottom: 12px;
+    }
+
+    .target-letter-name {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: #1e293b;
+      margin-bottom: 6px;
+    }
+
+    .target-letter-tip {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .dish-stage {
+      position: relative;
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    .dish-base {
+      font-family: 'Amiri', serif;
+      font-size: 7rem;
+      color: #64748b;
+      position: relative;
+      transition: all 0.3s;
+    }
+
+    .dot-options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .dot-option-btn {
+      background: white;
+      border: 3px solid #cbd5e1;
+      border-radius: 16px;
+      padding: 18px 14px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dot-option-btn:hover {
+      transform: translateY(-5px);
+      border-color: var(--primary);
+      box-shadow: var(--shadow);
+    }
+
+    .dot-visual {
+      font-size: 2.2rem;
+      line-height: 1;
+      height: 38px;
+    }
+
+    .dot-desc {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #334155;
+    }
+
+    /* Balon Patlatma */
+    .balloon-game-container {
+      position: relative;
+      max-width: 900px;
+      height: 560px;
+      margin: 0 auto;
+      background: linear-gradient(180deg, #cffafe 0%, #e0e7ff 50%, #fdf2f8 100%);
+      border-radius: 28px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      border: 4px solid white;
+    }
+
+    .balloon-top-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 14px 20px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 20;
+      border-bottom: 2px solid rgba(255,255,255,0.6);
+    }
+
+    .balloon-target-display {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .target-bubble {
+      background: linear-gradient(135deg, var(--secondary), var(--purple));
+      color: white;
+      padding: 6px 16px;
+      border-radius: 50px;
+      font-weight: 900;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 10px rgba(247, 37, 133, 0.3);
+    }
+
+    .target-bubble-arabic {
+      font-family: 'Amiri', serif;
+      font-size: 1.8rem;
+    }
+
+    .balloon-stage {
+      position: absolute;
+      top: 70px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      overflow: hidden;
+    }
+
+    .balloon-item {
+      position: absolute;
+      width: 85px;
+      height: 110px;
+      border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: white;
+      font-family: 'Amiri', serif;
+      font-size: 3.5rem;
+      line-height: 1;
+      box-shadow: inset -6px -6px 15px rgba(0,0,0,0.18), inset 6px 6px 15px rgba(255,255,255,0.4), 0 10px 20px rgba(0,0,0,0.15);
+      transition: transform 0.1s;
+      animation: floatUp linear forwards;
+    }
+
+    .balloon-item::after {
+      content: '';
+      position: absolute;
+      bottom: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 18px;
+      background: rgba(0,0,0,0.25);
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(580px); }
+      to { transform: translateY(-130px); }
+    }
+
+    .balloon-start-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(10px);
+      z-index: 30;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      text-align: center;
+      gap: 16px;
+    }
+
+    .btn-big-action {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      font-family: inherit;
+      border: none;
+      padding: 16px 40px;
+      border-radius: 50px;
+      font-size: 1.3rem;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+      transition: all 0.25s;
+    }
+    .btn-big-action:hover {
+      transform: scale(1.08);
+    }
+
+    /* Hafıza Kartları */
+    .memory-container {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .memory-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      perspective: 1000px;
+      margin-top: 24px;
+    }
+
+    .memory-card {
+      height: 130px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .memory-card.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      inset: 0;
+      border-radius: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      backface-visibility: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .card-front {
+      background: linear-gradient(135deg, #4361ee, #3a0ca3);
+      color: white;
+      font-size: 2.2rem;
+      border: 3px solid white;
+    }
+
+    .card-back {
+      background: white;
+      border: 3px solid #cbd5e1;
+      transform: rotateY(180deg);
+      padding: 8px;
+    }
+
+    .card-back .arabic {
+      font-family: 'Amiri', serif;
+      font-size: 3.5rem;
+      color: #1e293b;
+      line-height: 1;
+    }
+
+    .card-back .latin {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .memory-card.matched .card-back {
+      border-color: #10b981;
+      background: #ecfdf5;
+    }
+
+    /* Şans Çarkı */
+    .wheel-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 28px;
+      padding: 34px 24px;
+      box-shadow: var(--shadow-lg);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .wheel-wrapper {
+      position: relative;
+      width: 320px;
+      height: 320px;
+      margin: 20px 0;
+    }
+
+    .wheel-pointer {
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 18px solid transparent;
+      border-right: 18px solid transparent;
+      border-top: 32px solid #ef4444;
+      z-index: 10;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+    }
+
+    #wheelCanvas {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.18), inset 0 0 0 8px white;
+      transition: transform 4s cubic-bezier(0.15, 0.9, 0.2, 1);
+    }
+
+    .wheel-result-card {
+      margin-top: 20px;
+      background: #f8fafc;
+      border-radius: 20px;
+      padding: 20px;
+      border: 2px solid #e2e8f0;
+      width: 100%;
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Konfeti Canvas */
+    #confettiCanvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* Modal / Popups */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(6px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal-box {
+      background: white;
+      border-radius: 24px;
+      max-width: 500px;
+      width: 100%;
+      padding: 32px;
+      text-align: center;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+      animation: popSuccess 0.3s ease;
+    }
+
+    @media (max-width: 768px) {
+      header { padding: 12px 16px; }
+      .logo-text h1 { font-size: 1.1rem; }
+      .quiz-options { grid-template-columns: 1fr; }
+      .memory-grid { grid-template-columns: repeat(3, 1fr); }
+      .kara-word-box { gap: 10px; padding: 16px 20px; }
+      .kara-arabic { font-size: 4rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Konfeti Efekti -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <!-- Üst Bar -->
+  <header>
+    <a href="elifba.htm" class="logo-container" title="Elifba Ana Sayfasına Dön">
+      <div class="logo-icon">ا ب</div>
+      <div class="logo-text">
+        <h1>Elifba Eğlence Dünyası</h1>
+        <p>Elif - Be - Te - Peltek Se Harfleri</p>
+      </div>
+    </a>
+
+    <div class="stats-bar">
+      <div class="stat-badge star-badge">
+        <span>⭐</span>
+        <span id="starCount">0</span> Yıldız
+      </div>
+      <div class="stat-badge streak-badge">
+        <span>🔥</span>
+        <span id="streakCount">0</span> Seri
+      </div>
+      <button class="btn-sound-toggle" id="btnSoundToggle" title="Oyun Efekt Seslerini Aç/Kapat">🔊</button>
+      <a href="elifba.htm" style="text-decoration:none;" class="stat-badge" title="Tüm Elifba Derslerine Dön">🏠 Dersler</a>
+    </div>
+  </header>
+
+  <!-- Sekmeler -->
+  <nav class="tabs-nav">
+    <button class="tab-btn active" data-tab="tab-letters">📖 1. Harfleri Keşfet</button>
+    <button class="tab-btn" data-tab="tab-reading">📚 2. Okuma & Karaoke Takip</button>
+    <button class="tab-btn" data-tab="tab-quiz">🎯 3. Sesi Dinle Harfi Bul</button>
+    <button class="tab-btn" data-tab="tab-dots">🔍 4. Nokta Avcısı</button>
+    <button class="tab-btn" data-tab="tab-balloons">🎈 5. Balon Patlatmaca</button>
+    <button class="tab-btn" data-tab="tab-memory">🃏 6. Hafıza Kartları</button>
+    <button class="tab-btn" data-tab="tab-wheel">🎡 7. Şans Çarkı</button>
+  </nav>
+
+  <!-- Ana İçerik -->
+  <main>
+
+    <!-- SEKME 1: HARFLERİ KEŞFET & SESLER -->
+    <section id="tab-letters" class="view-section active">
+      <div class="section-header">
+        <h2>🌟 4 Arkadaş Harfimizi Tanıyalım!</h2>
+        <p>Kartların üzerine veya "Dinle" düğmelerine tıklayarak orijinal telaffuzları dinleyin. Farkları keşfedin!</p>
+      </div>
+
+      <div class="letters-grid">
+        <!-- ELİF -->
+        <div class="letter-card" style="--card-color: #2563eb;" onclick="playAudioFile('dosyalar/1.mp3', this)">
+          <div class="card-badge">1. Harf</div>
+          <div class="arabic-display">ا</div>
+          <div class="letter-info">
+            <h3>ELİF</h3>
+            <div class="sound-guide">"E" Sesi Gibidir</div>
+          </div>
+          <div class="letter-mnemonic">
+            🌲 <strong>İpucu:</strong> Dimdik ayakta duran tek bir çizgi! Hiç noktası yoktur.
+          </div>
+          <button class="btn-play-sound">🔊 Harf Sesini Dinle</button>
+        </div>
+
+        <!-- BE -->
+        <div class="letter-card" style="--card-color: #059669;" onclick="playAudioFile('dosyalar/2.mp3', this)">
+          <div class="card-badge">2. Harf</div>
+          <div class="arabic-display">ب</div>
+          <div class="letter-info">
+            <h3>BE</h3>
+            <div class="sound-guide">"B" Sesi Gibidir</div>
+          </div>
+          <div class="letter-mnemonic">
+            🍎 <strong>İpucu:</strong> Bir tabak, <strong>ALTINDA 1 NOKTA</strong> var! (Bebeğin beşiği altta).
+          </div>
+          <button class="btn-play-sound">🔊 Harf Sesini Dinle</button>
+        </div>
+
+        <!-- TE -->
+        <div class="letter-card" style="--card-color: #d97706;" onclick="playAudioFile('dosyalar/3.mp3', this)">
+          <div class="card-badge">3. Harf</div>
+          <div class="arabic-display">ت</div>
+          <div class="letter-info">
+            <h3>TE</h3>
+            <div class="sound-guide">"T" Sesi Gibidir</div>
+          </div>
+          <div class="letter-mnemonic">
+            😊 <strong>İpucu:</strong> Gülen sevimli yüz! <strong>ÜSTÜNDE 2 GÖZ/NOKTA</strong> var!
+          </div>
+          <button class="btn-play-sound">🔊 Harf Sesini Dinle</button>
+        </div>
+
+        <!-- PELTEK SE -->
+        <div class="letter-card" style="--card-color: #dc2626;" onclick="playAudioFile('dosyalar/4.mp3', this)">
+          <div class="card-badge">4. Harf</div>
+          <div class="arabic-display">ث</div>
+          <div class="letter-info">
+            <h3>PELTEK SE</h3>
+            <div class="sound-guide">Dil Uçta Peltek "The/Se"</div>
+          </div>
+          <div class="letter-mnemonic">
+            👅 <strong>İpucu:</strong> <strong>ÜSTÜNDE 3 NOKTA</strong> var! Dilinin ucunu dişlerinin arasına hafifçe koyup söyle.
+          </div>
+          <button class="btn-play-sound">🔊 Harf Sesini Dinle</button>
+        </div>
+      </div>
+
+      <!-- Sürekli Tekrar Oynatıcı Paneli -->
+      <div style="background: white; border-radius: 20px; padding: 22px; box-shadow: var(--shadow); margin-bottom: 30px; text-align: center; border: 2px solid #e2e8f0;">
+        <h3 style="color: var(--primary-dark); font-size: 1.3rem; margin-bottom: 8px;">🔁 Sürekli Tekrar Dinleme Modu</h3>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 16px;">Harflerin telaffuzunu kulağına yerleştirmek için otomatik döngüyü başlatabilirsin.</p>
+        <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+          <button class="btn-big-action" id="btnAutoLoop" onclick="toggleAutoLoop()" style="font-size: 1.05rem; padding: 12px 28px;">
+            ▶️ Sırayla Sürekli Tekrar Et
+          </button>
+          <button class="btn-sound-toggle" onclick="stopAudio()" style="width: auto; padding: 0 20px; border-radius: 50px; font-weight: 800; font-size: 0.9rem;" title="Durdur">
+            ⏹️ Durdur
+          </button>
+        </div>
+        <div id="loopStatusText" style="margin-top: 10px; font-weight: 800; color: var(--primary); font-size: 0.95rem;"></div>
+      </div>
+
+      <!-- Karşılaştırma Tablosu (Noktalar & Farklar) -->
+      <div style="background: white; border-radius: 20px; padding: 26px; box-shadow: var(--shadow);">
+        <h3 style="text-align: center; color: var(--primary-dark); font-size: 1.4rem; margin-bottom: 18px;">
+          ⚖️ Karıştırmamak İçin Altın Kural: Noktaların Yerine Bak!
+        </h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; text-align: center;">
+          <div style="background: #eff6ff; padding: 18px; border-radius: 16px; border: 2px solid #bfdbfe;">
+            <div style="font-family:'Amiri'; font-size: 3.5rem; color:#1e40af;">ا</div>
+            <div style="font-weight: 900; font-size: 1.2rem; color: #1e3a8a;">ELİF</div>
+            <div style="color: #3b82f6; font-weight: 800; margin-top: 4px;">0 Nokta (Noktasız)</div>
+          </div>
+          <div style="background: #ecfdf5; padding: 18px; border-radius: 16px; border: 2px solid #a7f3d0;">
+            <div style="font-family:'Amiri'; font-size: 3.5rem; color:#065f46;">ب</div>
+            <div style="font-weight: 900; font-size: 1.2rem; color: #064e3b;">BE</div>
+            <div style="color: #10b981; font-weight: 800; margin-top: 4px;">Altta 1 Nokta 👇</div>
+          </div>
+          <div style="background: #fffbeb; padding: 18px; border-radius: 16px; border: 2px solid #fde68a;">
+            <div style="font-family:'Amiri'; font-size: 3.5rem; color:#92400e;">ت</div>
+            <div style="font-weight: 900; font-size: 1.2rem; color: #78350f;">TE</div>
+            <div style="color: #f59e0b; font-weight: 800; margin-top: 4px;">Üstte 2 Nokta 👆👆</div>
+          </div>
+          <div style="background: #fef2f2; padding: 18px; border-radius: 16px; border: 2px solid #fecaca;">
+            <div style="font-family:'Amiri'; font-size: 3.5rem; color:#991b1b;">ث</div>
+            <div style="font-weight: 900; font-size: 1.2rem; color: #7f1d1d;">PELTEK SE</div>
+            <div style="color: #ef4444; font-weight: 800; margin-top: 4px;">Üstte 3 Nokta 🔺 (Peltek)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEKME 2: DETAYLI & İŞARETLİ OKUMA STÜDYOSU (ÇOCUKLARA ÖZEL) -->
+    <section id="tab-reading" class="view-section">
+      <div class="section-header">
+        <h2>📚 Canlı & İşaretli Okuma Stüdyosu</h2>
+        <p>Okuma-yazma bilmeyen minikler için: Ses okundukça parlayan harfleri ve sevimli parmağı (👆) takip edin!</p>
+      </div>
+
+      <!-- Alt Kategori Butonları -->
+      <div class="reading-subtabs">
+        <button class="read-subtab-btn active" onclick="switchReadingMode('stage-words', this)">
+          📖 1. Kelimeler & Karaoke Takip
+        </button>
+        <button class="read-subtab-btn" onclick="switchReadingMode('stage-train', this)">
+          🚂 2. Harekeler Treni (E - İ - Ü)
+        </button>
+        <button class="read-subtab-btn" onclick="switchReadingMode('stage-syllables', this)">
+          🧪 3. İki Harfli Hece Birleştirme
+        </button>
+        <button class="read-subtab-btn" onclick="switchReadingMode('stage-compare', this)">
+          🔍 4. Noktalara Göre Oku
+        </button>
+        <button class="read-subtab-btn" onclick="switchReadingMode('stage-piano', this)">
+          🎹 5. Dokun-Dinle Ses Tahtası
+        </button>
+      </div>
+
+      <!-- MOD 1: BÜYÜK KARAOKE OKUMA STÜDYOSU (Kelimeler) -->
+      <div id="stage-words" class="reading-stage-content">
+        <div class="karaoke-stage">
+          <div class="karaoke-top-controller">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:1.6rem;">🎯</span>
+              <div style="text-align:left;">
+                <div style="font-weight:900; font-size:1.15rem; color:#1e293b;" id="karaWordTitle">أَدَبَ (E-De-Be)</div>
+                <div style="font-size:0.85rem; color:#64748b; font-weight:700;">Harflere doğrudan dokunabilir veya 'Dinle'ye basabilirsin!</div>
+              </div>
+            </div>
+
+            <div class="speed-toggle-container">
+              <span>Hız:</span>
+              <button class="btn-speed-opt active" id="btnSpeedNormal" onclick="setKaraokeSpeed(1)">🐇 Normal</button>
+              <button class="btn-speed-opt" id="btnSpeedSlow" onclick="setKaraokeSpeed(1.6)">🐢 Yavaş & Adım Adım</button>
+            </div>
+          </div>
+
+          <!-- Sağdan Sola Büyük Harfler Kutusu -->
+          <div class="kara-word-box" id="karaWordBox">
+            <!-- JS ile dinamik doldurulacak -->
+          </div>
+
+          <!-- Eylem Butonları -->
+          <div class="kara-actions-bar">
+            <button class="btn-kara-play" onclick="playCurrentWordKaraoke()">
+              ▶️ Kelimeyi Birlikte Oku
+            </button>
+            <button class="btn-kara-slow" onclick="playCurrentWordStepByStep()">
+              🐢 Harf Harf Yavaş Oku
+            </button>
+            <button class="btn-sound-toggle" onclick="toggleWordLoop()" id="btnWordLoop" title="Kelimeyi Sürekli Tekrar Et" style="width:auto; padding:0 18px; border-radius:30px; font-weight:800; font-size:0.9rem;">
+              🔁 Sürekli Tekrar
+            </button>
+          </div>
+
+          <!-- Kelime Seçim Şeridi (Filmstrip) -->
+          <div style="margin-top:28px; text-align:left;">
+            <div style="font-weight:800; color:#475569; font-size:0.95rem; margin-bottom:8px;">👇 Okumak İstediğin Kelimeyi Seç:</div>
+            <div class="words-filmstrip" id="wordsFilmstrip">
+              <!-- JS ile kelimeler eklenecek -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MOD 2: HAREKELER TRENİ (ÜSTÜN, ESRE, ÖTRE) -->
+      <div id="stage-train" class="reading-stage-content" style="display:none;">
+        <div class="train-container">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
+            <div>
+              <h3 style="font-size:1.4rem; font-weight:900; color:var(--primary-dark);">🚂 Harekeli Harfler Treni</h3>
+              <p style="color:var(--text-muted); font-size:0.95rem; font-weight:700;">Her harfin 3 vagonu var: 🎩 Üstün (E), 🛝 Esre (İ), 🎀 Ötre (Ü)</p>
+            </div>
+          </div>
+
+          <!-- ELİF TRENİ -->
+          <div style="background:#eff6ff; border-radius:20px; padding:18px; margin-bottom:18px; border:2px solid #bfdbfe;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-weight:900; color:#1e40af; font-size:1.1rem;">🌲 1. ELİF TRENİ (Noktasız)</span>
+              <button class="btn-play-sound" style="padding:4px 14px; font-size:0.85rem; margin:0;" onclick="playTrainSeries('elif')">🚂 Treni Sür & Oku</button>
+            </div>
+            <div class="train-track-row" id="trainRow-elif">
+              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/1-1.mp3', this)">
+                <div class="wagon-arabic">أَ</div>
+                <div class="wagon-badge" style="color:#2563eb;">🎩 Üstün: E</div>
+              </div>
+              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/1-1.mp3', this)">
+                <div class="wagon-arabic">إِ</div>
+                <div class="wagon-badge" style="color:#059669;">🛝 Esre: İ</div>
+              </div>
+              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/1-1.mp3', this)">
+                <div class="wagon-arabic">أُ</div>
+                <div class="wagon-badge" style="color:#d97706;">🎀 Ötre: Ü</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BE TRENİ -->
+          <div style="background:#ecfdf5; border-radius:20px; padding:18px; margin-bottom:18px; border:2px solid #a7f3d0;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-weight:900; color:#065f46; font-size:1.1rem;">🍏 2. BE TRENİ (Altta 1 Nokta)</span>
+              <button class="btn-play-sound" style="padding:4px 14px; font-size:0.85rem; margin:0; background:linear-gradient(135deg,#059669,#10b981);" onclick="playTrainSeries('be')">🚂 Treni Sür & Oku</button>
+            </div>
+            <div class="train-track-row" id="trainRow-be">
+              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/2-1.mp3', this)">
+                <div class="wagon-arabic">بَ</div>
+                <div class="wagon-badge" style="color:#059669;">🎩 Üstün: BE</div>
+              </div>
+              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/2-1.mp3', this)">
+                <div class="wagon-arabic">بِ</div>
+                <div class="wagon-badge" style="color:#2563eb;">🛝 Esre: Bİ</div>
+              </div>
+              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/2-1.mp3', this)">
+                <div class="wagon-arabic">بُ</div>
+                <div class="wagon-badge" style="color:#d97706;">🎀 Ötre: BÜ</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TE TRENİ -->
+          <div style="background:#fffbeb; border-radius:20px; padding:18px; margin-bottom:18px; border:2px solid #fde68a;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-weight:900; color:#92400e; font-size:1.1rem;">👀 3. TE TRENİ (Üstte 2 Nokta)</span>
+              <button class="btn-play-sound" style="padding:4px 14px; font-size:0.85rem; margin:0; background:linear-gradient(135deg,#d97706,#f59e0b);" onclick="playTrainSeries('te')">🚂 Treni Sür & Oku</button>
+            </div>
+            <div class="train-track-row" id="trainRow-te">
+              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/3-1.mp3', this)">
+                <div class="wagon-arabic"> تَ</div>
+                <div class="wagon-badge" style="color:#d97706;">🎩 Üstün: TE</div>
+              </div>
+              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/3-1.mp3', this)">
+                <div class="wagon-arabic"> تِ</div>
+                <div class="wagon-badge" style="color:#2563eb;">🛝 Esre: Tİ</div>
+              </div>
+              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/3-1.mp3', this)">
+                <div class="wagon-arabic"> تُ</div>
+                <div class="wagon-badge" style="color:#059669;">🎀 Ötre: TÜ</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PELTEK SE TRENİ -->
+          <div style="background:#fef2f2; border-radius:20px; padding:18px; border:2px solid #fecaca;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-weight:900; color:#991b1b; font-size:1.1rem;">👅 4. PELTEK SE TRENİ (Üstte 3 Nokta)</span>
+              <button class="btn-play-sound" style="padding:4px 14px; font-size:0.85rem; margin:0; background:linear-gradient(135deg,#dc2626,#ef4444);" onclick="playTrainSeries('se')">🚂 Treni Sür & Oku</button>
+            </div>
+            <div class="train-track-row" id="trainRow-se">
+              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/4-1.mp3', this)">
+                <div class="wagon-arabic"> ثَ</div>
+                <div class="wagon-badge" style="color:#dc2626;">🎩 Üstün: SE</div>
+              </div>
+              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/4-1.mp3', this)">
+                <div class="wagon-arabic"> ثِ</div>
+                <div class="wagon-badge" style="color:#2563eb;">🛝 Esre: Sİ</div>
+              </div>
+              <div class="train-wagon" onclick="playSingleTrainWagon('dosyalar/4-1.mp3', this)">
+                <div class="wagon-arabic"> ثُ</div>
+                <div class="wagon-badge" style="color:#d97706;">🎀 Ötre: SÜ</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MOD 3: İKİ HARFLİ HECE BİRLEŞTİRME ATÖLYESİ 🧪 -->
+      <div id="stage-syllables" class="reading-stage-content" style="display:none;">
+        <div class="workshop-card">
+          <div style="text-align:center; margin-bottom:20px;">
+            <h3 style="font-size:1.4rem; font-weight:900; color:var(--primary-dark);">🧪 Harf Birleştirme Laboratuvarı</h3>
+            <p style="color:var(--text-muted); font-size:0.95rem; font-weight:700;">
+              Harfler el ele tutuşunca hece oluşur! Önce 1. harfe, sonra 2. harfe bas, sonra birleştir!
+            </p>
+          </div>
+
+          <!-- 1. ÖRNEK: BE + TE = BETE -->
+          <div style="background:#f8fafc; border-radius:20px; padding:20px; margin-bottom:20px; border:2px solid #e2e8f0;">
+            <div style="font-weight:900; color:#334155; margin-bottom:10px;">1. Alıştırma: Be (بَ) ile Te (تَ) Birleşiyor</div>
+            <div class="syllable-assembly">
+              <div class="assembly-part" onclick="playPartAudio('dosyalar/2.mp3', this)">
+                بَ
+                <div style="font-size:0.8rem; font-family:'Nunito'; font-weight:800; color:#059669;">1. Be (Altta 1)</div>
+              </div>
+              <div class="assembly-sign">+</div>
+              <div class="assembly-part" onclick="playPartAudio('dosyalar/3.mp3', this)">
+                تَ
+                <div style="font-size:0.8rem; font-family:'Nunito'; font-weight:800; color:#d97706;">2. Te (Üstte 2)</div>
+              </div>
+              <div class="assembly-sign">=</div>
+              <div class="assembly-result" onclick="playAudioFile('dosyalar/2.mp3', this)">
+                بَتَ
+                <div style="font-size:0.85rem; font-family:'Nunito'; font-weight:900; color:#4361ee;">🤝 Be - Te</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. ÖRNEK: TE + BE = TEBE -->
+          <div style="background:#f8fafc; border-radius:20px; padding:20px; margin-bottom:20px; border:2px solid #e2e8f0;">
+            <div style="font-weight:900; color:#334155; margin-bottom:10px;">2. Alıştırma: Te (تَ) ile Be (بَ) Birleşiyor</div>
+            <div class="syllable-assembly">
+              <div class="assembly-part" onclick="playPartAudio('dosyalar/3.mp3', this)">
+                تَ
+                <div style="font-size:0.8rem; font-family:'Nunito'; font-weight:800; color:#d97706;">1. Te (Üstte 2)</div>
+              </div>
+              <div class="assembly-sign">+</div>
+              <div class="assembly-part" onclick="playPartAudio('dosyalar/2.mp3', this)">
+                بَ
+                <div style="font-size:0.8rem; font-family:'Nunito'; font-weight:800; color:#059669;">2. Be (Altta 1)</div>
+              </div>
+              <div class="assembly-sign">=</div>
+              <div class="assembly-result" onclick="playAudioFile('dosyalar/3.mp3', this)">
+                تَبَ
+                <div style="font-size:0.85rem; font-family:'Nunito'; font-weight:900; color:#4361ee;">🤝 Te - Be</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. ÖRNEK: CEZİMLİ EB, ET, ES (DURAKLI OKUMA) -->
+          <div style="background:#eff6ff; border-radius:20px; padding:20px; border:2px solid #bfdbfe;">
+            <div style="font-weight:900; color:#1e40af; margin-bottom:10px;">3. Alıştırma: Cezimli Durak (Elif + Cezim)</div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; direction:rtl;">
+              <div class="assembly-result" style="font-size:3.5rem; text-align:center;" onclick="playAudioFile('dosyalar/1-7.mp3', this)">
+                أَبْ
+                <div style="font-size:0.9rem; font-family:'Nunito'; font-weight:900; color:#1e40af;">🛑 Eb (Be Durdu)</div>
+              </div>
+              <div class="assembly-result" style="font-size:3.5rem; text-align:center;" onclick="playAudioFile('dosyalar/2-7.mp3', this)">
+                أَتْ
+                <div style="font-size:0.9rem; font-family:'Nunito'; font-weight:900; color:#d97706;">🛑 Et (Te Durdu)</div>
+              </div>
+              <div class="assembly-result" style="font-size:3.5rem; text-align:center;" onclick="playAudioFile('dosyalar/3-7.mp3', this)">
+                أَثْ
+                <div style="font-size:0.9rem; font-family:'Nunito'; font-weight:900; color:#dc2626;">🛑 Es (Se Durdu)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MOD 4: NOKTALARA GÖRE OKU (BE - TE - SE AYRIMI) -->
+      <div id="stage-compare" class="reading-stage-content" style="display:none;">
+        <div style="text-align:center; margin-bottom:20px;">
+          <h3 style="font-size:1.5rem; font-weight:900; color:var(--primary-dark);">🔍 Noktalara Göre Oku & Karşılaştır</h3>
+          <p style="color:var(--text-muted); font-size:1rem; font-weight:700;">
+            Tabaklar tamamen aynı! Sadece noktaların yerine ve sayısına dikkat et. Kartlara basarak dinle!
+          </p>
+        </div>
+
+        <div class="compare-grid">
+          <!-- BE -->
+          <div class="compare-card" style="border-color:#a7f3d0;" onclick="playAudioFile('dosyalar/2.mp3', this)">
+            <div class="compare-arabic" style="color:#059669;">بَ</div>
+            <div style="font-size:1.4rem; font-weight:900; color:#064e3b;">BE</div>
+            <div class="dot-highlight-box" style="background:#ecfdf5; color:#065f46;">
+              🍏 <strong>Altta 1 Nokta</strong>
+            </div>
+            <div style="font-size:0.85rem; color:#64748b; font-weight:700; margin-top:8px;">
+              "Bebeğin beşiği gibi altta tek elma!"
+            </div>
+            <button class="btn-play-sound" style="margin:12px auto 0; padding:6px 16px; font-size:0.85rem; background:#059669;">🔊 Be Dinle</button>
+          </div>
+
+          <!-- TE -->
+          <div class="compare-card" style="border-color:#fde68a;" onclick="playAudioFile('dosyalar/3.mp3', this)">
+            <div class="compare-arabic" style="color:#d97706;">تَ</div>
+            <div style="font-size:1.4rem; font-weight:900; color:#78350f;">TE</div>
+            <div class="dot-highlight-box" style="background:#fffbeb; color:#92400e;">
+              👀 <strong>Üstte 2 Nokta</strong>
+            </div>
+            <div style="font-size:0.85rem; color:#64748b; font-weight:700; margin-top:8px;">
+              "Gülen yüzün üstündeki iki göz!"
+            </div>
+            <button class="btn-play-sound" style="margin:12px auto 0; padding:6px 16px; font-size:0.85rem; background:#d97706;">🔊 Te Dinle</button>
+          </div>
+
+          <!-- PELTEK SE -->
+          <div class="compare-card" style="border-color:#fecaca;" onclick="playAudioFile('dosyalar/4.mp3', this)">
+            <div class="compare-arabic" style="color:#dc2626;">ثَ</div>
+            <div style="font-size:1.4rem; font-weight:900; color:#7f1d1d;">PELTEK SE</div>
+            <div class="dot-highlight-box" style="background:#fef2f2; color:#991b1b;">
+              ⭐⭐⭐ <strong>Üstte 3 Nokta</strong>
+            </div>
+            <div style="font-size:0.85rem; color:#64748b; font-weight:700; margin-top:8px;">
+              "Dil ucu dişlerin arasında 3 yıldız!"
+            </div>
+            <button class="btn-play-sound" style="margin:12px auto 0; padding:6px 16px; font-size:0.85rem; background:#dc2626;">🔊 Se Dinle</button>
+          </div>
+
+          <!-- ELİF -->
+          <div class="compare-card" style="border-color:#bfdbfe;" onclick="playAudioFile('dosyalar/1.mp3', this)">
+            <div class="compare-arabic" style="color:#2563eb;">أَ</div>
+            <div style="font-size:1.4rem; font-weight:900; color:#1e3a8a;">ELİF</div>
+            <div class="dot-highlight-box" style="background:#eff6ff; color:#1e40af;">
+              🌲 <strong>Hiç Nokta Yok!</strong>
+            </div>
+            <div style="font-size:0.85rem; color:#64748b; font-weight:700; margin-top:8px;">
+              "Dimdik ayakta duran tek çizgi!"
+            </div>
+            <button class="btn-play-sound" style="margin:12px auto 0; padding:6px 16px; font-size:0.85rem; background:#2563eb;">🔊 Elif Dinle</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- MOD 5: DOKUN-DİNLE SES TAHTASI (PİYANO) -->
+      <div id="stage-piano" class="reading-stage-content" style="display:none;">
+        <div style="text-align:center; margin-bottom:18px;">
+          <h3 style="font-size:1.5rem; font-weight:900; color:var(--primary-dark);">🎹 Dokun - Dinle Harf & Hece Piyanosu</h3>
+          <p style="color:var(--text-muted); font-size:0.95rem; font-weight:700;">
+            İstediğin tuşa parmağınla bas ve kendi seslerini keşfet!
+          </p>
+        </div>
+
+        <div class="piano-board">
+          <div class="piano-key" style="border-color:#bfdbfe;" onclick="playPianoKey('dosyalar/1.mp3', this)">
+            <div class="piano-arabic" style="color:#2563eb;">ا</div>
+            <div class="piano-subtext">Elif</div>
+          </div>
+          <div class="piano-key" style="border-color:#a7f3d0;" onclick="playPianoKey('dosyalar/2.mp3', this)">
+            <div class="piano-arabic" style="color:#059669;">ب</div>
+            <div class="piano-subtext">Be</div>
+          </div>
+          <div class="piano-key" style="border-color:#fde68a;" onclick="playPianoKey('dosyalar/3.mp3', this)">
+            <div class="piano-arabic" style="color:#d97706;">ت</div>
+            <div class="piano-subtext">Te</div>
+          </div>
+          <div class="piano-key" style="border-color:#fecaca;" onclick="playPianoKey('dosyalar/4.mp3', this)">
+            <div class="piano-arabic" style="color:#dc2626;">ث</div>
+            <div class="piano-subtext">Se</div>
+          </div>
+          <div class="piano-key" style="border-color:#bfdbfe;" onclick="playPianoKey('dosyalar/1-1.mp3', this)">
+            <div class="piano-arabic" style="color:#2563eb;">أَ</div>
+            <div class="piano-subtext">E</div>
+          </div>
+          <div class="piano-key" style="border-color:#a7f3d0;" onclick="playPianoKey('dosyalar/2-1.mp3', this)">
+            <div class="piano-arabic" style="color:#059669;">بَ</div>
+            <div class="piano-subtext">Be</div>
+          </div>
+          <div class="piano-key" style="border-color:#fde68a;" onclick="playPianoKey('dosyalar/3-1.mp3', this)">
+            <div class="piano-arabic" style="color:#d97706;">تَ</div>
+            <div class="piano-subtext">Te</div>
+          </div>
+          <div class="piano-key" style="border-color:#fecaca;" onclick="playPianoKey('dosyalar/4-1.mp3', this)">
+            <div class="piano-arabic" style="color:#dc2626;">ثَ</div>
+            <div class="piano-subtext">Se</div>
+          </div>
+          <div class="piano-key" style="border-color:#e0e7ff;" onclick="playPianoKey('dosyalar/1-7.mp3', this)">
+            <div class="piano-arabic" style="color:#4361ee;">أَبْ</div>
+            <div class="piano-subtext">Eb</div>
+          </div>
+          <div class="piano-key" style="border-color:#e0e7ff;" onclick="playPianoKey('dosyalar/2-7.mp3', this)">
+            <div class="piano-arabic" style="color:#4361ee;">أَتْ</div>
+            <div class="piano-subtext">Et</div>
+          </div>
+          <div class="piano-key" style="border-color:#e0e7ff;" onclick="playPianoKey('dosyalar/3-7.mp3', this)">
+            <div class="piano-arabic" style="color:#4361ee;">أَثْ</div>
+            <div class="piano-subtext">Es</div>
+          </div>
+          <div class="piano-key" style="border-color:#fdf2f8;" onclick="playPianoKey('dosyalar/1-15.mp3', this)">
+            <div class="piano-arabic" style="color:#f72585;">أَبَّ</div>
+            <div class="piano-subtext">Ebbe</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEKME 3: SESİ DİNLE HARFİ BUL (QUIZ) -->
+    <section id="tab-quiz" class="view-section">
+      <div class="section-header">
+        <h2>🎯 Sesi Dinle, Doğru Harfi Bul!</h2>
+        <p>Hoparlör düğmesine basarak sesi dinle, ardından 4 harf arasından doğru olanı seç!</p>
+      </div>
+
+      <div class="quiz-container">
+        <div class="quiz-audio-box">
+          <button class="big-sound-btn" id="btnQuizReplay" onclick="playCurrentQuizSound()" title="Sesi Tekrar Dinle">
+            🔊
+          </button>
+          <div class="quiz-prompt">Sesi dinlemek için butona tıkla!</div>
+        </div>
+
+        <div class="quiz-options" id="quizOptionsGrid">
+          <!-- Dinamik Kartlar JS ile Doldurulacak -->
+        </div>
+
+        <div class="quiz-feedback" id="quizFeedback"></div>
+
+        <div style="margin-top: 24px; display: flex; justify-content: center; gap: 12px;">
+          <button class="btn-big-action" id="btnNextQuiz" onclick="nextQuizQuestion()" style="display:none; padding:12px 30px; font-size:1.1rem;">
+            Sonraki Soru ➡️
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEKME 4: NOKTA AVCISI (DOT HUNTER) -->
+    <section id="tab-dots" class="view-section">
+      <div class="section-header">
+        <h2>🔍 Nokta Ustası: Noktaları Yerleştir!</h2>
+        <p>Harflerin tabağı aynı, ama noktaları farklı! İstenen harfi oluşturmak için doğru noktayı seç.</p>
+      </div>
+
+      <div class="dot-hunter-box">
+        <div class="dot-question-card">
+          <div class="target-mission-badge" id="dotMissionBadge">GÖREV</div>
+          <div class="target-letter-name" id="dotTargetName">BE Harfini Oluştur!</div>
+          <div class="target-letter-tip" id="dotTargetTip">Noktaları tabağın neresine koymalısın?</div>
+        </div>
+
+        <div class="dish-stage">
+          <div class="dish-base" id="dishBaseDisplay">ـٮـ</div>
+        </div>
+
+        <div class="dot-options-grid" id="dotOptionsGrid">
+          <!-- JS ile seçenekler gelecek -->
+        </div>
+
+        <div class="quiz-feedback" id="dotFeedback" style="margin-top:20px;"></div>
+
+        <div style="margin-top: 20px;">
+          <button class="btn-big-action" id="btnNextDot" onclick="nextDotQuestion()" style="display:none; padding:12px 32px; font-size:1.05rem;">
+            Sonraki Harf ➡️
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEKME 5: BALON PATLATMACA -->
+    <section id="tab-balloons" class="view-section">
+      <div class="section-header">
+        <h2>🎈 Uçan Balonları Patlat!</h2>
+        <p>Görevde belirtilen harfin bulunduğu balonlara tıkla ve patlat! Yanlış balonlara dikkat et.</p>
+      </div>
+
+      <div class="balloon-game-container" id="balloonGameContainer">
+        <div class="balloon-top-bar">
+          <div class="balloon-target-display">
+            <span style="font-weight:800; color:#475569;">GÖREV:</span>
+            <div class="target-bubble" id="balloonTargetBubble">
+              <span id="balloonTargetName">BE</span>
+              <span class="target-bubble-arabic" id="balloonTargetArabic">ب</span>
+            </div>
+            <button class="btn-play-sound" style="padding:4px 12px; font-size:0.8rem; margin:0;" onclick="playAudioFile(currentBalloonAudio)">🔊 Dinle</button>
+          </div>
+          <div style="font-weight:900; font-size:1.1rem; color:var(--primary);">
+            Skor: <span id="balloonScore">0</span>
+          </div>
+        </div>
+
+        <div class="balloon-stage" id="balloonStage"></div>
+
+        <div class="balloon-start-overlay" id="balloonStartOverlay">
+          <div style="font-size: 4rem;">🎈🎈🎈</div>
+          <h3 style="font-size: 2rem; font-weight: 900; color: #1e293b;">Balon Patlatma Macerası</h3>
+          <p style="font-size: 1.1rem; color: #64748b; max-width: 480px;">
+            Gökyüzünde Elif, Be, Te ve Se balonları uçuşuyor! Görev verilen harfin balonlarını patlatıp puanları topla!
+          </p>
+          <button class="btn-big-action" onclick="startBalloonGame()">Oyunu Başlat 🚀</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEKME 6: HAFIZA KARTLARI -->
+    <section id="tab-memory" class="view-section">
+      <div class="section-header">
+        <h2>🃏 Sihirli Hafıza Kartları</h2>
+        <p>Kapalı kartları çevir, aynı harfleri bularak eşleştir! Her kart açılışında o harfin sesini duyacaksın.</p>
+      </div>
+
+      <div class="memory-container">
+        <div style="display:flex; justify-content:center; gap:14px; align-items:center; margin-bottom:16px;">
+          <div class="stat-badge">Hamle: <span id="memoryMoves" style="margin-left:4px;">0</span></div>
+          <div class="stat-badge star-badge">Eşleşen: <span id="memoryMatches" style="margin-left:4px;">0</span> / 4</div>
+          <button class="btn-sound-toggle" onclick="resetMemoryGame()" title="Yeniden Başlat" style="width:auto; padding:0 16px; border-radius:30px; font-size:0.9rem; font-weight:800;">
+            🔄 Yeniden Karıştır
+          </button>
+        </div>
+
+        <div class="memory-grid" id="memoryGrid"></div>
+      </div>
+    </section>
+
+    <!-- SEKME 7: ŞANS ÇARKI (SPIN WHEEL) -->
+    <section id="tab-wheel" class="view-section">
+      <div class="section-header">
+        <h2>🎡 Şans Çarkı ile Rastgele Tekrar</h2>
+        <p>Çarkı çevir, şansına gelen harfi seslendir ve örnek okunuşunu dinle!</p>
+      </div>
+
+      <div class="wheel-container">
+        <div class="wheel-wrapper">
+          <div class="wheel-pointer"></div>
+          <canvas id="wheelCanvas" width="320" height="320"></canvas>
+        </div>
+
+        <button class="btn-big-action" id="btnSpinWheel" onclick="spinWheel()" style="margin-top:10px;">
+          🎰 ÇARKI ÇEVİR!
+        </button>
+
+        <div class="wheel-result-card" id="wheelResultCard">
+          <div style="color:var(--text-muted); font-weight:700;">Çarkı çevirmek için yukarıdaki butona tıkla!</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- TEBRİK MODALI -->
+  <div class="modal-backdrop" id="celebrationModal">
+    <div class="modal-box">
+      <div style="font-size: 4rem; margin-bottom: 10px;">🏆🎉🌟</div>
+      <h3 style="font-size: 1.8rem; font-weight: 900; color: #1e293b; margin-bottom: 8px;">Harika Bir Başarı!</h3>
+      <p style="color: #64748b; font-size: 1.05rem; font-weight: 700; margin-bottom: 20px;" id="modalMessage">
+        Tüm kartları doğru eşleştirdin ve yeni yıldızlar kazandın!
+      </p>
+      <button class="btn-big-action" onclick="closeCelebrationModal()">Devam Et 🚀</button>
+    </div>
+  </div>
+
+  <script>
+    /* =========================================================
+       ELİF - BE - TE - SE VERİ TABANI & SES DOSYALARI
+       ========================================================= */
+    const LETTERS_DATA = [
+      {
+        id: 'elif',
+        arabic: 'ا',
+        name: 'Elif',
+        color: '#2563eb',
+        dots: '0',
+        dotDesc: 'Noktasız, dimdik çizgi',
+        sound: 'dosyalar/1.mp3',
+        harekeSound: 'dosyalar/1-1.mp3',
+        cezimSound: 'dosyalar/1-7.mp3',
+        cezimText: 'أَبْ (Eb)',
+        mnemonic: 'Dimdik bir ağaç gibi, hiç noktası yok!'
+      },
+      {
+        id: 'be',
+        arabic: 'ب',
+        name: 'Be',
+        color: '#059669',
+        dots: '1-bottom',
+        dotDesc: 'Altta 1 Nokta',
+        sound: 'dosyalar/2.mp3',
+        harekeSound: 'dosyalar/2-1.mp3',
+        cezimSound: 'dosyalar/1-7.mp3',
+        cezimText: 'أَبْ (Eb)',
+        mnemonic: 'Tabağın ALTI-nda 1 elma var!'
+      },
+      {
+        id: 'te',
+        arabic: 'ت',
+        name: 'Te',
+        color: '#d97706',
+        dots: '2-top',
+        dotDesc: 'Üstte 2 Nokta',
+        sound: 'dosyalar/3.mp3',
+        harekeSound: 'dosyalar/3-1.mp3',
+        cezimSound: 'dosyalar/2-7.mp3',
+        cezimText: 'أَتْ (Et)',
+        mnemonic: 'Gülen yüzün ÜSTÜ-nde 2 gözü var!'
+      },
+      {
+        id: 'se',
+        arabic: 'ث',
+        name: 'Peltek Se',
+        color: '#dc2626',
+        dots: '3-top',
+        dotDesc: 'Üstte 3 Nokta',
+        sound: 'dosyalar/4.mp3',
+        harekeSound: 'dosyalar/4-1.mp3',
+        cezimSound: 'dosyalar/3-7.mp3',
+        cezimText: 'أَثْ (Es)',
+        mnemonic: 'ÜSTÜ-nde 3 kar tanesi! Dilin ucunu hafifçe dişlerinin arasına al.'
+      }
+    ];
+
+    /* =========================================================
+       KARAOKE & OKUMA İÇİN KELİME VERİLERİ (SAĞDAN SOLA HARF HARF)
+       ========================================================= */
+    const WORDS_DATA = [
+      {
+        id: 'edebe',
+        title: 'أَدَبَ (E - De - Be)',
+        fullArabic: 'أَدَبَ',
+        audio: 'dosyalar/1-2.mp3',
+        // Arapça sağdan sola okunur: 1. Harf Elif, 2. Harf Dal, 3. Harf Be
+        letters: [
+          { char: 'أَ', name: 'Elif', tip: '🌲 Elif', color: '#2563eb', sound: 'dosyalar/1.mp3' },
+          { char: 'دَ', name: 'Dal', tip: 'Dal', color: '#475569', sound: 'dosyalar/1-2.mp3' },
+          { char: 'بَ', name: 'Be', tip: '🍏 Altta 1 Nokta', color: '#059669', sound: 'dosyalar/2.mp3' }
+        ]
+      },
+      {
+        id: 'terake',
+        title: 'تَرَكَ (Te - Ra - Ke)',
+        fullArabic: 'تَرَكَ',
+        audio: 'dosyalar/2-3.mp3',
+        letters: [
+          { char: 'تَـ', name: 'Te', tip: '👀 Üstte 2 Nokta', color: '#d97706', sound: 'dosyalar/3.mp3' },
+          { char: 'رَ', name: 'Ra', tip: 'Ra', color: '#475569', sound: 'dosyalar/2-3.mp3' },
+          { char: 'كَ', name: 'Kef', tip: 'Kef', color: '#475569', sound: 'dosyalar/2-3.mp3' }
+        ]
+      },
+      {
+        id: 'verise',
+        title: 'وَرِثَ (Ve - Ri - Se)',
+        fullArabic: 'وَرِثَ',
+        audio: 'dosyalar/3-5.mp3',
+        letters: [
+          { char: 'وَ', name: 'Vav', tip: 'Vav', color: '#475569', sound: 'dosyalar/3-5.mp3' },
+          { char: 'رِ', name: 'Ra', tip: '🛝 Esreli Ra', color: '#475569', sound: 'dosyalar/3-5.mp3' },
+          { char: 'ـثَ', name: 'Peltek Se', tip: '👅 Üstte 3 Nokta', color: '#dc2626', sound: 'dosyalar/4.mp3' }
+        ]
+      },
+      {
+        id: 'ebeden',
+        title: 'أَبَدًا (E - Be - Den)',
+        fullArabic: 'أَبَدًا',
+        audio: 'dosyalar/2-19.mp3',
+        letters: [
+          { char: 'أَ', name: 'Elif', tip: '🌲 Elif', color: '#2563eb', sound: 'dosyalar/1.mp3' },
+          { char: 'ـبَـ', name: 'Be', tip: '🍏 Ortada Be (Altta 1)', color: '#059669', sound: 'dosyalar/2.mp3' },
+          { char: 'دًا', name: 'Den', tip: 'Dal + Tenvin', color: '#475569', sound: 'dosyalar/2-19.mp3' }
+        ]
+      },
+      {
+        id: 'meselen',
+        title: 'مَثَلًا (Me - Se - Len)',
+        fullArabic: 'مَثَلًا',
+        audio: 'dosyalar/3-19.mp3',
+        letters: [
+          { char: 'مَـ', name: 'Mim', tip: 'Mim', color: '#475569', sound: 'dosyalar/3-19.mp3' },
+          { char: 'ـثَـ', name: 'Peltek Se', tip: '👅 Ortada Se (Üstte 3)', color: '#dc2626', sound: 'dosyalar/4.mp3' },
+          { char: 'لًا', name: 'Len', tip: 'Lam-Elif', color: '#475569', sound: 'dosyalar/3-19.mp3' }
+        ]
+      },
+      {
+        id: 'beyne',
+        title: 'بَيْنَ (Bey - Ne)',
+        fullArabic: 'بَيْنَ',
+        audio: 'dosyalar/1-9.mp3',
+        letters: [
+          { char: 'بَـ', name: 'Be', tip: '🍏 Başta Be (Altta 1)', color: '#059669', sound: 'dosyalar/2.mp3' },
+          { char: 'ـيْـ', name: 'Ya', tip: 'Cezimli Ya', color: '#475569', sound: 'dosyalar/1-9.mp3' },
+          { char: 'نَ', name: 'Nun', tip: 'Nun', color: '#475569', sound: 'dosyalar/1-9.mp3' }
+        ]
+      }
+    ];
+
+    /* =========================================================
+       AUDIO VE SES EFEKTLERİ MOTORU (HTML5 + Web Audio API)
+       ========================================================= */
+    let currentAudio = null;
+    let sfxEnabled = true;
+    let stars = 0;
+    let streak = 0;
+
+    let audioCtx = null;
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playSfx(type) {
+      if (!sfxEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+
+        if (type === 'correct') {
+          const osc1 = ctx.createOscillator();
+          const osc2 = ctx.createOscillator();
+          const gain = ctx.createGain();
+
+          osc1.type = 'triangle';
+          osc2.type = 'sine';
+          osc1.frequency.setValueAtTime(523.25, now);
+          osc1.frequency.exponentialRampToValueAtTime(659.25, now + 0.1);
+          osc2.frequency.setValueAtTime(783.99, now);
+          osc2.frequency.exponentialRampToValueAtTime(1046.50, now + 0.15);
+
+          gain.gain.setValueAtTime(0.3, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+
+          osc1.connect(gain);
+          osc2.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc1.start(now);
+          osc2.start(now);
+          osc1.stop(now + 0.45);
+          osc2.stop(now + 0.45);
+        } else if (type === 'wrong') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(180, now);
+          osc.frequency.exponentialRampToValueAtTime(80, now + 0.3);
+
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.3);
+        } else if (type === 'pop') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(600, now);
+          osc.frequency.exponentialRampToValueAtTime(120, now + 0.08);
+
+          gain.gain.setValueAtTime(0.4, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.08);
+        } else if (type === 'click') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(900, now);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.03);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.03);
+        }
+      } catch (e) {
+        console.warn("SFX error:", e);
+      }
+    }
+
+    function playAudioFile(path, element) {
+      if (!path) return;
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+      }
+      currentAudio = new Audio(path);
+      currentAudio.play().catch(e => {
+        console.log("Audio play error:", e);
+      });
+
+      if (element) {
+        element.style.transform = 'scale(1.05)';
+        setTimeout(() => {
+          element.style.transform = '';
+        }, 300);
+      }
+    }
+
+    function stopAudio() {
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+      }
+      if (isAutoLooping) {
+        toggleAutoLoop();
+      }
+      if (wordLoopActive) {
+        toggleWordLoop();
+      }
+    }
+
+    function addStars(count) {
+      stars += count;
+      document.getElementById('starCount').textContent = stars;
+      streak += 1;
+      document.getElementById('streakCount').textContent = streak;
+      triggerConfetti();
+    }
+
+    function resetStreak() {
+      streak = 0;
+      document.getElementById('streakCount').textContent = streak;
+    }
+
+    /* =========================================================
+       ANA SEKME YÖNETİMİ
+       ========================================================= */
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const viewSections = document.querySelectorAll('.view-section');
+
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tabId = btn.getAttribute('data-tab');
+        tabButtons.forEach(b => b.classList.remove('active'));
+        viewSections.forEach(s => s.classList.remove('active'));
+
+        btn.classList.add('active');
+        const activeSection = document.getElementById(tabId);
+        if (activeSection) activeSection.classList.add('active');
+
+        if (tabId === 'tab-reading') {
+          initKaraokeStudio();
+        } else if (tabId === 'tab-quiz') {
+          initQuiz();
+        } else if (tabId === 'tab-dots') {
+          initDotHunter();
+        } else if (tabId === 'tab-memory') {
+          initMemoryGame();
+        } else if (tabId === 'tab-wheel') {
+          drawWheel();
+        }
+      });
+    });
+
+    document.getElementById('btnSoundToggle').addEventListener('click', function() {
+      sfxEnabled = !sfxEnabled;
+      this.textContent = sfxEnabled ? '🔊' : '🔇';
+      this.style.opacity = sfxEnabled ? '1' : '0.6';
+    });
+
+    /* =========================================================
+       SEKME 1: OTOMATİK TEKRAR DÖNGÜSÜ (LOOP AUDIO)
+       ========================================================= */
+    let isAutoLooping = false;
+    let loopIndex = 0;
+    let loopTimeout = null;
+
+    function toggleAutoLoop() {
+      isAutoLooping = !isAutoLooping;
+      const btn = document.getElementById('btnAutoLoop');
+      const statusText = document.getElementById('loopStatusText');
+
+      if (isAutoLooping) {
+        btn.textContent = '⏸️ Otomatik Tekrarı Durdur';
+        btn.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+        loopIndex = 0;
+        playNextInLoop();
+      } else {
+        btn.textContent = '▶️ Sırayla Sürekli Tekrar Et';
+        btn.style.background = '';
+        statusText.textContent = '';
+        if (loopTimeout) clearTimeout(loopTimeout);
+        if (currentAudio) currentAudio.pause();
+      }
+    }
+
+    function playNextInLoop() {
+      if (!isAutoLooping) return;
+      const item = LETTERS_DATA[loopIndex];
+      const statusText = document.getElementById('loopStatusText');
+      statusText.innerHTML = `Şimdi Okunuyor: <strong style="color:${item.color}; font-size:1.2rem;">${item.name} (${item.arabic})</strong>`;
+
+      if (currentAudio) currentAudio.pause();
+      currentAudio = new Audio(item.sound);
+
+      currentAudio.onended = () => {
+        loopIndex = (loopIndex + 1) % LETTERS_DATA.length;
+        loopTimeout = setTimeout(playNextInLoop, 1200);
+      };
+
+      currentAudio.play().catch(e => {
+        console.log("Loop play error:", e);
+      });
+    }
+
+    /* =========================================================
+       SEKME 2: CANLI & İŞARETLİ KARAOKE OKUMA STÜDYOSU (ÇOCUKLARA ÖZEL)
+       ========================================================= */
+    let activeWordIndex = 0;
+    let karaokeSpeed = 1; // 1: normal, 1.6: yavaş
+    let isKaraokePlaying = false;
+    let wordLoopActive = false;
+    let karaokeTimeoutList = [];
+
+    function switchReadingMode(stageId, btn) {
+      document.querySelectorAll('.read-subtab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      document.querySelectorAll('.reading-stage-content').forEach(s => s.style.display = 'none');
+      const target = document.getElementById(stageId);
+      if (target) target.style.display = 'block';
+    }
+
+    function setKaraokeSpeed(speed) {
+      karaokeSpeed = speed;
+      document.getElementById('btnSpeedNormal').classList.toggle('active', speed === 1);
+      document.getElementById('btnSpeedSlow').classList.toggle('active', speed > 1);
+    }
+
+    function initKaraokeStudio() {
+      renderWordsFilmstrip();
+      loadActiveWord(activeWordIndex);
+    }
+
+    function renderWordsFilmstrip() {
+      const strip = document.getElementById('wordsFilmstrip');
+      strip.innerHTML = '';
+
+      WORDS_DATA.forEach((w, idx) => {
+        const card = document.createElement('div');
+        card.className = 'word-strip-card' + (idx === activeWordIndex ? ' active' : '');
+        card.innerHTML = `
+          <div class="word-strip-arabic">${w.fullArabic}</div>
+          <div class="word-strip-title">${w.title}</div>
+        `;
+        card.onclick = () => {
+          activeWordIndex = idx;
+          renderWordsFilmstrip();
+          loadActiveWord(idx);
+          playCurrentWordKaraoke();
+        };
+        strip.appendChild(card);
+      });
+    }
+
+    function loadActiveWord(idx) {
+      clearKaraokeTimeouts();
+      const word = WORDS_DATA[idx];
+      document.getElementById('karaWordTitle').textContent = word.title;
+
+      const box = document.getElementById('karaWordBox');
+      box.className = 'kara-word-box';
+      box.innerHTML = '';
+
+      // Sağdan sola harfleri oluştur
+      word.letters.forEach((l, letterIdx) => {
+        const charElem = document.createElement('div');
+        charElem.className = 'kara-char-item';
+        charElem.id = `karaChar-${letterIdx}`;
+        charElem.innerHTML = `
+          <div class="kara-arabic" style="color:${l.color};">${l.char}</div>
+          <div class="kara-tip-bubble">${l.tip}</div>
+          <div class="kara-pointer">👆</div>
+        `;
+        // Çocuğun doğrudan parmağıyla harfe dokunması:
+        charElem.onclick = () => tapSingleLetter(word, letterIdx);
+        box.appendChild(charElem);
+      });
+    }
+
+    // Çocuk harfe bastığında doğrudan sesini verip parlat
+    function tapSingleLetter(word, letterIdx) {
+      clearKaraokeTimeouts();
+      highlightLetterElement(letterIdx);
+      const letter = word.letters[letterIdx];
+      playAudioFile(letter.sound);
+      playSfx('pop');
+    }
+
+    function highlightLetterElement(index) {
+      document.querySelectorAll('.kara-char-item').forEach((el, idx) => {
+        if (idx === index) {
+          el.classList.add('active');
+        } else {
+          el.classList.remove('active');
+        }
+      });
+    }
+
+    function clearKaraokeTimeouts() {
+      karaokeTimeoutList.forEach(t => clearTimeout(t));
+      karaokeTimeoutList = [];
+      document.querySelectorAll('.kara-char-item').forEach(el => el.classList.remove('active'));
+      const box = document.getElementById('karaWordBox');
+      if (box) box.classList.remove('word-success');
+    }
+
+    // Kelimeyi birlikte karaoke tarzında oku
+    function playCurrentWordKaraoke() {
+      clearKaraokeTimeouts();
+      const word = WORDS_DATA[activeWordIndex];
+      playAudioFile(word.audio);
+
+      const letterCount = word.letters.length;
+      // Normal hızda yaklaşık 400ms her harf, yavaş modda 800ms
+      const stepDuration = 480 * karaokeSpeed;
+
+      word.letters.forEach((l, i) => {
+        const t = setTimeout(() => {
+          highlightLetterElement(i);
+          playSfx('click');
+        }, i * stepDuration);
+        karaokeTimeoutList.push(t);
+      });
+
+      // Bittiğinde tüm kelimeyi parlat ve yıldız ver
+      const finishTimeout = setTimeout(() => {
+        document.querySelectorAll('.kara-char-item').forEach(el => el.classList.remove('active'));
+        const box = document.getElementById('karaWordBox');
+        box.classList.add('word-success');
+        playSfx('correct');
+        addStars(2);
+
+        if (wordLoopActive) {
+          const loopT = setTimeout(() => {
+            playCurrentWordKaraoke();
+          }, 1400);
+          karaokeTimeoutList.push(loopT);
+        }
+      }, letterCount * stepDuration + 200);
+
+      karaokeTimeoutList.push(finishTimeout);
+    }
+
+    // Harf harf yavaş oku modu
+    function playCurrentWordStepByStep() {
+      clearKaraokeTimeouts();
+      const word = WORDS_DATA[activeWordIndex];
+      let delay = 0;
+
+      word.letters.forEach((l, i) => {
+        const t1 = setTimeout(() => {
+          highlightLetterElement(i);
+          playAudioFile(l.sound);
+        }, delay);
+        karaokeTimeoutList.push(t1);
+        delay += 1100;
+      });
+
+      // En son birleştirip kelimeyi oku
+      const tFinal = setTimeout(() => {
+        highlightLetterElement(-1);
+        const box = document.getElementById('karaWordBox');
+        box.classList.add('word-success');
+        playAudioFile(word.audio);
+        addStars(3);
+      }, delay);
+      karaokeTimeoutList.push(tFinal);
+    }
+
+    function toggleWordLoop() {
+      wordLoopActive = !wordLoopActive;
+      const btn = document.getElementById('btnWordLoop');
+      if (wordLoopActive) {
+        btn.textContent = '⏹️ Tekrarı Durdur';
+        btn.style.background = '#ef4444';
+        btn.style.color = 'white';
+        playCurrentWordKaraoke();
+      } else {
+        btn.textContent = '🔁 Sürekli Tekrar';
+        btn.style.background = '';
+        btn.style.color = '';
+        clearKaraokeTimeouts();
+      }
+    }
+
+    /* --- HAREKELER TRENİ İŞLEVLERİ --- */
+    function playSingleTrainWagon(sound, elem) {
+      elem.classList.add('active');
+      playAudioFile(sound);
+      setTimeout(() => elem.classList.remove('active'), 1200);
+    }
+
+    function playTrainSeries(trainId) {
+      const row = document.getElementById('trainRow-' + trainId);
+      const wagons = row.querySelectorAll('.train-wagon');
+
+      let audioMap = {
+        'elif': 'dosyalar/1-1.mp3',
+        'be': 'dosyalar/2-1.mp3',
+        'te': 'dosyalar/3-1.mp3',
+        'se': 'dosyalar/4-1.mp3'
+      };
+
+      playAudioFile(audioMap[trainId]);
+
+      wagons.forEach((w, i) => {
+        setTimeout(() => {
+          wagons.forEach(wagon => wagon.classList.remove('active'));
+          w.classList.add('active');
+          playSfx('click');
+        }, i * 1400);
+      });
+
+      setTimeout(() => {
+        wagons.forEach(w => w.classList.remove('active'));
+        playSfx('correct');
+        addStars(2);
+      }, wagons.length * 1400);
+    }
+
+    /* --- HECE BİRLEŞTİRME İŞLEVLERİ --- */
+    function playPartAudio(sound, elem) {
+      elem.classList.add('active');
+      playAudioFile(sound);
+      setTimeout(() => elem.classList.remove('active'), 500);
+    }
+
+    /* --- PİYANO SESİ --- */
+    function playPianoKey(sound, elem) {
+      elem.classList.add('active');
+      playAudioFile(sound);
+      playSfx('pop');
+      setTimeout(() => elem.classList.remove('active'), 350);
+    }
+
+    /* =========================================================
+       OYUN 1: SESİ DİNLE HARFİ BUL (QUIZ)
+       ========================================================= */
+    let currentQuizLetter = null;
+    let quizLocked = false;
+
+    function initQuiz() {
+      nextQuizQuestion();
+    }
+
+    function nextQuizQuestion() {
+      quizLocked = false;
+      document.getElementById('btnNextQuiz').style.display = 'none';
+      document.getElementById('quizFeedback').innerHTML = '';
+
+      currentQuizLetter = LETTERS_DATA[Math.floor(Math.random() * LETTERS_DATA.length)];
+      const shuffled = [...LETTERS_DATA].sort(() => Math.random() - 0.5);
+
+      const grid = document.getElementById('quizOptionsGrid');
+      grid.innerHTML = '';
+
+      shuffled.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'quiz-card';
+        card.innerHTML = `
+          <div class="arabic-letter">${item.arabic}</div>
+          <div class="name-label">${item.name}</div>
+        `;
+        card.onclick = () => handleQuizChoice(item, card);
+        grid.appendChild(card);
+      });
+
+      setTimeout(() => {
+        playCurrentQuizSound();
+      }, 350);
+    }
+
+    function playCurrentQuizSound() {
+      if (currentQuizLetter) {
+        playAudioFile(currentQuizLetter.sound);
+        const btn = document.getElementById('btnQuizReplay');
+        btn.style.transform = 'scale(1.2)';
+        setTimeout(() => btn.style.transform = '', 300);
+      }
+    }
+
+    function handleQuizChoice(chosen, cardElement) {
+      if (quizLocked) return;
+
+      if (chosen.id === currentQuizLetter.id) {
+        quizLocked = true;
+        cardElement.classList.add('correct');
+        playSfx('correct');
+        addStars(5);
+
+        const praises = ['Mükemmel! 🌟', 'Aferin Sana! 👏', 'Harikasın! 🚀', 'Doğru Bildin! 🎉', 'Maşallah! ✨'];
+        const randomPraise = praises[Math.floor(Math.random() * praises.length)];
+        document.getElementById('quizFeedback').innerHTML = `<span style="color:#10b981;">${randomPraise} Bu <strong>${chosen.name} (${chosen.arabic})</strong> harfidir!</span>`;
+
+        document.getElementById('btnNextQuiz').style.display = 'inline-block';
+      } else {
+        cardElement.classList.add('wrong');
+        playSfx('wrong');
+        resetStreak();
+
+        document.getElementById('quizFeedback').innerHTML = `
+          <span style="color:#ef4444;">
+            Bir daha dene! İpucu: ${currentQuizLetter.mnemonic}
+          </span>
+        `;
+        setTimeout(() => {
+          cardElement.classList.remove('wrong');
+        }, 800);
+      }
+    }
+
+    /* =========================================================
+       OYUN 2: NOKTA AVCISI (DOT HUNTER)
+       ========================================================= */
+    let currentDotTarget = null;
+    let dotLocked = false;
+
+    const DOT_QUESTIONS = [
+      {
+        targetId: 'be',
+        title: 'BE (ب) Harfini Yap!',
+        tip: 'Tabağın altına 1 nokta koymalıyız.',
+        correctChoice: '1-bottom',
+        arabicResult: 'ب',
+        audio: 'dosyalar/2.mp3'
+      },
+      {
+        targetId: 'te',
+        title: 'TE (ت) Harfini Yap!',
+        tip: 'Gülen yüzün üstüne 2 göz/nokta koymalıyız.',
+        correctChoice: '2-top',
+        arabicResult: 'ت',
+        audio: 'dosyalar/3.mp3'
+      },
+      {
+        targetId: 'se',
+        title: 'PELTEK SE (ث) Harfini Yap!',
+        tip: 'Üstüne 3 nokta koyup peltek söylemeliyiz.',
+        correctChoice: '3-top',
+        arabicResult: 'ث',
+        audio: 'dosyalar/4.mp3'
+      },
+      {
+        targetId: 'elif',
+        title: 'ELİF (ا) Harfi!',
+        tip: 'Elif hiç tabak almaz, dimdik ayakta noktasız durur!',
+        correctChoice: '0-none',
+        arabicResult: 'ا',
+        audio: 'dosyalar/1.mp3'
+      }
+    ];
+
+    function initDotHunter() {
+      nextDotQuestion();
+    }
+
+    function nextDotQuestion() {
+      dotLocked = false;
+      document.getElementById('btnNextDot').style.display = 'none';
+      document.getElementById('dotFeedback').innerHTML = '';
+
+      currentDotTarget = DOT_QUESTIONS[Math.floor(Math.random() * DOT_QUESTIONS.length)];
+
+      document.getElementById('dotTargetName').textContent = currentDotTarget.title;
+      document.getElementById('dotTargetTip').textContent = currentDotTarget.tip;
+
+      const dish = document.getElementById('dishBaseDisplay');
+      dish.textContent = currentDotTarget.targetId === 'elif' ? '│' : 'ـٮـ';
+      dish.style.color = '#64748b';
+
+      const options = [
+        { id: '1-bottom', label: 'Altta 1 Nokta', visual: '🔻' },
+        { id: '2-top', label: 'Üstte 2 Nokta', visual: '🔺🔺' },
+        { id: '3-top', label: 'Üstte 3 Nokta', visual: '🔺🔺🔺' },
+        { id: '0-none', label: 'Hiç Nokta Yok (Düz)', visual: '➖' }
+      ];
+
+      const grid = document.getElementById('dotOptionsGrid');
+      grid.innerHTML = '';
+
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'dot-option-btn';
+        btn.innerHTML = `
+          <div class="dot-visual">${opt.visual}</div>
+          <div class="dot-desc">${opt.label}</div>
+        `;
+        btn.onclick = () => handleDotChoice(opt.id, btn);
+        grid.appendChild(btn);
+      });
+    }
+
+    function handleDotChoice(choiceId, btnElement) {
+      if (dotLocked) return;
+
+      if (choiceId === currentDotTarget.correctChoice) {
+        dotLocked = true;
+        playSfx('correct');
+        addStars(5);
+
+        const dish = document.getElementById('dishBaseDisplay');
+        dish.textContent = currentDotTarget.arabicResult;
+        dish.style.color = '#10b981';
+        dish.style.transform = 'scale(1.25)';
+
+        playAudioFile(currentDotTarget.audio);
+
+        document.getElementById('dotFeedback').innerHTML = `
+          <span style="color:#10b981; font-size:1.3rem; font-weight:900;">
+            Aferin! Noktaları tam yerine koydun: <strong>${currentDotTarget.arabicResult}</strong> harfi oluştu!
+          </span>
+        `;
+        document.getElementById('btnNextDot').style.display = 'inline-block';
+      } else {
+        playSfx('wrong');
+        resetStreak();
+        btnElement.style.borderColor = '#ef4444';
+        btnElement.style.background = '#fef2f2';
+
+        document.getElementById('dotFeedback').innerHTML = `
+          <span style="color:#ef4444; font-weight:800;">
+            Bu nokta yeri uymadı, tekrar düşün! İpucu: ${currentDotTarget.tip}
+          </span>
+        `;
+        setTimeout(() => {
+          btnElement.style.borderColor = '';
+          btnElement.style.background = '';
+        }, 800);
+      }
+    }
+
+    /* =========================================================
+       OYUN 3: BALON PATLATMACA (BALLOON POP)
+       ========================================================= */
+    let balloonInterval = null;
+    let balloonGameActive = false;
+    let currentBalloonTarget = null;
+    let currentBalloonAudio = 'dosyalar/1.mp3';
+    let balloonScore = 0;
+
+    const BALLOON_COLORS = [
+      'linear-gradient(135deg, #f72585, #b5179e)',
+      'linear-gradient(135deg, #4361ee, #3a0ca3)',
+      'linear-gradient(135deg, #4cc9f0, #4895ef)',
+      'linear-gradient(135deg, #10b981, #059669)',
+      'linear-gradient(135deg, #f59e0b, #d97706)',
+      'linear-gradient(135deg, #8b5cf6, #6d28d9)'
+    ];
+
+    function startBalloonGame() {
+      document.getElementById('balloonStartOverlay').style.display = 'none';
+      balloonGameActive = true;
+      balloonScore = 0;
+      document.getElementById('balloonScore').textContent = '0';
+      pickNewBalloonTarget();
+
+      const stage = document.getElementById('balloonStage');
+      stage.innerHTML = '';
+
+      if (balloonInterval) clearInterval(balloonInterval);
+      balloonInterval = setInterval(spawnBalloon, 1400);
+    }
+
+    function pickNewBalloonTarget() {
+      currentBalloonTarget = LETTERS_DATA[Math.floor(Math.random() * LETTERS_DATA.length)];
+      currentBalloonAudio = currentBalloonTarget.sound;
+
+      document.getElementById('balloonTargetName').textContent = currentBalloonTarget.name;
+      document.getElementById('balloonTargetArabic').textContent = currentBalloonTarget.arabic;
+
+      playAudioFile(currentBalloonAudio);
+    }
+
+    function spawnBalloon() {
+      if (!balloonGameActive) return;
+      const stage = document.getElementById('balloonStage');
+
+      const letterObj = LETTERS_DATA[Math.floor(Math.random() * LETTERS_DATA.length)];
+      const balloon = document.createElement('div');
+      balloon.className = 'balloon-item';
+      balloon.textContent = letterObj.arabic;
+
+      const randomColor = BALLOON_COLORS[Math.floor(Math.random() * BALLOON_COLORS.length)];
+      balloon.style.background = randomColor;
+
+      const leftPercent = Math.random() * 75 + 10;
+      balloon.style.left = leftPercent + '%';
+
+      const duration = Math.random() * 2 + 5;
+      balloon.style.animationDuration = duration + 's';
+
+      balloon.onclick = () => handleBalloonPop(letterObj, balloon);
+
+      stage.appendChild(balloon);
+
+      setTimeout(() => {
+        if (balloon.parentNode === stage) {
+          stage.removeChild(balloon);
+        }
+      }, duration * 1000);
+    }
+
+    function handleBalloonPop(letterObj, balloonElement) {
+      if (!balloonGameActive) return;
+
+      playSfx('pop');
+
+      if (letterObj.id === currentBalloonTarget.id) {
+        playSfx('correct');
+        balloonScore += 10;
+        document.getElementById('balloonScore').textContent = balloonScore;
+        addStars(2);
+
+        balloonElement.style.transform = 'scale(1.4)';
+        balloonElement.style.opacity = '0';
+        setTimeout(() => {
+          if (balloonElement.parentNode) balloonElement.parentNode.removeChild(balloonElement);
+        }, 150);
+
+        if (balloonScore % 30 === 0) {
+          pickNewBalloonTarget();
+        }
+      } else {
+        playSfx('wrong');
+        balloonElement.style.filter = 'grayscale(1)';
+        balloonElement.style.transform = 'translateX(-10px)';
+      }
+    }
+
+    /* =========================================================
+       OYUN 4: SİHİRLİ HAFIZA KARTLARI (MEMORY MATCH)
+       ========================================================= */
+    let memoryFlippedCards = [];
+    let memoryMatchedCount = 0;
+    let memoryMoves = 0;
+    let memoryLocked = false;
+
+    function initMemoryGame() {
+      resetMemoryGame();
+    }
+
+    function resetMemoryGame() {
+      memoryFlippedCards = [];
+      memoryMatchedCount = 0;
+      memoryMoves = 0;
+      memoryLocked = false;
+      document.getElementById('memoryMoves').textContent = '0';
+      document.getElementById('memoryMatches').textContent = '0';
+
+      let deck = [];
+      LETTERS_DATA.forEach(letter => {
+        deck.push({ ...letter, uid: letter.id + '-1' });
+        deck.push({ ...letter, uid: letter.id + '-2' });
+      });
+
+      deck.sort(() => Math.random() - 0.5);
+
+      const grid = document.getElementById('memoryGrid');
+      grid.innerHTML = '';
+
+      deck.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'memory-card';
+        card.dataset.id = item.id;
+        card.dataset.sound = item.sound;
+
+        card.innerHTML = `
+          <div class="card-face card-front">🌟</div>
+          <div class="card-face card-back">
+            <div class="arabic">${item.arabic}</div>
+            <div class="latin">${item.name}</div>
+          </div>
+        `;
+
+        card.onclick = () => flipMemoryCard(card, item);
+        grid.appendChild(card);
+      });
+    }
+
+    function flipMemoryCard(card, item) {
+      if (memoryLocked) return;
+      if (card.classList.contains('flipped') || card.classList.contains('matched')) return;
+
+      card.classList.add('flipped');
+      playAudioFile(item.sound);
+      memoryFlippedCards.push({ card, item });
+
+      if (memoryFlippedCards.length === 2) {
+        memoryMoves++;
+        document.getElementById('memoryMoves').textContent = memoryMoves;
+        checkMemoryMatch();
+      }
+    }
+
+    function checkMemoryMatch() {
+      const [first, second] = memoryFlippedCards;
+
+      if (first.item.id === second.item.id) {
+        playSfx('correct');
+        first.card.classList.add('matched');
+        second.card.classList.add('matched');
+        memoryMatchedCount++;
+        document.getElementById('memoryMatches').textContent = memoryMatchedCount;
+        memoryFlippedCards = [];
+        addStars(5);
+
+        if (memoryMatchedCount === 4) {
+          setTimeout(() => {
+            showCelebrationModal('Tebrikler! Bütün harfleri doğru eşleştirdin! 🌟');
+          }, 500);
+        }
+      } else {
+        memoryLocked = true;
+        playSfx('wrong');
+        setTimeout(() => {
+          first.card.classList.remove('flipped');
+          second.card.classList.remove('flipped');
+          memoryFlippedCards = [];
+          memoryLocked = false;
+        }, 1000);
+      }
+    }
+
+    /* =========================================================
+       OYUN 5: ŞANS ÇARKI (SPIN WHEEL)
+       ========================================================= */
+    let wheelAngle = 0;
+    let isSpinning = false;
+
+    function drawWheel() {
+      const canvas = document.getElementById('wheelCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+      const radius = canvas.width / 2;
+      const segments = LETTERS_DATA.length;
+      const step = (Math.PI * 2) / segments;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      LETTERS_DATA.forEach((item, i) => {
+        const start = i * step;
+        const end = start + step;
+
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, radius, start, end);
+        ctx.fillStyle = item.color;
+        ctx.fill();
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = 'white';
+        ctx.stroke();
+
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(start + step / 2);
+        ctx.textAlign = 'right';
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 42px Amiri, serif';
+        ctx.fillText(item.arabic, radius - 35, 15);
+        ctx.restore();
+      });
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, 32, 0, Math.PI * 2);
+      ctx.fillStyle = 'white';
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.stroke();
+    }
+
+    function spinWheel() {
+      if (isSpinning) return;
+      isSpinning = true;
+
+      const btn = document.getElementById('btnSpinWheel');
+      btn.disabled = true;
+      btn.style.opacity = '0.6';
+
+      const extraRounds = Math.floor(Math.random() * 4 + 4) * 360;
+      const randomStopAngle = Math.floor(Math.random() * 360);
+      const totalSpin = extraRounds + randomStopAngle;
+
+      wheelAngle += totalSpin;
+      const canvas = document.getElementById('wheelCanvas');
+      canvas.style.transform = `rotate(${wheelAngle}deg)`;
+
+      const clickTimer = setInterval(() => {
+        playSfx('click');
+      }, 180);
+
+      setTimeout(() => {
+        clearInterval(clickTimer);
+        isSpinning = false;
+        btn.disabled = false;
+        btn.style.opacity = '1';
+
+        const normalizedAngle = (wheelAngle % 360);
+        let effectiveAngle = (270 - normalizedAngle) % 360;
+        if (effectiveAngle < 0) effectiveAngle += 360;
+
+        const segmentAngle = 360 / LETTERS_DATA.length;
+        const winnerIndex = Math.floor(effectiveAngle / segmentAngle) % LETTERS_DATA.length;
+        const winner = LETTERS_DATA[winnerIndex];
+
+        playSfx('correct');
+        addStars(5);
+        playAudioFile(winner.sound);
+
+        const card = document.getElementById('wheelResultCard');
+        card.innerHTML = `
+          <div style="font-size:1.1rem; color:var(--text-muted); font-weight:800;">Gelen Harf:</div>
+          <div style="font-family:'Amiri'; font-size:4rem; color:${winner.color}; line-height:1.2;">
+            ${winner.arabic}
+          </div>
+          <div style="font-size:1.5rem; font-weight:900; color:#1e293b;">${winner.name}</div>
+          <div style="font-size:0.95rem; color:#475569; font-weight:700; margin-top:6px;">
+            Harekeli: ${winner.name.toUpperCase()} (E - İ - Ü)
+          </div>
+          <div style="margin-top:12px; display:flex; gap:10px;">
+            <button class="btn-play-sound" style="padding:6px 18px; font-size:0.85rem;" onclick="playAudioFile('${winner.sound}')">🔊 İsmini Dinle</button>
+            <button class="btn-play-sound" style="padding:6px 18px; font-size:0.85rem; background:linear-gradient(135deg,#059669,#10b981);" onclick="playAudioFile('${winner.harekeSound}')">🔊 Harekeli Dinle</button>
+          </div>
+        `;
+      }, 4000);
+    }
+
+    /* =========================================================
+       KONFETİ EFEKTİ SİSTEMİ
+       ========================================================= */
+    function triggerConfetti() {
+      const canvas = document.getElementById('confettiCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const colors = ['#f72585', '#7209b7', '#3a0ca3', '#4361ee', '#4cc9f0', '#10b981', '#f59e0b'];
+
+      for (let i = 0; i < 70; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          r: Math.random() * 6 + 3,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          vx: (Math.random() - 0.5) * 16,
+          vy: (Math.random() - 0.5) * 16 - 3,
+          gravity: 0.25,
+          alpha: 1
+        });
+      }
+
+      function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let alive = false;
+
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += p.gravity;
+          p.alpha -= 0.015;
+
+          if (p.alpha > 0) {
+            alive = true;
+            ctx.save();
+            ctx.globalAlpha = p.alpha;
+            ctx.fillStyle = p.color;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          }
+        });
+
+        if (alive) {
+          requestAnimationFrame(render);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+
+      render();
+    }
+
+    function showCelebrationModal(msg) {
+      document.getElementById('modalMessage').textContent = msg;
+      document.getElementById('celebrationModal').classList.add('active');
+      triggerConfetti();
+    }
+
+    function closeCelebrationModal() {
+      document.getElementById('celebrationModal').classList.remove('active');
+    }
+
+    window.onload = () => {
+      drawWheel();
+      initQuiz();
+      initKaraokeStudio();
+    };
+  </script>
+</body>
+</html>
