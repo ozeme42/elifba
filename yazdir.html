@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elifba Çalışma Sayfaları - Sayfa Sayfa Yazdırılabilir Kitapçık</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a0ca3;
+      --accent: #f72585;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --bg: #f8fafc;
+      --radius: 16px;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Nunito', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f1f5f9;
+      color: var(--text);
+      line-height: 1.5;
+      padding-bottom: 60px;
+    }
+
+    header {
+      background: white;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .header-logo .icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Amiri', serif;
+      font-size: 1.6rem;
+      font-weight: bold;
+    }
+
+    .header-logo h1 {
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: var(--primary-dark);
+      line-height: 1.2;
+    }
+
+    .header-logo p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .btn-action {
+      padding: 9px 18px;
+      border-radius: 50px;
+      font-family: inherit;
+      font-weight: 800;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: none;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--text-muted);
+      border: 2px solid #cbd5e1;
+    }
+    .btn-secondary:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    main {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .hero-panel {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      border: 2px solid #e2e8f0;
+      margin-bottom: 30px;
+    }
+
+    .hero-panel h2 {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--primary-dark);
+      margin-bottom: 8px;
+    }
+
+    .hero-panel p {
+      color: var(--text-muted);
+      font-size: 1rem;
+      font-weight: 700;
+      max-width: 650px;
+      margin: 0 auto 18px;
+    }
+
+    .quick-pills {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .pill-btn {
+      padding: 7px 14px;
+      border-radius: 30px;
+      border: 1.5px solid #cbd5e1;
+      background: #f8fafc;
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .pill-btn:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* Print Sheets */
+    .print-sheets-container {
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+      align-items: center;
+    }
+
+    .print-sheet {
+      background: white;
+      width: 100%;
+      max-width: 820px;
+      min-height: 1140px;
+      padding: 32px 36px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      border: 2px solid #94a3b8;
+      position: relative;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #0f172a;
+    }
+
+    .sheet-top-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2.5px solid #0f172a;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .sheet-title-box h3 {
+      font-size: 1.45rem;
+      font-weight: 900;
+      color: #0f172a;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sheet-title-box p {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #64748b;
+      margin: 0;
+    }
+
+    .sheet-student-info {
+      text-align: right;
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #334155;
+      line-height: 1.6;
+    }
+
+    .sheet-student-info .line-fill {
+      display: inline-block;
+      width: 130px;
+      border-bottom: 1.5px dashed #475569;
+      margin-left: 6px;
+    }
+
+    .btn-page-print-corner {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: #f1f5f9;
+      border: 1.5px solid #cbd5e1;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: 0.8rem;
+      color: #334155;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-page-print-corner:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .outline-arabic-letter {
+      font-family: 'Amiri', 'Traditional Arabic', serif;
+      font-size: 6.8rem;
+      line-height: 1.1;
+      color: white;
+      -webkit-text-stroke: 3.5px #0f172a;
+      font-weight: bold;
+      display: inline-block;
+      letter-spacing: 2px;
+    }
+
+    .tracing-box {
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin: 12px 0;
+    }
+
+    .tracing-section-title {
+      font-size: 0.95rem;
+      font-weight: 900;
+      color: #1e293b;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tracing-row {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      direction: rtl;
+      border-bottom: 1px dashed #cbd5e1;
+      padding: 6px 0;
+    }
+
+    .tracing-row:last-child {
+      border-bottom: none;
+    }
+
+    .trace-cell {
+      width: 60px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px dashed #94a3b8;
+      border-radius: 8px;
+      background: white;
+      font-family: 'Amiri', 'Traditional Arabic', serif;
+      font-size: 3rem;
+      color: #94a3b8;
+      position: relative;
+    }
+
+    .trace-cell.solid {
+      color: #0f172a;
+      font-weight: bold;
+      border-color: #0f172a;
+      background: #eff6ff;
+    }
+
+    .trace-cell.empty {
+      border-style: dotted;
+      border-color: #cbd5e1;
+    }
+
+    .sheet-footer {
+      border-top: 2px solid #0f172a;
+      padding-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #334155;
+    }
+
+    .sheet-stars-rating {
+      font-size: 1.25rem;
+      letter-spacing: 3px;
+      color: #cbd5e1;
+    }
+
+    .certificate-box {
+      border: 3px double #0f172a;
+      border-radius: 16px;
+      padding: 16px 20px;
+      background: #fffbeb;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 8mm 10mm;
+      }
+
+      html, body {
+        background: white !important;
+        color: #000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      header, .hero-panel, .btn-page-print-corner, .no-print {
+        display: none !important;
+      }
+
+      main {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .print-sheets-container {
+        gap: 0 !important;
+        width: 100% !important;
+      }
+
+      .print-sheet {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        width: 100% !important;
+        height: 275mm !important;
+        min-height: 270mm !important;
+        max-height: 280mm !important;
+        box-sizing: border-box !important;
+        padding: 8mm 12mm !important;
+        border: 2px solid #000 !important;
+        border-radius: 10px !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        background: white !important;
+      }
+
+      .print-sheet:last-child {
+        page-break-after: auto !important;
+        break-after: auto !important;
+      }
+
+      body.print-single-mode .print-sheet {
+        display: none !important;
+      }
+
+      body.print-single-mode .print-sheet.sheet-active-print {
+        display: flex !important;
+        page-break-after: auto !important;
+        break-after: auto !important;
+      }
+
+      .outline-arabic-letter {
+        -webkit-text-stroke: 3px #000 !important;
+        color: white !important;
+      }
+
+      .sheet-top-header, .sheet-footer {
+        border-color: #000 !important;
+      }
+
+      .tracing-box {
+        background: white !important;
+        border-color: #64748b !important;
+      }
+
+      .trace-cell {
+        border-color: #64748b !important;
+        color: #94a3b8 !important;
+      }
+
+      .trace-cell.solid {
+        background: #f1f5f9 !important;
+        color: #000 !important;
+        border-color: #000 !important;
+      }
+
+      .certificate-box {
+        background: white !important;
+        border-color: #000 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="no-print">
+    <a href="oyunlar.html" class="header-logo" title="Oyunlar Sayfasına Dön">
+      <div class="icon">ا ب</div>
+      <div>
+        <h1>Elifba Çalışma Defteri</h1>
+        <p>A4 Sayfa Sayfa Yazdırılabilir Alıştırmalar</p>
+      </div>
+    </a>
+
+    <div class="header-actions">
+      <button class="btn-action btn-primary" onclick="printAllWorksheets()">
+        🖨️ Tümünü Yazdır (6 Sayfa)
+      </button>
+      <a href="oyunlar.html" class="btn-action btn-secondary">
+        🎮 İnteraktif Oyunlara Dön
+      </a>
+      <a href="elifba.htm" class="btn-action btn-secondary">
+        🏠 Dersler
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <div class="hero-panel no-print">
+      <h2>🖨️ Adım Adım Yazdırılabilir Çalışma Sayfaları</h2>
+      <p>
+        Okuma-yazma bilmeyen minik talebeler için büyük boyama harfleri, kesik çizgili yazma kılavuzları, harekeler treni ve başarı sertifikasından oluşan 6 sayfalık A4 seti.
+      </p>
+
+      <button class="btn-action btn-primary" onclick="printAllWorksheets()" style="font-size:1.1rem; padding:12px 28px;">
+        🖨️ TÜM KİTAPÇIĞI YAZDIR (6 Sayfa A4)
+      </button>
+
+      <div class="quick-pills">
+        <button class="pill-btn" onclick="printSingleWorksheet(1)">📄 1. Sayfa: Elif (ا)</button>
+        <button class="pill-btn" onclick="printSingleWorksheet(2)">📄 2. Sayfa: Be (ب)</button>
+        <button class="pill-btn" onclick="printSingleWorksheet(3)">📄 3. Sayfa: Te (ت)</button>
+        <button class="pill-btn" onclick="printSingleWorksheet(4)">📄 4. Sayfa: Peltek Se (ث)</button>
+        <button class="pill-btn" onclick="printSingleWorksheet(5)">📄 5. Sayfa: Harekeler Treni</button>
+        <button class="pill-btn" onclick="printSingleWorksheet(6)">📄 6. Sayfa: Dedektif & Belge</button>
+      </div>
+    </div>
+
+    <div class="print-sheets-container">
+      <!-- ==========================================
+             SAYFA 1: ELİF (ا) ÇALIŞMA SAYFASI
+             ========================================== -->
+        <div class="print-sheet" id="print-sheet-1">
+          <button class="btn-page-print-corner no-print" onclick="printSingleWorksheet(1)">🖨️ Bu Sayfayı Yazdır</button>
+          
+          <div class="sheet-top-header">
+            <div class="sheet-title-box">
+              <h3>🌲 1. ADIM: ELİF (ا) HARFİ</h3>
+              <p>Kur'an-ı Kerim Elifbası Başlangıç Çalışma Sayfası</p>
+            </div>
+            <div class="sheet-student-info">
+              <div>Öğrenci Adı: <span class="line-fill"></span></div>
+              <div>Tarih: <span class="line-fill"></span></div>
+            </div>
+          </div>
+
+          <!-- Etkinlik 1: Büyük Harf Boyama -->
+          <div style="display:flex; align-items:center; justify-content:space-around; background:#f8fafc; border:2px dashed #cbd5e1; border-radius:14px; padding:12px; margin-bottom:12px;">
+            <div style="text-align:center;">
+              <div class="outline-arabic-letter">ا</div>
+              <div style="font-weight:900; font-size:1.1rem; color:#1e293b; margin-top:-6px;">ELİF</div>
+            </div>
+            <div style="max-width:340px; font-size:0.92rem; font-weight:700; color:#334155; line-height:1.5;">
+              <div style="font-size:1.05rem; font-weight:900; color:#2563eb; margin-bottom:4px;">🎨 1. ETKİNLİK: Harfi Boya!</div>
+              "Elif, ormandaki dimdik bir çam ağacı gibidir. <strong>Hiç noktası yoktur!</strong> İçini en sevdiğin renklere boya."
+            </div>
+            <div style="font-size:3.5rem;">🌲</div>
+          </div>
+
+          <!-- Etkinlik 2: Kesik Çizgileri Birleştir -->
+          <div class="tracing-box">
+            <div class="tracing-section-title">✏️ 2. ETKİNLİK: Yukarıdan Aşağıya Çiz ve Elif (ا) Yaz:</div>
+            <div class="tracing-row">
+              <div class="trace-cell solid">ا</div>
+              <div class="trace-cell">ا</div>
+              <div class="trace-cell">ا</div>
+              <div class="trace-cell">ا</div>
+              <div class="trace-cell">ا</div>
+              <div class="trace-cell empty"></div>
+              <div class="trace-cell empty"></div>
+            </div>
+            <div class="tracing-row" style="margin-top:6px;">
+              <div class="trace-cell solid">ا</div>
+              <div class="trace-cell">ا</div>
+              <div class="trace-cell">ا</div>
+              <div class="trace-cell empty"></div>
+              <div class="trace-cell empty"></div>
+              <div class="trace-cell empty"></div>
+              <div class="trace-cell empty"></div>
+            </div>
+          </div>
+
+          <!-- Etkinlik 3: Harekelerle Elif -->
+          <div style="background:#eff6ff; border:1.5px solid #bfdbfe; border-radius:12px; padding:12px; margin-bottom:12px;">
+            <div class="tracing-section-title" style="color:#1e40af;">🎩 🛝 🎀 3. ETKİNLİK: Harekeli Elif'leri Oku & Tekrar Et:</div>
+            <div style="display:flex; justify-content:space-around; text-align:center; direction:rtl;">
+              <div style="background:white; border:2px solid #2563eb; border-radius:10px; padding:8px 20px;">
+                <div style="font-family:'Amiri'; font-size:2.8rem; color:#2563eb; line-height:1;">أَ</div>
+                <div style="font-weight:900; font-size:0.95rem; color:#1e40af;">Üstün: E</div>
+              </div>
+              <div style="background:white; border:2px solid #059669; border-radius:10px; padding:8px 20px;">
+                <div style="font-family:'Amiri'; font-size:2.8rem; color:#059669; line-height:1;">إِ</div>
+                <div style="font-weight:900; font-size:0.95rem; color:#065f46;">Esre: İ</div>
+              </div>
+              <div style="background:white; border:2px solid #d97706; border-radius:10px; padding:8px 20px;">
+                <div style="font-family:'Amiri'; font-size:2.8rem; color:#d97706; line-height:1;">أُ</div>
+                <div style="font-weight:900; font-size:0.95rem; color:#92400e;">Ötre: Ü</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Etkinlik 4: Elif Dedektifi -->
+          <div style="border:2px solid #e2e8f0; border-radius:12px; padding:12px; background:#ffffff;">
+            <div class="tracing-section-title">🔍 4. ETKİNLİK: Noktasız Dimdik Duran ELİF (ا) Harflerini Bul ve Daire İçine Al:</div>
+            <div style="display:flex; justify-content:space-around; align-items:center; direction:rtl; font-family:'Amiri'; font-size:2.5rem; font-weight:bold; color:#1e293b; padding:4px 0;">
+              <span style="border:2px dashed #94a3b8; border-radius:50%; width:48px; height:48px; display:inline-flex; align-items:center; justify-content:center;">ا</span>
+              <span>ب</span>
+              <span style="border:2px dashed #94a3b8; border-radius:50%; width:48px; height:48px; display:inline-flex; align-items:center; justify-content:center;">ا</span>
+              <span>ت</span>
+              <span style="border:2px dashed #94a3b8; border-radius:50%; width:48px; height:48px; display:inline-flex; align-items:center; justify-content:center;">ا</span>
+              <span>ث</span>
+              <span style="border:2px dashed #94a3b8; border-radius:50%; width:48px; height:48px; display:inline-flex; align-items:center; justify-content:center;">ا</span>
+            </div>
+          </div>
+
+          <div class="sheet-footer">
+            <div>🌟 Aferin! Öğretmen / Veli Notu: <span class="sheet-stars-rating">⭐⭐⭐⭐⭐</span></div>
+            <div>Sayfa 1 / 6</div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             SAYFA 2: BE (ب) ÇALIŞMA SAYFASI
+             ========================================== -->
+        <div class="print-sheet" id="print-sheet-2">
+          <button class="btn-page-print-corner no-print" onclick="printSingleWorksheet(2)">🖨️ Bu Sayfayı Yazdır</button>
+          
+          <div class="sheet-top-header">
+            <div class="sheet-title-box">
+              <h3>🍏 2. ADIM: BE (ب) HARFİ</h3>
+              <p>Kur'an-ı Kerim Elifbası Başlangıç Çalışma Sayfası</p>
+            </div>
+            <div class="sheet-student-info">
+              <div>Öğrenci Adı: <span class="line-fill"></span></div>
+              <div>Tarih: <span class="line-fill"></span></div>
+            </div>
+          </div>
+
+          <!-- Etkinlik 1: Büyük Harf & Elma Boyama -->
+          <div style="display:flex; align-items:center; justify-content:space-around; background:#ecfdf5; border:2px dashed #a7f3d0; border-radius:14px; padding:12px; margin-bottom:12px;">
+            <div style="text-align:center;">
+              <div class="outline-arabic-letter">ب</div>
+              <div style="font-weight:900; font-size:1.1rem; color:#065f46; margin-top:-6px;">BE</div>
+            </div>
+            <div style="max-width:340px; font-size:0.92rem; font-weight:700; color:#334155; line-height:1.5;">
+              <div style="font-size:1.05rem; font-weight:900; color:#059669; margin-bottom:4px;">🎨 1. ETKİNLİK: Tabağı ve Elmayı Boya!</div>
+              "Be harfi sevimli bir kayık/tabak gibidir. <strong>ALTINDA 1 TEK ELMA/NOKTA</strong> vardır. Elmayı kırmızıya boya!"
+            </div>
+            <div style="font-size:3.5rem;">🍎</div>
+          </div>
+
+          <!-- Etkinlik 2: Kesik Çizgileri Birleştir -->
+          <div class="tracing-box">
+            <div class="tracing-section-title">✏️ 2. ETKİNLİK: Sağdan Sola Çanağı Çiz ve Altına Tek Nokta Koy:</div>
+            <div class="tracing-row">
+              <div class="trace-cell solid">ب</div>
+              <div class="trace-cell">ب</div>
+              <div class="trace-cell">ب</div>
+              <div class="trace-cell">ب</div>
+              <div class="trace-cell empty"></div>
+              <div class="trace-cell empty"></div>
+            </div>
+            <div class="tracing-row" style="margin-top:6px;">
+              <div class="trace-cell solid">ب</div>
+              <div class="trace-cell">ب</div>
+              <div class="trace-cell">ب</div>
+              <div class="trace-cell empty"></div>
+              <div class="trace-cell empty"></div>
+              <div class="trace-cell empty"></div>
+            </div>
+          </div>
+
+          <!-- Etkinlik 3: Harekelerle Be -->
+          <div style="background:#f0fdf4; border:1.5px solid #bbf7d0; border-radius:12px; padding:12px; margin-bottom:12px;">
+            <div class="tracing-section-title" style="color:#166534;">🎩 🛝 🎀 3. ETKİNLİK: Harekeli Be Harflerini Oku:</div>
+            <div style="display:flex; justify-content:space-around; text-align:center; direction:rtl;">
+              <div style="background:white; border:2px solid #059669; border-radius:10px; padding:8px 20px;">
+                <div style="font-family:'Amiri'; font-size:2.8rem; color:#059669; line-height:1;">بَ</div>
+                <div style="font-weight:900; font-size:0.95rem; color:#065f46;">Üstün: BE</div>
+              </div>
+              <div style="background:white; border:2px solid #2563eb; border-radius:10px; padding:8px 20px;">
+                <div style="font-family:'Amiri'; font-size:2.8rem; color:#2563eb; line-height:1;">بِ</div>
+                <div style="font-weight:900; font-size:0.95rem; color:#1e40af;">Esre: Bİ</div>
+              </div>
+              <div style="background:white; border:2px solid #d97706; border-radius:10px; padding:8px 20px;">
+                <div style="font-family:'Amiri'; font-size:2.8rem; color:#d97706; line-height:1;">بُ</div>
+                <div style="font-weight:900; font-size:0.95rem; color:#92400e;">Ötre: BÜ</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Etkinlik 4: Altta 1 Nokta Dedektifi -->
+          <div style="border:2px solid #e2e8f0; border-radius:12px; padding:12px; background:#ffffff;">
+            <div class="tracing-section-title">🔍 4. ETKİNLİK: Sadece ALTINDA 1 NOKTASI Olan BE (ب) Harflerini Boya:</div>
+            <div style="display:flex; justify-content:space-around; align-items:center; direction:rtl; font-family:'Amiri'; font-size:2.5rem; font-weight:bold; color:#1e293b; padding:4px 0;">
+              <span style="border:2px solid #059669; border-radius:8px; padding:0 12px; background:#ecfdf5;">ب</span>
+              <span>ت</span>
+              <span style="border:2px solid #059669; border-radius:8px; padding:0 12px; background:#ecfdf5;">ب</span>
+              <span>ث</span>
+              <span>ا</span>
+              <span style="border:2px solid #059669; border-radius:8px; padding:0 12px; background:#ecfdf5;">ب</span>
+              <span>ت</span>
+            </div>
+          </div>
+
+          <div class="sheet-footer">
+            <div>🌟 Aferin! Öğretmen / Veli Notu: <span class="sheet-stars-rating">⭐⭐⭐⭐⭐</span></div>
+            <div>Sayfa 2 / 6</div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             SAYFA 3: TE (ت) ÇALIŞMA SAYFASI
+             ========================================== -->
+        <div class="print-sheet" id="print-sheet-3">
+          <button class="btn-page-print-corner no-print" onclick="printSingleWorksheet(3)">🖨️ Bu Sayfayı Yazdır</button>
+          
+          <div class="sheet-top-header">
+            <div class="sheet-title-box">
+              <h3>👀 3. ADIM: TE (ت) HARFİ</h3>
+              <p>Kur'an-ı Kerim Elifbası Başlangıç Çalışma Sayfası</p>
+            </div>
+            <div class="sheet-student-info">
+              <div>Öğrenci Adı: <span class="line-fill"></span></div>
+              <div>Tarih: <span class="line-fill"></span></div>
+            </div>
+          </div>
+
+          <!-- Etkinlik 1: Büyük Harf & Gülen Gözler Boyama -->
+          <div style="display:flex; align-items:center; justify-content:space-around; background:#fffbeb; border:2px dashed #fde68a; border-radius:14px; padding:12px; margin-bottom:12px;">
+            <div style="text-align:center;">
+              <div class="outline-arabic-letter">ت</div>
+              <div style="font-weight:900; font-size:1.1rem; color:#92400e; margin-top:-6px;">TE</div>
+            </div>
+            <div style="max-width:340px; font-size:0.92rem; font-weight:700; color:#334155; line-height:1.5;">
+              <div style="font-size:1.05rem; font-weight:900; color:#d97706; margin-bottom:4px;">🎨 1. ETKİNLİK: Gülen Gözleri Boya!</div>
+              "Te harfi tıpkı gülen bir yüz gibidir! Tabak Be ile aynıdır ama <strong>ÜSTÜNDE 2 TANE GÖZÜ/NOKTASI</strong> vardır."
+            </div>
+            <div style="font-size:3.5rem;">😊</div>
+          </div>
+
+          <!-- Etkinlik 2: Kesik Çizgileri Birleştir -->
+          <div class="tracing-box">
+            <div class="tracing-section-title">✏️ 2. ETKİNLİK: Çanağı Çiz ve Üstüne 2 Göz/Nokta Koy:</div>
+            <div class="tracing-row">
+              <div class="trace-cell solid">ت</div>
+              <div class="trace-cell">ت</div>
+              <div class="trace-cell">ت</div>
+              <div class="trace-cell">ت</div>
+              <div class="trace-cell empty"></div>
+              <div class="trace-cell empty"></div>
+            </div>
+            <div class="tracing-row" style="margin-top:6px;">
+              <div class="trace-cell solid">ت</div>
+              <div class="trace-cell">ت</div>
+              <div class="trace-cell">ت</div>
+              <div class="trace-cell empty"></div>
+              <div class="trace-cell empty"></div>
+              <div class="trace-cell empty"></div>
+            </div>
+          </div>
+
+          <!-- Etkinlik 3: Harekeli Te -->
+          <div style="background:#fff7ed; border:1.5px solid #fed7aa; border-radius:12px; padding:12px; margin-bottom:12px;">
+            <div class="tracing-section-title" style="color:#9a3412;">🎩 🛝 🎀 3. ETKİNLİK: Harekeli Te Harflerini Oku:</div>
+            <div style="display:flex; justify-content:space-around; text-align:center; direction:rtl;">
+              <div style="background:white; border:2px solid #d97706; border-radius:10px; padding:8px 20px;">
+                <div style="font-family:'Amiri'; font-size:2.8rem; color:#d97706; line-height:1;">تَ</div>
+                <div style="font-weight:900; font-size:0.95rem; color:#92400e;">Üstün: TE</div>
+              </div>
+              <div style="background:white; border:2px solid #2563eb; border-radius:10px; padding:8px 20px;">
+                <div style="font-family:'Amiri'; font-size:2.8rem; color:#2563eb; line-height:1;">تِ</div>
+                <div style="font-weight:900; font-size:0.95rem; color:#1e40af;">Esre: Tİ</div>
+              </div>
+              <div style="background:white; border:2px solid #059669; border-radius:10px; padding:8px 20px;">
+                <div style="font-family:'Amiri'; font-size:2.8rem; color:#059669; line-height:1;">تُ</div>
+                <div style="font-weight:900; font-size:0.95rem; color:#065f46;">Ötre: TÜ</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Etkinlik 4: Üstte 2 Nokta Dedektifi -->
+          <div style="border:2px solid #e2e8f0; border-radius:12px; padding:12px; background:#ffffff;">
+            <div class="tracing-section-title">🔍 4. ETKİNLİK: ÜSTÜNDE 2 NOKTASI Olan Gülen TE (ت) Harflerini Daireye Al:</div>
+            <div style="display:flex; justify-content:space-around; align-items:center; direction:rtl; font-family:'Amiri'; font-size:2.5rem; font-weight:bold; color:#1e293b; padding:4px 0;">
+              <span style="border:2px solid #d97706; border-radius:50%; width:48px; height:48px; display:inline-flex; align-items:center; justify-content:center; background:#fffbeb;">ت</span>
+              <span>ب</span>
+              <span style="border:2px solid #d97706; border-radius:50%; width:48px; height:48px; display:inline-flex; align-items:center; justify-content:center; background:#fffbeb;">ت</span>
+              <span>ا</span>
+              <span>ث</span>
+              <span style="border:2px solid #d97706; border-radius:50%; width:48px; height:48px; display:inline-flex; align-items:center; justify-content:center; background:#fffbeb;">ت</span>
+              <span>ب</span>
+            </div>
+          </div>
+
+          <div class="sheet-footer">
+            <div>🌟 Aferin! Öğretmen / Veli Notu: <span class="sheet-stars-rating">⭐⭐⭐⭐⭐</span></div>
+            <div>Sayfa 3 / 6</div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             SAYFA 4: PELTEK SE (ث) ÇALIŞMA SAYFASI
+             ========================================== -->
+        <div class="print-sheet" id="print-sheet-4">
+          <button class="btn-page-print-corner no-print" onclick="printSingleWorksheet(4)">🖨️ Bu Sayfayı Yazdır</button>
+          
+          <div class="sheet-top-header">
+            <div class="sheet-title-box">
+              <h3>👅 4. ADIM: PELTEK SE (ث) HARFİ</h3>
+              <p>Kur'an-ı Kerim Elifbası Başlangıç Çalışma Sayfası</p>
+            </div>
+            <div class="sheet-student-info">
+              <div>Öğrenci Adı: <span class="line-fill"></span></div>
+              <div>Tarih: <span class="line-fill"></span></div>
+            </div>
+          </div>
+
+          <!-- Etkinlik 1: Büyük Harf & 3 Yıldız Boyama -->
+          <div style="display:flex; align-items:center; justify-content:space-around; background:#fef2f2; border:2px dashed #fecaca; border-radius:14px; padding:12px; margin-bottom:12px;">
+            <div style="text-align:center;">
+              <div class="outline-arabic-letter">ث</div>
+              <div style="font-weight:900; font-size:1.1rem; color:#991b1b; margin-top:-6px;">PELTEK SE</div>
+            </div>
+            <div style="max-width:340px; font-size:0.92rem; font-weight:700; color:#334155; line-height:1.5;">
+              <div style="font-size:1.05rem; font-weight:900; color:#dc2626; margin-bottom:4px;">🎨 1. ETKİNLİK: 3 Kar Tanesini Boya!</div>
+              "Dilinin ucunu dişlerinin arasına hafifçe koyup söyle! <strong>ÜSTÜNDE 3 KAR TANESİ/YILDIZ</strong> vardır."
+            </div>
+            <div style="font-size:3.5rem;">❄️</div>
+          </div>
+
+          <!-- Etkinlik 2: Kesik Çizgileri Birleştir -->
+          <div class="tracing-box">
+            <div class="tracing-section-title">✏️ 2. ETKİNLİK: Çanağı Çiz ve Üstüne 3 Nokta Koy:</div>
+            <div class="tracing-row">
+              <div class="trace-cell solid">ث</div>
+              <div class="trace-cell">ث</div>
+              <div class="trace-cell">ث</div>
+              <div class="trace-cell">ث</div>
+              <div class="trace-cell empty"></div>
+              <div class="trace-cell empty"></div>
+            </div>
+            <div class="tracing-row" style="margin-top:6px;">
+              <div class="trace-cell solid">ث</div>
+              <div class="trace-cell">ث</div>
+              <div class="trace-cell">ث</div>
+              <div class="trace-cell empty"></div>
+              <div class="trace-cell empty"></div>
+              <div class="trace-cell empty"></div>
+            </div>
+          </div>
+
+          <!-- Etkinlik 3: Harekeli Peltek Se -->
+          <div style="background:#fff1f2; border:1.5px solid #fecdd3; border-radius:12px; padding:12px; margin-bottom:12px;">
+            <div class="tracing-section-title" style="color:#9f1239;">🎩 🛝 🎀 3. ETKİNLİK: Harekeli Peltek Se Harflerini Oku:</div>
+            <div style="display:flex; justify-content:space-around; text-align:center; direction:rtl;">
+              <div style="background:white; border:2px solid #dc2626; border-radius:10px; padding:8px 20px;">
+                <div style="font-family:'Amiri'; font-size:2.8rem; color:#dc2626; line-height:1;">ثَ</div>
+                <div style="font-weight:900; font-size:0.95rem; color:#991b1b;">Üstün: SE</div>
+              </div>
+              <div style="background:white; border:2px solid #2563eb; border-radius:10px; padding:8px 20px;">
+                <div style="font-family:'Amiri'; font-size:2.8rem; color:#2563eb; line-height:1;">ثِ</div>
+                <div style="font-weight:900; font-size:0.95rem; color:#1e40af;">Esre: Sİ</div>
+              </div>
+              <div style="background:white; border:2px solid #d97706; border-radius:10px; padding:8px 20px;">
+                <div style="font-family:'Amiri'; font-size:2.8rem; color:#d97706; line-height:1;">ثُ</div>
+                <div style="font-weight:900; font-size:0.95rem; color:#92400e;">Ötre: SÜ</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Etkinlik 4: 3 Noktayı Sen Koy -->
+          <div style="border:2px solid #e2e8f0; border-radius:12px; padding:12px; background:#ffffff;">
+            <div class="tracing-section-title">🎯 4. ETKİNLİK: Bu Boş Tabakların ÜSTÜNE 3 Nokta Koyup PELTEK SE (ث) Yap:</div>
+            <div style="display:flex; justify-content:space-around; align-items:center; direction:rtl; font-family:'Amiri'; font-size:2.8rem; color:#64748b; padding:4px 0;">
+              <div style="border:2px dashed #dc2626; border-radius:10px; padding:4px 18px; text-align:center;">ـ<span style="font-size:0.8rem; display:block; font-family:'Nunito'; color:#991b1b; font-weight:800;">3 Nokta Çiz ✍️</span></div>
+              <div style="border:2px dashed #dc2626; border-radius:10px; padding:4px 18px; text-align:center;">ـ<span style="font-size:0.8rem; display:block; font-family:'Nunito'; color:#991b1b; font-weight:800;">3 Nokta Çiz ✍️</span></div>
+              <div style="border:2px dashed #dc2626; border-radius:10px; padding:4px 18px; text-align:center;">ـ<span style="font-size:0.8rem; display:block; font-family:'Nunito'; color:#991b1b; font-weight:800;">3 Nokta Çiz ✍️</span></div>
+            </div>
+          </div>
+
+          <div class="sheet-footer">
+            <div>🌟 Aferin! Öğretmen / Veli Notu: <span class="sheet-stars-rating">⭐⭐⭐⭐⭐</span></div>
+            <div>Sayfa 4 / 6</div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             SAYFA 5: HAREKELER TRENİ ÇALIŞMA SAYFASI
+             ========================================== -->
+        <div class="print-sheet" id="print-sheet-5">
+          <button class="btn-page-print-corner no-print" onclick="printSingleWorksheet(5)">🖨️ Bu Sayfayı Yazdır</button>
+          
+          <div class="sheet-top-header">
+            <div class="sheet-title-box">
+              <h3>🚂 5. ADIM: HAREKELER TRENİ</h3>
+              <p>Üstün, Esre ve Ötre Öğrenme & Eşleştirme Sayfası</p>
+            </div>
+            <div class="sheet-student-info">
+              <div>Öğrenci Adı: <span class="line-fill"></span></div>
+              <div>Tarih: <span class="line-fill"></span></div>
+            </div>
+          </div>
+
+          <!-- 3 Hareke Görsel Tablosu -->
+          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-bottom:14px; text-align:center;">
+            <div style="border:2px solid #2563eb; border-radius:12px; padding:10px; background:#eff6ff;">
+              <div style="font-size:1.8rem;">🎩</div>
+              <div style="font-weight:900; font-size:1.05rem; color:#1e40af;">ÜSTÜN ( َ )</div>
+              <div style="font-size:0.82rem; font-weight:700; color:#334155; margin-top:2px;">Harfin ÜSTÜNDE durur.<br>İnce harflere <strong>'E'</strong> sesi verir.</div>
+            </div>
+            <div style="border:2px solid #059669; border-radius:12px; padding:10px; background:#ecfdf5;">
+              <div style="font-size:1.8rem;">🛝</div>
+              <div style="font-weight:900; font-size:1.05rem; color:#065f46;">ESRE ( ِ )</div>
+              <div style="font-size:0.82rem; font-weight:700; color:#334155; margin-top:2px;">Harfin ALTINDA durur.<br>Harflere <strong>'İ'</strong> sesi verir.</div>
+            </div>
+            <div style="border:2px solid #d97706; border-radius:12px; padding:10px; background:#fffbeb;">
+              <div style="font-size:1.8rem;">🎀</div>
+              <div style="font-weight:900; font-size:1.05rem; color:#92400e;">ÖTRE ( ُ )</div>
+              <div style="font-size:0.82rem; font-weight:700; color:#334155; margin-top:2px;">Harfin ÜSTÜNDE kurdeledir.<br>Harflere <strong>'Ü'</strong> sesi verir.</div>
+            </div>
+          </div>
+
+          <!-- Tren Vagonları Sıralaması -->
+          <div style="border:2px solid #cbd5e1; border-radius:12px; padding:12px; background:white; margin-bottom:14px;">
+            <div class="tracing-section-title">🚂 2. ETKİNLİK: Tren Vagonlarını Yüksek Sesle Oku:</div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:6px 14px; border-radius:8px; direction:rtl; font-family:'Amiri'; font-size:2.2rem; font-weight:bold;">
+                <span style="font-size:1.3rem;">🌲 ELİF:</span>
+                <span style="color:#2563eb;">أَ <small style="font-family:'Nunito'; font-size:0.85rem; color:#475569;">(E)</small></span>
+                <span style="color:#059669;">إِ <small style="font-family:'Nunito'; font-size:0.85rem; color:#475569;">(İ)</small></span>
+                <span style="color:#d97706;">أُ <small style="font-family:'Nunito'; font-size:0.85rem; color:#475569;">(Ü)</small></span>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:6px 14px; border-radius:8px; direction:rtl; font-family:'Amiri'; font-size:2.2rem; font-weight:bold;">
+                <span style="font-size:1.3rem;">🍏 BE:</span>
+                <span style="color:#2563eb;">بَ <small style="font-family:'Nunito'; font-size:0.85rem; color:#475569;">(BE)</small></span>
+                <span style="color:#059669;">بِ <small style="font-family:'Nunito'; font-size:0.85rem; color:#475569;">(Bİ)</small></span>
+                <span style="color:#d97706;">بُ <small style="font-family:'Nunito'; font-size:0.85rem; color:#475569;">(BÜ)</small></span>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:6px 14px; border-radius:8px; direction:rtl; font-family:'Amiri'; font-size:2.2rem; font-weight:bold;">
+                <span style="font-size:1.3rem;">👀 TE:</span>
+                <span style="color:#2563eb;">تَ <small style="font-family:'Nunito'; font-size:0.85rem; color:#475569;">(TE)</small></span>
+                <span style="color:#059669;">تِ <small style="font-family:'Nunito'; font-size:0.85rem; color:#475569;">(Tİ)</small></span>
+                <span style="color:#d97706;">تُ <small style="font-family:'Nunito'; font-size:0.85rem; color:#475569;">(TÜ)</small></span>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:6px 14px; border-radius:8px; direction:rtl; font-family:'Amiri'; font-size:2.2rem; font-weight:bold;">
+                <span style="font-size:1.3rem;">👅 SE:</span>
+                <span style="color:#2563eb;">ثَ <small style="font-family:'Nunito'; font-size:0.85rem; color:#475569;">(SE)</small></span>
+                <span style="color:#059669;">ثِ <small style="font-family:'Nunito'; font-size:0.85rem; color:#475569;">(Sİ)</small></span>
+                <span style="color:#d97706;">ثُ <small style="font-family:'Nunito'; font-size:0.85rem; color:#475569;">(SÜ)</small></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Çizgiyle Eşleştirme Oyunu -->
+          <div style="border:2px solid #e2e8f0; border-radius:12px; padding:12px; background:white;">
+            <div class="tracing-section-title">📏 3. ETKİNLİK: Sol Taraftaki Harfleri Sağdaki Doğru Okunuşuyla Kalemle Eşleştir:</div>
+            <div style="display:flex; justify-content:space-around; align-items:center; font-weight:900;">
+              <div style="display:flex; flex-direction:column; gap:8px; font-family:'Amiri'; font-size:2rem; direction:rtl;">
+                <span style="border:1.5px solid #0f172a; padding:2px 14px; border-radius:8px;">بَ</span>
+                <span style="border:1.5px solid #0f172a; padding:2px 14px; border-radius:8px;">إِ</span>
+                <span style="border:1.5px solid #0f172a; padding:2px 14px; border-radius:8px;">تُ</span>
+                <span style="border:1.5px solid #0f172a; padding:2px 14px; border-radius:8px;">ثَ</span>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:20px; color:#cbd5e1; font-size:1.3rem;">
+                <span>● &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ●</span>
+                <span>● &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ●</span>
+                <span>● &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ●</span>
+                <span>● &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ●</span>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:8px; font-size:1.15rem; color:#1e293b;">
+                <span style="border:1.5px solid #0f172a; padding:3px 14px; border-radius:8px;">İ</span>
+                <span style="border:1.5px solid #0f172a; padding:3px 14px; border-radius:8px;">TÜ</span>
+                <span style="border:1.5px solid #0f172a; padding:3px 14px; border-radius:8px;">BE</span>
+                <span style="border:1.5px solid #0f172a; padding:3px 14px; border-radius:8px;">SE</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="sheet-footer">
+            <div>🌟 Aferin! Öğretmen / Veli Notu: <span class="sheet-stars-rating">⭐⭐⭐⭐⭐</span></div>
+            <div>Sayfa 5 / 6</div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             SAYFA 6: DEDEKTİF, HECE & BAŞARI BELGESİ
+             ========================================== -->
+        <div class="print-sheet" id="print-sheet-6">
+          <button class="btn-page-print-corner no-print" onclick="printSingleWorksheet(6)">🖨️ Bu Sayfayı Yazdır</button>
+          
+          <div class="sheet-top-header">
+            <div class="sheet-title-box">
+              <h3>🏆 6. ADIM: DEDEKTİF & BAŞARI BELGESİ</h3>
+              <p>Karşılaştırma, Hece Birleştirme ve Mezuniyet Belgesi</p>
+            </div>
+            <div class="sheet-student-info">
+              <div>Öğrenci Adı: <span class="line-fill"></span></div>
+              <div>Tarih: <span class="line-fill"></span></div>
+            </div>
+          </div>
+
+          <!-- Nokta Dedektifi Tablosu -->
+          <div style="border:2px solid #0f172a; border-radius:12px; padding:12px; background:white; margin-bottom:12px;">
+            <div class="tracing-section-title">🔍 1. ETKİNLİK: Nokta Dedektifi! Tabaklara Noktaları Sen Koy:</div>
+            <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; text-align:center;">
+              <div style="border:2px solid #059669; border-radius:10px; padding:8px; background:#ecfdf5;">
+                <div style="font-family:'Amiri'; font-size:3.2rem; line-height:1; color:#065f46;">ـ</div>
+                <div style="font-size:0.85rem; font-weight:900; color:#064e3b; margin-top:2px;">👇 ALTINA 1 Nokta Koy:<br><strong>BE (ب) Olsun!</strong></div>
+              </div>
+              <div style="border:2px solid #d97706; border-radius:10px; padding:8px; background:#fffbeb;">
+                <div style="font-family:'Amiri'; font-size:3.2rem; line-height:1; color:#92400e;">ـ</div>
+                <div style="font-size:0.85rem; font-weight:900; color:#78350f; margin-top:2px;">👆 ÜSTÜNE 2 Nokta Koy:<br><strong>TE (ت) Olsun!</strong></div>
+              </div>
+              <div style="border:2px solid #dc2626; border-radius:10px; padding:8px; background:#fef2f2;">
+                <div style="font-family:'Amiri'; font-size:3.2rem; line-height:1; color:#991b1b;">ـ</div>
+                <div style="font-size:0.85rem; font-weight:900; color:#7f1d1d; margin-top:2px;">⭐⭐⭐ ÜSTÜNE 3 Nokta Koy:<br><strong>PELTEK SE (ث) Olsun!</strong></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- İki Harfli Hece Birleştirme -->
+          <div style="border:2px solid #cbd5e1; border-radius:12px; padding:12px; background:#f8fafc; margin-bottom:12px;">
+            <div class="tracing-section-title">🤝 2. ETKİNLİK: Harfler El Ele Tutuşunca Hece Olur! Oku ve Üzerinden Geç:</div>
+            <div style="display:flex; justify-content:space-around; align-items:center; direction:rtl; text-align:center;">
+              <div style="background:white; border:2px solid #3b82f6; border-radius:10px; padding:6px 14px;">
+                <div style="font-family:'Amiri'; font-size:2.2rem; font-weight:bold; color:#1e40af;">بَ + تَ = بَتَ</div>
+                <div style="font-size:0.85rem; font-weight:900; color:#1e3a8a;">Be + Te = BETE</div>
+              </div>
+              <div style="background:white; border:2px solid #d97706; border-radius:10px; padding:6px 14px;">
+                <div style="font-family:'Amiri'; font-size:2.2rem; font-weight:bold; color:#d97706;">تَ + بَ = تَبَ</div>
+                <div style="font-size:0.85rem; font-weight:900; color:#78350f;">Te + Be = TEBE</div>
+              </div>
+              <div style="background:white; border:2px solid #059669; border-radius:10px; padding:6px 14px;">
+                <div style="font-family:'Amiri'; font-size:2.2rem; font-weight:bold; color:#059669;">أَ + بْ = أَبْ</div>
+                <div style="font-size:0.85rem; font-weight:900; color:#064e3b;">E + b = EB (Cezim)</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BAŞARI SERTİFİKASI -->
+          <div class="certificate-box">
+            <div style="font-size:2rem; line-height:1;">🎖️ 🏆 🌟</div>
+            <div style="font-size:1.35rem; font-weight:900; color:#1e293b; letter-spacing:1px; margin-top:2px;">
+              MİNİK KUR'AN TALEBESİ BAŞARI BELGESİ
+            </div>
+            <p style="font-size:0.92rem; font-weight:700; color:#334155; margin:6px auto; max-width:550px; line-height:1.4;">
+              Bu belge; Kur'an-ı Kerim'in ilk kapısı olan <strong>Elif (ا), Be (ب), Te (ت) ve Peltek Se (ث)</strong> harflerini, harekelerini ve hecelerini üstün başarıyla öğrenen sevgili öğrencimiz:<br>
+              <strong style="font-size:1.15rem; color:#1e40af; border-bottom:2px dashed #1e40af; display:inline-block; min-width:240px; margin-top:6px;">......................................................................</strong><br>
+              için sevgi ve gururla takdim edilmiştir.
+            </p>
+            <div style="display:flex; justify-content:space-around; align-items:center; margin-top:10px; font-size:0.85rem; font-weight:800; color:#475569;">
+              <div>Öğretmen / Veli İmzası: <span class="line-fill"></span></div>
+              <div>Tarih: <span class="line-fill"></span></div>
+            </div>
+            <div style="margin-top:6px; font-size:1.1rem; color:#f59e0b; letter-spacing:4px;">⭐⭐⭐⭐⭐</div>
+          </div>
+
+          <div class="sheet-footer">
+            <div>🎓 Tebrikler, İlk 4 Harfi Bitirdin!</div>
+            <div>Sayfa 6 / 6</div>
+          </div>
+        </div>
+
+      
+    </div>
+  </main>
+
+  <script>
+    function printAllWorksheets() {
+      document.body.classList.remove('print-single-mode');
+      window.print();
+    }
+
+    function printSingleWorksheet(pageIndex) {
+      document.body.classList.add('print-single-mode');
+      document.querySelectorAll('.print-sheet').forEach((sheet, idx) => {
+        if (idx + 1 === pageIndex) {
+          sheet.classList.add('sheet-active-print');
+        } else {
+          sheet.classList.remove('sheet-active-print');
+        }
+      });
+
+      window.print();
+
+      setTimeout(() => {
+        document.body.classList.remove('print-single-mode');
+        document.querySelectorAll('.print-sheet').forEach(s => s.classList.remove('sheet-active-print'));
+      }, 1000);
+    }
+  </script>
+</body>
+</html>

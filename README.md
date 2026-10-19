@@ -30,6 +30,16 @@ Bu proje; Kur'an-ı Kerim elifbasının ilk harfleri olan **Elif (ا)**, **Be (�
    - 🎡 **Şans Çarkı:** Çarkıfelek ile rastgele harf tekrarı.
    - 🎹 **Dokun-Dinle Ses Tahtası:** Özgürce keşfetmek için büyük renkli piyano tuşları.
 
+6. **🖨️ Sayfa Sayfa Yazdırılabilir Çalışma Defteri (A4 Baskı):**
+   - Okuma-yazma bilmeyen minik çocuklar için 6 sayfalık A4 formatında hazır baskı seti.
+   - İster tüm kitapçığı tek tıkla basın, ister her harfi adım adım ayrı ayrı yazdırın (`yazdir.html` veya `oyunlar.html` Sekme 8).
+   - Sayfa 1: Elif (ا) Harfi Boyama, Kesik Çizgili Yazma ve Harekeler.
+   - Sayfa 2: Be (ب) Harfi Boyama, Altında Tek Nokta Çizimi ve Alıştırmalar.
+   - Sayfa 3: Te (ت) Harfi Boyama, Üstünde 2 Göz Çizimi ve Gülen Yüz Etkinliği.
+   - Sayfa 4: Peltek Se (ث) Harfi Boyama ve Üstünde 3 Kar Tanesi Çizimi.
+   - Sayfa 5: Harekeler Treni Tablosu ve Kalemle Çizgi Eşleştirme Alıştırması.
+   - Sayfa 6: Nokta Dedektifi, İki Harfli Hece Birleştirme ve Minik Talebe Başarı Sertifikası!
+
 ## 🚀 Nasıl Çalıştırılır?
 
 Herhangi bir kurulum gerektirmez:
