@@ -1822,7 +1822,458 @@
         border-color: #000 !important;
       }
     }
-  </style>
+  
+    /* --- 28 Harf ve Ders Adımları İçin Modern Stiller --- */
+    .level-toggle-container {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .level-toggle-btn {
+      padding: 12px 26px;
+      border-radius: 50px;
+      border: 2px solid #e2e8f0;
+      background: white;
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .level-toggle-btn:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .level-toggle-btn.active {
+      background: linear-gradient(135deg, var(--primary), var(--purple));
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 6px 18px rgba(67, 97, 238, 0.35);
+      transform: scale(1.02);
+    }
+
+    .filter-chips-container {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .filter-chip {
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1.5px solid #cbd5e1;
+      background: #f8fafc;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #475569;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-chip:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+    .filter-chip.active {
+      background: var(--primary-dark);
+      color: white;
+      border-color: var(--primary-dark);
+      box-shadow: 0 2px 8px rgba(58, 12, 163, 0.25);
+    }
+
+    .all-letters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+      margin-bottom: 35px;
+    }
+
+    .letter-card-compact {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px 16px;
+      box-shadow: var(--shadow);
+      border: 2px solid transparent;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: all 0.25s;
+    }
+    .letter-card-compact::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: var(--card-color, var(--primary));
+    }
+    .letter-card-compact:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--card-color, var(--primary));
+    }
+
+    .letter-card-compact .card-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 0.72rem;
+      background: #f1f5f9;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-weight: 800;
+      color: var(--text-muted);
+    }
+
+    .letter-card-compact .card-tag {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 0.72rem;
+      background: #eff6ff;
+      color: #1d4ed8;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-weight: 800;
+    }
+
+    .letter-card-compact .arabic-display {
+      font-family: 'Amiri', serif;
+      font-size: 4.2rem;
+      line-height: 1.1;
+      margin: 12px 0 6px 0;
+      color: #0f172a;
+      transition: transform 0.2s;
+    }
+    .letter-card-compact:hover .arabic-display {
+      transform: scale(1.18);
+      color: var(--card-color, var(--primary));
+    }
+
+    .letter-card-compact .name-title {
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+
+    .letter-card-compact .sound-sub {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--card-color, var(--primary));
+      margin-bottom: 8px;
+    }
+
+    .letter-card-compact .mahrec-box {
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      color: #475569;
+      font-weight: 600;
+      margin-bottom: 12px;
+      width: 100%;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .compact-actions {
+      display: flex;
+      gap: 6px;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+    .compact-btn {
+      flex: 1;
+      min-width: 100px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .compact-btn-primary {
+      background: var(--card-color, var(--primary));
+      color: white;
+    }
+    .compact-btn-primary:hover {
+      filter: brightness(1.1);
+      transform: scale(1.02);
+    }
+    .compact-btn-hareke {
+      background: #eff6ff;
+      color: #1e40af;
+      border: 1.5px solid #bfdbfe;
+    }
+    .compact-btn-hareke:hover {
+      background: #dbeafe;
+    }
+
+    /* --- Müfredat & 28 Ders Adımı Stilleri --- */
+    .curriculum-section-header {
+      background: linear-gradient(135deg, #1e3a8a, #4338ca);
+      color: white;
+      border-radius: var(--radius);
+      padding: 30px 24px;
+      text-align: center;
+      margin-bottom: 25px;
+      box-shadow: var(--shadow-lg);
+    }
+    .curriculum-section-header h2 {
+      font-size: 2rem;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+    .curriculum-section-header p {
+      font-size: 1.05rem;
+      opacity: 0.92;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .curriculum-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .lesson-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 22px 20px;
+      box-shadow: var(--shadow);
+      border: 2px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.25s;
+      position: relative;
+    }
+    .lesson-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary);
+    }
+
+    .lesson-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    .lesson-step-badge {
+      background: linear-gradient(135deg, var(--primary), var(--purple));
+      color: white;
+      font-size: 0.85rem;
+      font-weight: 900;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+    .lesson-cat-badge {
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 12px;
+      background: #f1f5f9;
+      color: #475569;
+    }
+
+    .lesson-title {
+      font-size: 1.28rem;
+      font-weight: 900;
+      color: #0f172a;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+
+    .lesson-desc {
+      font-size: 0.92rem;
+      color: #475569;
+      line-height: 1.45;
+      margin-bottom: 18px;
+      flex-grow: 1;
+    }
+
+    .lesson-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .btn-lesson-preview {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 2px solid #e2e8f0;
+      background: white;
+      font-weight: 800;
+      font-size: 0.88rem;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-lesson-preview:hover {
+      background: #eff6ff;
+      border-color: #3b82f6;
+      color: #1d4ed8;
+    }
+    .btn-lesson-open {
+      flex: 1.3;
+      padding: 10px 16px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg, #10b981, #059669);
+      font-weight: 900;
+      font-size: 0.88rem;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+    .btn-lesson-open:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+    }
+
+    /* Modal Stili */
+    .lesson-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .lesson-modal-overlay.active {
+      display: flex;
+    }
+    .lesson-modal-content {
+      background: white;
+      width: 100%;
+      max-width: 900px;
+      height: 85vh;
+      border-radius: 24px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: modalSlideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes modalSlideUp {
+      from { transform: translateY(40px) scale(0.96); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    .lesson-modal-header {
+      padding: 16px 24px;
+      background: #f8fafc;
+      border-bottom: 2px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .lesson-modal-title {
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .lesson-modal-close {
+      background: #e2e8f0;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .lesson-modal-close:hover {
+      background: #cbd5e1;
+      transform: scale(1.1);
+    }
+    .lesson-modal-body {
+      flex-grow: 1;
+      position: relative;
+    }
+    .lesson-modal-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .lesson-modal-footer {
+      padding: 12px 24px;
+      background: #f8fafc;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Oyun Seviye Barı */
+    .game-level-bar {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .game-level-btn {
+      padding: 8px 18px;
+      border-radius: 20px;
+      border: 2px solid #e2e8f0;
+      background: white;
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .game-level-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
+    }
+
+</style>
 </head>
 <body>
 
@@ -1849,21 +2300,23 @@
         <span id="streakCount">0</span> Seri
       </div>
       <button class="btn-sound-toggle" id="btnSoundToggle" title="Oyun Efekt Seslerini Aç/Kapat">🔊</button>
-      <button class="stat-badge" style="border:none; cursor:pointer; background:#eff6ff; color:#1e40af; font-weight:800;" onclick="openPrintTab()" title="Yazdırılabilir Çalışma Sayfalarını Aç">🖨️ Yazdır</button>
-      <a href="elifba.htm" style="text-decoration:none;" class="stat-badge" title="Tüm Elifba Derslerine Dön">🏠 Dersler</a>
+      <button class="stat-badge" style="border:none; cursor:pointer; background:#ecfdf5; color:#065f46; font-weight:800;" onclick="openLessonsTab()" title="28 Ders Adımını İncele">🎓 28 Ders</button>
+      <button class="stat-badge" style="border:none; cursor:pointer; background:#eff6ff; color:#1e40af; font-weight:800;" onclick="openPrintTab()" title="Yazdırılabilir Çalışma Sayfalarını Aç">🖨️ Yazdır (A4)</button>
+      <a href="elifba.htm" style="text-decoration:none;" class="stat-badge" title="Tüm Elifba Derslerine Dön">🏠 Ana Sayfa</a>
     </div>
   </header>
 
-  <!-- Sekmeler -->
+  <!-- Sekmeler (28 Harf + 28 Ders Adımı Tam Set) -->
   <nav class="tabs-nav">
-    <button class="tab-btn active" data-tab="tab-letters">📖 1. Harfleri Keşfet</button>
-    <button class="tab-btn" data-tab="tab-reading">📚 2. Okuma & Karaoke Takip</button>
+    <button class="tab-btn active" data-tab="tab-letters">📖 1. Harfleri Keşfet (28 Harf)</button>
+    <button class="tab-btn" data-tab="tab-reading">📚 2. Canlı Okuma Stüdyosu</button>
     <button class="tab-btn" data-tab="tab-quiz">🎯 3. Sesi Dinle Harfi Bul</button>
     <button class="tab-btn" data-tab="tab-dots">🔍 4. Nokta Avcısı</button>
     <button class="tab-btn" data-tab="tab-balloons">🎈 5. Balon Patlatmaca</button>
     <button class="tab-btn" data-tab="tab-memory">🃏 6. Hafıza Kartları</button>
     <button class="tab-btn" data-tab="tab-wheel">🎡 7. Şans Çarkı</button>
-    <button class="tab-btn" data-tab="tab-print" style="background:#fef2f2; border:2px solid #fecaca; color:#991b1b;">🖨️ 8. Sayfa Sayfa Yazdır</button>
+    <button class="tab-btn" data-tab="tab-lessons" style="background:#f0fdf4; border:2px solid #86efac; color:#15803d; font-weight:900;">🎓 8. 28 Ders Adımı (Tüm Müfredat)</button>
+    <button class="tab-btn" data-tab="tab-print" style="background:#fef2f2; border:2px solid #fecaca; color:#991b1b;">🖨️ 9. Sayfa Sayfa Yazdır</button>
   </nav>
 
   <!-- Ana İçerik -->
@@ -1872,11 +2325,37 @@
     <!-- SEKME 1: HARFLERİ KEŞFET & SESLER -->
     <section id="tab-letters" class="view-section active">
       <div class="section-header">
-        <h2>🌟 4 Arkadaş Harfimizi Tanıyalım!</h2>
-        <p>Kartların üzerine veya "Dinle" düğmelerine tıklayarak orijinal telaffuzları dinleyin. Farkları keşfedin!</p>
+        <h2>🌟 Kur'an Harflerini Keşfedelim!</h2>
+        <p>İster başlangıç olarak ilk 4 harfe odaklanın, ister 28 harfin tamamını orijinal sesleriyle keşfedin!</p>
       </div>
 
-      <div class="letters-grid">
+      <!-- Seviye Seçim Barı -->
+      <div class="level-toggle-container">
+        <button class="level-toggle-btn active" id="btnLetterLevelFirst4" onclick="switchLetterViewLevel('first4')">
+          🎯 Seviye 1: İlk 4 Harf (Elif, Be, Te, Se)
+        </button>
+        <button class="level-toggle-btn" id="btnLetterLevelAll" onclick="switchLetterViewLevel('all')">
+          🌟 Seviye 2: Tüm Alfabe (28 Harfin Tamamı)
+        </button>
+      </div>
+
+      <!-- Seviye 2 Filtre Çipleri (Tüm Harfler İçin) -->
+      <div id="allLettersFilters" class="filter-chips-container" style="display: none;">
+        <button class="filter-chip active" onclick="filterAlphabetGrid('all', this)">🌈 Tümü (29 Kart)</button>
+        <button class="filter-chip" onclick="filterAlphabetGrid('tabak', this)">🥣 Tabak Harfleri (ب ت ث)</button>
+        <button class="filter-chip" onclick="filterAlphabetGrid('noktali', this)">🐪 Karnında/Tepesinde Noktalı (ج خ ذ ز ش ض ظ غ ف ق ن ي)</button>
+        <button class="filter-chip" onclick="filterAlphabetGrid('peltek', this)">🌸 Peltek Harfler (ث ذ ظ)</button>
+        <button class="filter-chip" onclick="filterAlphabetGrid('bogaz', this)">🗣️ Boğaz Harfleri (ء ه ع ح غ خ)</button>
+        <button class="filter-chip" onclick="filterAlphabetGrid('kalin', this)">🦁 Kalın Harfler (خ ص ض ط ظ غ ق)</button>
+        <button class="filter-chip" onclick="filterAlphabetGrid('noktasiz', this)">✨ Noktasız Harfler</button>
+      </div>
+
+      <!-- 28 Harfin Tamamı Dinamik Grid (Seviye 2) -->
+      <div id="allLettersGridContainer" class="all-letters-grid" style="display: none;">
+        <!-- JavaScript ile dinamik olarak doldurulacak -->
+      </div>
+
+      <div class="letters-grid" id="first4LettersGridContainer">
         <!-- ELİF -->
         <div class="letter-card" style="--card-color: #2563eb;" onclick="playAudioFile('dosyalar/1.mp3', this)">
           <div class="card-badge">1. Harf</div>
@@ -2604,7 +3083,36 @@
     </section>
 
   
-    <!-- SEKME 8: ADIM ADIM YAZDIRILABİLİR ÇALIŞMA SAYFALARI (A4 BASKI) -->
+
+    <!-- SEKME 8: TÜM 28 DERS ADIMI (MÜFREDAT GEZGİNİ & NAMAZ DUALARI) -->
+    <section id="tab-lessons" class="view-section">
+      <div class="curriculum-section-header">
+        <h2>🎓 Kur'an-ı Kerim Elifbası: 28 Adımlık Tam Müfredat</h2>
+        <p>
+          Harflerden başlayıp harekeler, cezm, med, şedde, tenvin kuralları ve namaz dualarına kadar 28 adımın tamamı sesli ve açıklamalı olarak elinizin altında!
+        </p>
+      </div>
+
+      <!-- Müfredat Kategori Filtreleri -->
+      <div class="filter-chips-container">
+        <button class="filter-chip active" onclick="filterLessonsGrid('all', this)">🌟 Tüm Adımlar (28 Ders + 8 Dua)</button>
+        <button class="filter-chip" onclick="filterLessonsGrid('hareke', this)">🟢 1. Harfler & Harekeler (Ders 1-8)</button>
+        <button class="filter-chip" onclick="filterLessonsGrid('cezm', this)">🔵 2. Cezm & Kelimeler (Ders 9-11)</button>
+        <button class="filter-chip" onclick="filterLessonsGrid('med', this)">🟣 3. Med (Uzatma) Harfleri (Ders 12-16)</button>
+        <button class="filter-chip" onclick="filterLessonsGrid('sedde', this)">🔴 4. Şedde (Ders 17-19)</button>
+        <button class="filter-chip" onclick="filterLessonsGrid('tenvin', this)">🟠 5. Tenvinler (Ders 20-22)</button>
+        <button class="filter-chip" onclick="filterLessonsGrid('tecvid', this)">🟤 6. İleri Tecvid Kuralları (Ders 23-28)</button>
+        <button class="filter-chip" onclick="filterLessonsGrid('dua', this)">🤲 7. Namaz Duaları (8 Dua)</button>
+      </div>
+
+      <!-- 28 Ders Kartları Izgarası -->
+      <div class="curriculum-grid" id="curriculumCardsGrid">
+        <!-- JavaScript ile dinamik olarak doldurulacak -->
+      </div>
+    </section>
+
+
+    <!-- SEKME 9: ADIM ADIM YAZDIRILABİLİR ÇALIŞMA SAYFALARI (A4 BASKI) -->
     <section id="tab-print" class="view-section">
       <div class="section-header no-print">
         <h2>🖨️ Sayfa Sayfa Yazdırılabilir Çalışma Sayfaları</h2>
@@ -3180,7 +3688,37 @@
       </div>
     </section>
 
-  </main>
+  
+  <!-- İNTERAKTİF DERS İNCELEME MODALI -->
+  <div id="lessonModal" class="lesson-modal-overlay">
+    <div class="lesson-modal-content">
+      <div class="lesson-modal-header">
+        <div class="lesson-modal-title" id="modalLessonTitle">
+          <span>📖</span> <span id="modalLessonHeading">Ders Adı</span>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <a id="modalExternalLink" href="#" target="_blank" style="text-decoration:none; background:#eff6ff; color:#1d4ed8; padding:6px 14px; border-radius:12px; font-size:0.85rem; font-weight:800;">
+            ↗️ Tam Ekranda Aç
+          </a>
+          <button class="lesson-modal-close" onclick="closeLessonModal()" title="Kapat">✕</button>
+        </div>
+      </div>
+      <div class="lesson-modal-body">
+        <iframe id="modalLessonIframe" class="lesson-modal-iframe" src="about:blank"></iframe>
+      </div>
+      <div class="lesson-modal-footer">
+        <button class="compact-btn compact-btn-hareke" id="btnPrevLesson" onclick="navigateLesson(-1)" style="font-size:0.9rem; padding:8px 18px;">
+          ⬅️ Önceki Ders
+        </button>
+        <span id="modalLessonCounter" style="font-weight:800; color:#64748b; font-size:0.9rem;">Ders 1 / 28</span>
+        <button class="compact-btn compact-btn-primary" id="btnNextLesson" onclick="navigateLesson(1)" style="font-size:0.9rem; padding:8px 18px;">
+          Sonraki Ders ➡️
+        </button>
+      </div>
+    </div>
+  </div>
+
+</main>
 
   <!-- TEBRİK MODALI -->
   <div class="modal-backdrop" id="celebrationModal">
@@ -3198,6 +3736,435 @@
     /* =========================================================
        ELİF - BE - TE - SE VERİ TABANI & SES DOSYALARI
        ========================================================= */
+
+    /* =========================================================
+       TÜM 28/29 ARAPÇA HARF VERİ TABANI & SESLERİ
+       ========================================================= */
+    const ALL_28_LETTERS = [
+      {
+        num: 1, id: 'elif', arabic: 'ا', name: 'Elif', color: '#2563eb', dots: '0',
+        dotDesc: 'Noktasız dimdik çizgi', category: 'bogaz noktasiz', catLabel: 'Boğaz (Noktasız)',
+        mahrec: 'Boğaz sonu', sound: 'dosyalar/1.mp3', harekeSound: 'dosyalar/1-1.mp3',
+        soundGuide: '"E" sesi gibidir', mnemonic: 'Dimdik bir ağaç gibi, hiç noktası yok!'
+      },
+      {
+        num: 2, id: 'be', arabic: 'ب', name: 'Be', color: '#059669', dots: '1-bottom',
+        dotDesc: 'Altta 1 Nokta', category: 'tabak noktali', catLabel: 'Tabak Harfi (Noktalı)',
+        mahrec: 'Alt ve üst dudak', sound: 'dosyalar/2.mp3', harekeSound: 'dosyalar/2-1.mp3',
+        soundGuide: '"B" sesi gibidir', mnemonic: 'Tabağın ALTI-nda 1 elma var! (Bebeğin beşiği altta)'
+      },
+      {
+        num: 3, id: 'te', arabic: 'ت', name: 'Te', color: '#d97706', dots: '2-top',
+        dotDesc: 'Üstte 2 Nokta', category: 'tabak noktali', catLabel: 'Tabak Harfi (Noktalı)',
+        mahrec: 'Dil ucu ile ön diş dipleri', sound: 'dosyalar/3.mp3', harekeSound: 'dosyalar/3-1.mp3',
+        soundGuide: '"T" sesi gibidir', mnemonic: 'Gülen yüzün ÜSTÜ-nde 2 gözü var!'
+      },
+      {
+        num: 4, id: 'se', arabic: 'ث', name: 'Peltek Se', color: '#dc2626', dots: '3-top',
+        dotDesc: 'Üstte 3 Nokta', category: 'peltek tabak noktali', catLabel: 'Peltek Harf (3 Noktalı)',
+        mahrec: 'Dil ucu ön diş uçları', sound: 'dosyalar/4.mp3', harekeSound: 'dosyalar/4-1.mp3',
+        soundGuide: 'Peltek "S" sesi', mnemonic: 'ÜSTÜ-nde 3 kar tanesi! Dilin ucunu dişlerinin arasına al.'
+      },
+      {
+        num: 5, id: 'cim', arabic: 'ج', name: 'Cim', color: '#7c3aed', dots: '1-belly',
+        dotDesc: 'Karnında 1 Nokta', category: 'noktali', catLabel: 'Karnında Noktalı Harf',
+        mahrec: 'Dil ortası ve üst damak ortası', sound: 'dosyalar/5.mp3', harekeSound: 'dosyalar/5-1.mp3',
+        soundGuide: '"C" sesi gibidir', mnemonic: 'Tombul bir göbek, tam KARNINDA 1 elma var!'
+      },
+      {
+        num: 6, id: 'ha', arabic: 'ح', name: 'Ha', color: '#0891b2', dots: '0',
+        dotDesc: 'Noktasız Boğaz Harfi', category: 'bogaz noktasiz', catLabel: 'Boğaz Harfi (Noktasız)',
+        mahrec: 'Boğaz ortası', sound: 'dosyalar/6.mp3', harekeSound: 'dosyalar/6-1.mp3',
+        soundGuide: 'Temiz, boğazdan "H" sesi', mnemonic: 'Hiç noktası yok, tertemiz bir nefes gibi boğazdan çıkar.'
+      },
+      {
+        num: 7, id: 'hi', arabic: 'خ', name: 'Hı', color: '#b45309', dots: '1-top',
+        dotDesc: 'Tepesinde 1 Nokta', category: 'kalin bogaz noktali', catLabel: 'Kalın Harf (Hırıltılı)',
+        mahrec: 'Boğazın ağza en yakın kısmı', sound: 'dosyalar/7.mp3', harekeSound: 'dosyalar/7-1.mp3',
+        soundGuide: 'Hırıltılı kalın "H" sesi', mnemonic: 'TEPESİNDE 1 nokta var! Boğazdan hafif hırıltıyla çıkar.'
+      },
+      {
+        num: 8, id: 'dal', arabic: 'د', name: 'Dal', color: '#4338ca', dots: '0',
+        dotDesc: 'Noktasız Kavis', category: 'noktasiz', catLabel: 'Kavisli Harf (Noktasız)',
+        mahrec: 'Dil ucu ile üst ön diş dipleri', sound: 'dosyalar/8.mp3', harekeSound: 'dosyalar/8-1.mp3',
+        soundGuide: '"D" sesi gibidir', mnemonic: 'Oturmuş bir kedi gibi bükülmüş, hiç noktası yok!'
+      },
+      {
+        num: 9, id: 'zel', arabic: 'ذ', name: 'Peltek Zel', color: '#be185d', dots: '1-top',
+        dotDesc: 'Tepesinde 1 Nokta', category: 'peltek noktali', catLabel: 'Peltek Harf (Noktalı)',
+        mahrec: 'Dil ucu ön diş uçları', sound: 'dosyalar/9.mp3', harekeSound: 'dosyalar/9-1.mp3',
+        soundGuide: 'Peltek "Z" sesi', mnemonic: 'Dal harfinin ikizi, ama TEPESİNDE 1 taç noktası var!'
+      },
+      {
+        num: 10, id: 'ra', arabic: 'ر', name: 'Ra', color: '#15803d', dots: '0',
+        dotDesc: 'Noktasız Kaydırak', category: 'noktasiz', catLabel: 'Kaydırak Harfi (Noktasız)',
+        mahrec: 'Dil ucu ve üst damak', sound: 'dosyalar/10.mp3', harekeSound: 'dosyalar/10-1.mp3',
+        soundGuide: '"R" sesi gibidir (Kalın/İnce)', mnemonic: 'Kaydıraktan kayan çocuk gibi aşağı süzülür, noktasızdır.'
+      },
+      {
+        num: 11, id: 'ze', arabic: 'ز', name: 'Ze', color: '#9333ea', dots: '1-top',
+        dotDesc: 'Tepesinde 1 Nokta', category: 'noktali', catLabel: 'Keskin Harf (Noktalı)',
+        mahrec: 'Dil ucu alt ön dişler', sound: 'dosyalar/11.mp3', harekeSound: 'dosyalar/11-1.mp3',
+        soundGuide: 'Keskin arı gibi "Z" sesi', mnemonic: 'Ra harfine benzer ama TEPESİNDE 1 vızıldayan nokta var!'
+      },
+      {
+        num: 12, id: 'sin', arabic: 'س', name: 'Sin', color: '#0284c7', dots: '0',
+        dotDesc: 'Noktasız 3 Dişli', category: 'noktasiz disli', catLabel: '3 Dişli Harf (Noktasız)',
+        mahrec: 'Dil ucu alt ön dişler', sound: 'dosyalar/12.mp3', harekeSound: 'dosyalar/12-1.mp3',
+        soundGuide: 'Keskin "S" sesi', mnemonic: '3 tane sivri dişi olan bir çatal gibi, noktasızdır.'
+      },
+      {
+        num: 13, id: 'sin2', arabic: 'ش', name: 'Şın', color: '#c026d3', dots: '3-top',
+        dotDesc: 'Üstte 3 Nokta', category: 'noktali disli', catLabel: '3 Dişli Harf (3 Noktalı)',
+        mahrec: 'Dil ortası ve üst damak', sound: 'dosyalar/13.mp3', harekeSound: 'dosyalar/13-1.mp3',
+        soundGuide: '"Ş" sesi gibidir', mnemonic: '3 dişi var ve ÜSTÜNDE 3 parlak yıldız noktası var!'
+      },
+      {
+        num: 14, id: 'sad', arabic: 'ص', name: 'Sad', color: '#b91c1c', dots: '0',
+        dotDesc: 'Noktasız Kalın Harf', category: 'kalin noktasiz', catLabel: 'Kalın Harf (Noktasız)',
+        mahrec: 'Dil ucu alt ön dişler', sound: 'dosyalar/14.mp3', harekeSound: 'dosyalar/14-1.mp3',
+        soundGuide: 'Kalın, tok "S" (Sa) sesi', mnemonic: 'Tombul bir halkası ve kancası olan güçlü kalın harf.'
+      },
+      {
+        num: 15, id: 'dad', arabic: 'ض', name: 'Dad', color: '#d97706', dots: '1-top',
+        dotDesc: 'Tepesinde 1 Nokta', category: 'kalin noktali', catLabel: 'Kalın Harf (Noktalı)',
+        mahrec: 'Dil kenarı ile üst azı dişler', sound: 'dosyalar/15.mp3', harekeSound: 'dosyalar/15-1.mp3',
+        soundGuide: 'Kalın, dolgun "D/Z" sesi', mnemonic: 'Sad harfinin ikizi, TEPESİNDE 1 nokta taşır.'
+      },
+      {
+        num: 16, id: 'ti', arabic: 'ط', name: 'Tı', color: '#4d7c0f', dots: '0',
+        dotDesc: 'Çubuklu Noktasız', category: 'kalin cubuklu', catLabel: 'Kalın Harf (Çubuklu)',
+        mahrec: 'Dil ucu üst ön diş dipleri', sound: 'dosyalar/16.mp3', harekeSound: 'dosyalar/16-1.mp3',
+        soundGuide: 'Kalın, güçlü "T" (Ta) sesi', mnemonic: 'Yukarı uzanan bir anten çubuğu var, hiç noktası yoktur.'
+      },
+      {
+        num: 17, id: 'zi', arabic: 'ظ', name: 'Zı', color: '#9f1239', dots: '1-top',
+        dotDesc: 'Çubuklu ve 1 Nokta', category: 'kalin peltek cubuklu', catLabel: 'Kalın Peltek Harf',
+        mahrec: 'Dil ucu ön diş uçları', sound: 'dosyalar/17.mp3', harekeSound: 'dosyalar/17-1.mp3',
+        soundGuide: 'Kalın, peltek "Z" sesi', mnemonic: 'Tı harfinin tepesine 1 nokta konulmuş halidir, peltektir.'
+      },
+      {
+        num: 18, id: 'ayn', arabic: 'ع', name: 'Ayn', color: '#1e40af', dots: '0',
+        dotDesc: 'Noktasız Boğaz Harfi', category: 'bogaz noktasiz', catLabel: 'Boğaz Harfi (Noktasız)',
+        mahrec: 'Boğaz ortası', sound: 'dosyalar/18.mp3', harekeSound: 'dosyalar/18-1.mp3',
+        soundGuide: 'Boğazı sıkarak "Ayn" sesi', mnemonic: 'Küçük yarım ay ve büyük göbek, boğazın ortasından seslenir.'
+      },
+      {
+        num: 19, id: 'gayn', arabic: 'غ', name: 'Gayn', color: '#6b21a8', dots: '1-top',
+        dotDesc: 'Tepesinde 1 Nokta', category: 'kalin bogaz noktali', catLabel: 'Kalın Boğaz Harfi (Ğa)',
+        mahrec: 'Boğazın ağza en yakın kısmı', sound: 'dosyalar/19.mp3', harekeSound: 'dosyalar/19-1.mp3',
+        soundGuide: 'Kalın boğaz "Ğ" (Ğa) sesi', mnemonic: 'Ayn harfine benzer, TEPESİNDE 1 nokta taşır.'
+      },
+      {
+        num: 20, id: 'fe', arabic: 'ف', name: 'Fe', color: '#047857', dots: '1-top',
+        dotDesc: 'Tepesinde 1 Nokta', category: 'noktali', catLabel: 'Dudak Harfi (Noktalı)',
+        mahrec: 'Üst ön dişler ve alt dudak içi', sound: 'dosyalar/20.mp3', harekeSound: 'dosyalar/20-1.mp3',
+        soundGuide: '"F" sesi gibidir', mnemonic: 'Yuvarlak başlı, yayvan gövdeli ve TEPESİNDE 1 nokta var!'
+      },
+      {
+        num: 21, id: 'kaf', arabic: 'ق', name: 'Kaf', color: '#a21caf', dots: '2-top',
+        dotDesc: 'Üstte 2 Nokta', category: 'kalin noktali', catLabel: 'Kalın Harf (2 Noktalı)',
+        mahrec: 'Dil kökü ve üst damak', sound: 'dosyalar/21.mp3', harekeSound: 'dosyalar/21-1.mp3',
+        soundGuide: 'Kalın, tok boğaz "K" sesi', mnemonic: 'Çanak gibi derin, ÜSTÜNDE 2 nokta parlar!'
+      },
+      {
+        num: 22, id: 'kef', arabic: 'ك', name: 'Kef', color: '#2563eb', dots: 'hemze',
+        dotDesc: 'İçinde küçük işaret', category: 'noktasiz', catLabel: 'İnce Harf (Kef)',
+        mahrec: 'Dil kökü ve küçük dil önü', sound: 'dosyalar/22.mp3', harekeSound: 'dosyalar/22-1.mp3',
+        soundGuide: 'İnce, tatlı "K" sesi', mnemonic: 'Kutunun içine hediye konulmuş gibi, zarif ve incedir.'
+      },
+      {
+        num: 23, id: 'lam', arabic: 'ل', name: 'Lam', color: '#0d9488', dots: '0',
+        dotDesc: 'Noktasız Kanca', category: 'noktasiz', catLabel: 'Kanca Harfi (Noktasız)',
+        mahrec: 'Dilin iki kenarı ve ucu', sound: 'dosyalar/23.mp3', harekeSound: 'dosyalar/23-1.mp3',
+        soundGuide: '"L" sesi gibidir', mnemonic: 'Dedemizin bastonu veya ters şemsiye sapı gibi kancalıdır!'
+      },
+      {
+        num: 24, id: 'mim', arabic: 'م', name: 'Mim', color: '#e11d48', dots: '0',
+        dotDesc: 'Noktasız Yuvarlak', category: 'noktasiz', catLabel: 'Dudak Harfi (Noktasız)',
+        mahrec: 'Alt ve üst dudak', sound: 'dosyalar/24.mp3', harekeSound: 'dosyalar/24-1.mp3',
+        soundGuide: '"M" sesi gibidir', mnemonic: 'Küçük yuvarlak bir baş ve aşağı sarkan sevimli kuyruk.'
+      },
+      {
+        num: 25, id: 'nun', arabic: 'ن', name: 'Nun', color: '#d97706', dots: '1-top',
+        dotDesc: 'Çanakta 1 Nokta', category: 'noktali', catLabel: 'Çanak Harfi (Noktalı)',
+        mahrec: 'Dil ucu ön diş etleri', sound: 'dosyalar/25.mp3', harekeSound: 'dosyalar/25-1.mp3',
+        soundGuide: '"N" sesi gibidir', mnemonic: 'Derin bir çorba çanağı, tam İÇİNDE 1 tane lezzetli köfte var!'
+      },
+      {
+        num: 26, id: 'vav', arabic: 'و', name: 'Vav', color: '#4f46e5', dots: '0',
+        dotDesc: 'Noktasız Kuyruklu', category: 'noktasiz', catLabel: 'Dudak Harfi (Noktasız)',
+        mahrec: 'Dudaklar ileri uzatılır', sound: 'dosyalar/26.mp3', harekeSound: 'dosyalar/26-1.mp3',
+        soundGuide: '"V / U / O" sesi', mnemonic: 'Secdeye varmış insan gibi başı önde, yuvarlak ve noktasız.'
+      },
+      {
+        num: 27, id: 'he', arabic: 'ه', name: 'He', color: '#059669', dots: '0',
+        dotDesc: 'Noktasız Çember', category: 'bogaz noktasiz', catLabel: 'Boğaz Harfi (Noktasız)',
+        mahrec: 'Boğaz sonu', sound: 'dosyalar/27.mp3', harekeSound: 'dosyalar/27-1.mp3',
+        soundGuide: 'İnce fısıltılı "H" sesi', mnemonic: 'İki gözlü bir kurdele veya yuvarlak bir halka gibi hafiftir.'
+      },
+      {
+        num: 28, id: 'lamelif', arabic: 'لا', name: 'Lamelif', color: '#7c3aed', dots: '0',
+        dotDesc: 'Birleşik Harf', category: 'birlesik noktasiz', catLabel: 'Birleşik Harf (Lâm + Elif)',
+        mahrec: 'Lâm ve Elif harfleri', sound: 'dosyalar/28.mp3', harekeSound: 'dosyalar/28-1.mp3',
+        soundGuide: '"Lâ" sesi (Uzatmalı)', mnemonic: 'Lâm (ل) ile Elif (ا) el ele tutuşup sarılmış iki can dost!'
+      },
+      {
+        num: 29, id: 'ye', arabic: 'ي', name: 'Ye', color: '#0284c7', dots: '2-bottom',
+        dotDesc: 'Altta 2 Nokta', category: 'noktali', catLabel: 'Ördek Harfi (2 Noktalı)',
+        mahrec: 'Dil ortası ve üst damak', sound: 'dosyalar/29.mp3', harekeSound: 'dosyalar/28-1.mp3',
+        soundGuide: '"Y" sesi gibidir', mnemonic: 'Gölde yüzen kuğu / ördek gibi, SUYUN ALTINDA 2 nokta yüzüyor!'
+      }
+    ];
+
+    /* =========================================================
+       28 DERS ADIMI VE 8 NAMAZ DUASI VERİ TABANI
+       ========================================================= */
+    const ALL_LESSONS_DATA = [
+      { step: 1, cat: 'hareke', title: 'Ders 1: Harfler', desc: '28 Arapça harfin temel şekilleri, telaffuzları ve çıkış yerleri (mahreçleri).', file: 'cuz1.html', audio: 'dosyalar/1.mp3', badge: 'Temel Alfabe' },
+      { step: 2, cat: 'hareke', title: 'Ders 2: Harekelerle Okunuş', desc: 'Harflerin üstün (e-a), esre (i-ı) ve ötre (ü-u) sesleriyle birlikte okunuşu.', file: 'cuz2.html', audio: 'dosyalar/1-1.mp3', badge: 'Üstün-Esre-Ötre' },
+      { step: 3, cat: 'hareke', title: 'Ders 3: Harflerin Halleri', desc: 'Harflerin kelime başında, ortasında ve sonunda yazılış formları.', file: 'cuz3.html', audio: 'dosyalar/1-1.mp3', badge: 'Başta-Ortada-Sonda' },
+      { step: 4, cat: 'hareke', title: 'Ders 4: Üstün 1', desc: 'Üstün harekesiyle temel tek heceli harf okunuşları.', file: 'cuz4.html', audio: 'dosyalar/1-2.mp3', badge: 'Üstün Kuralı' },
+      { step: 5, cat: 'hareke', title: 'Ders 5: Üstün 2', desc: '3 harfli kelimelerde üstün harekesi ile hece ve kelime birleştirme.', file: 'cuz5.html', audio: 'dosyalar/1-4.mp3', badge: '3 Harfli Kelimeler' },
+      { step: 6, cat: 'hareke', title: 'Ders 6: Üstün 3', desc: 'Farklı harflerin üstün ile hızlı ve akıcı okuma çalışmaları.', file: 'cuz6.html', audio: 'dosyalar/1-3.mp3', badge: 'Akıcı Okuma' },
+      { step: 7, cat: 'hareke', title: 'Ders 7: Esre', desc: 'Harfin altına konulan ve ince harfleri (i), kalın harfleri (ı-i) okutan esre.', file: 'cuz7.html', audio: 'dosyalar/1-5.mp3', badge: 'Esre Kuralı' },
+      { step: 8, cat: 'hareke', title: 'Ders 8: Ötre', desc: 'Harfin üstüne konulan ve ince harfleri (ü), kalın harfleri (u) okutan ötre.', file: 'cuz8.html', audio: 'dosyalar/1-6.mp3', badge: 'Ötre Kuralı' },
+      { step: 9, cat: 'cezm', title: 'Ders 9: Cezimli Okunuş', desc: 'Harfi harekesiz ve bir önceki harfe tutturarak okutan yuvarlak cezm kuralı.', file: 'cuz9.html', audio: 'dosyalar/1-7.mp3', badge: 'Cezm Giriş' },
+      { step: 10, cat: 'cezm', title: 'Ders 10: Cezm', desc: 'İki ve üç harfli kelimelerde cezimli hece okuma alıştırmaları.', file: 'cuz10.html', audio: 'dosyalar/1-8.mp3', badge: 'Cezm Alıştırma' },
+      { step: 11, cat: 'cezm', title: 'Ders 11: Alıştırmalar 1', desc: 'Harekeler ve cezm kurallarını birleştiren zengin kelime okuma tablosu.', file: 'cuz11.html', audio: 'dosyalar/1-9.mp3', badge: 'Pekiştirme 1' },
+      { step: 12, cat: 'med', title: 'Ders 12: Uzatılarak Okunuş', desc: 'Med (uzatma) harflerine giriş: Harfleri bir elif miktarı uzatarak okuma.', file: 'cuz12.html', audio: 'dosyalar/1-10.mp3', badge: 'Med Kuralları' },
+      { step: 13, cat: 'med', title: 'Ders 13: Med Harfi Elif', desc: 'Üstünlü harften sonra gelen hareketsiz elif (ا) ile harfi uzatma.', file: 'cuz13.html', audio: 'dosyalar/1-11.mp3', badge: 'Med: Elif (ا)' },
+      { step: 14, cat: 'med', title: 'Ders 14: Med Harfi Yâ', desc: 'Esreli harften sonra gelen hareketsiz yâ (ي) ile ince harfleri uzatma.', file: 'cuz14.html', audio: 'dosyalar/1-12.mp3', badge: 'Med: Yâ (ي)' },
+      { step: 15, cat: 'med', title: 'Ders 15: Med Harfi Vâv', desc: 'Ötreli harften sonra gelen hareketsiz vâv (و) ile harfleri uzatma.', file: 'cuz15.html', audio: 'dosyalar/1-13.mp3', badge: 'Med: Vâv (و)' },
+      { step: 16, cat: 'med', title: 'Ders 16: Alıştırmalar 2', desc: 'Tüm med harflerini (Elif, Vav, Ya) içeren kapsamlı kelime okumaları.', file: 'cuz16.html', audio: 'dosyalar/1-14.mp3', badge: 'Pekiştirme 2' },
+      { step: 17, cat: 'sedde', title: 'Ders 17: Şeddeli Okunuş', desc: 'Bir harfi iki kere (önce cezimli, sonra harekeli) okutan üç dişli şedde.', file: 'cuz17.html', audio: 'dosyalar/1-15.mp3', badge: 'Şedde Kuralı' },
+      { step: 18, cat: 'sedde', title: 'Ders 18: Şedde', desc: 'Şeddeli kelimelerde vurgu ve tutturma alıştırmaları.', file: 'cuz18.html', audio: 'dosyalar/1-16.mp3', badge: 'Şedde Alıştırma' },
+      { step: 19, cat: 'sedde', title: 'Ders 19: Alıştırmalar 3', desc: 'Şedde, cezm ve med kurallarının birlikte yer aldığı kelime ve ibareler.', file: 'cuz19.html', audio: 'dosyalar/1-17.mp3', badge: 'Pekiştirme 3' },
+      { step: 20, cat: 'tenvin', title: 'Ders 20: İki Üstün', desc: 'Kelime sonuna (en / an) sesi veren çift üstün tenvin harekesi.', file: 'cuz20.html', audio: 'dosyalar/1-19.mp3', badge: 'Tenvin (En/An)' },
+      { step: 21, cat: 'tenvin', title: 'Ders 21: İki Esre', desc: 'Kelime sonuna (in) sesi veren çift esre tenvin harekesi.', file: 'cuz21.html', audio: 'dosyalar/1-18.mp3', badge: 'Tenvin (İn)' },
+      { step: 22, cat: 'tenvin', title: 'Ders 22: İki Ötre', desc: 'Kelime sonuna (ün / un) sesi veren çift ötre tenvin harekesi.', file: 'cuz22.html', audio: 'dosyalar/1-20.mp3', badge: 'Tenvin (Ün/Un)' },
+      { step: 23, cat: 'tecvid', title: 'Ders 23: Çeker', desc: 'Harflerin üstüne veya altına konulan dik uzatma çizgisi (gizli med).', file: 'cuz23.html', audio: 'dosyalar/1-21.mp3', badge: 'Dik Çeker' },
+      { step: 24, cat: 'tecvid', title: 'Ders 24: Vav/Ya Şeklindeki Elif', desc: 'Yazıda vâv veya yâ şeklinde olup elif gibi uzatılarak okunan harfler.', file: 'cuz24.html', audio: 'dosyalar/1-22.mp3', badge: 'Elif-i Maksura' },
+      { step: 25, cat: 'tecvid', title: 'Ders 25: Zamir', desc: 'Kelime sonundaki zamir harfinin uzatılma veya kısa geçilme kuralları.', file: 'cuz25.html', audio: 'dosyalar/1-23.mp3', badge: 'Zamir (Hû/Hî)' },
+      { step: 26, cat: 'tecvid', title: 'Ders 26: El Takısı', desc: 'Elif-Lâm takısının okunduğu Kamerî ve şeddelendiği Şemsî harfler.', file: 'cuz26.html', audio: 'dosyalar/1-24.mp3', badge: 'Kamerî & Şemsî' },
+      { step: 27, cat: 'tecvid', title: 'Ders 27: Okunmayan Elif & Lâm', desc: 'Yazıda bulunup telaffuz edilmeyen vasıl elifleri ve kuralları.', file: 'cuz27.html', audio: 'dosyalar/1-25.mp3', badge: 'Vasıl Kuralları' },
+      { step: 28, cat: 'tecvid', title: 'Ders 28: Lafzatullah & Mukattaa', desc: 'Allah lafzının kalın/ince okunuşu ve sure başlarındaki şifreli harfler.', file: 'cuz28.html', audio: 'dosyalar/1-26.mp3', badge: 'Lafzatullah' },
+      // Namaz Duaları
+      { step: 29, cat: 'dua', isDua: true, title: 'Sübhaneke Duası', desc: 'Namazların ilk rekatında iftitah tekbirinden sonra okunan bereketli dua.', file: 'dua1.html', audio: 'dosyalar/subhaneke_1.mp3', badge: 'Namaz Duası 1' },
+      { step: 30, cat: 'dua', isDua: true, title: 'Et-Tahiyyâtü Duası', desc: 'Namazlarda oturuş (oturus) kısımlarında okunan mirac duası.', file: 'dua2.html', audio: 'dosyalar/tahiyyat_1.mp3', badge: 'Namaz Duası 2' },
+      { step: 31, cat: 'dua', isDua: true, title: 'Allahümme Salli', desc: 'Son oturuşta Peygamber Efendimiz (s.a.v) icin salat okunan dua.', file: 'dua3.html', audio: 'dosyalar/salli_1.mp3', badge: 'Namaz Duası 3' },
+      { step: 32, cat: 'dua', isDua: true, title: 'Allahümme Bârik', desc: 'Son oturuşta bereket niyazıyla okunan salavat duası.', file: 'dua4.html', audio: 'dosyalar/barik_1.mp3', badge: 'Namaz Duası 4' },
+      { step: 33, cat: 'dua', isDua: true, title: 'Rabbenâ Âtinâ', desc: 'Dünya ve ahiret iyiliği, güzelliği ve korunma duası.', file: 'dua5.html', audio: 'dosyalar/atina_1.mp3', badge: 'Namaz Duası 5' },
+      { step: 34, cat: 'dua', isDua: true, title: 'Rabbenâğfirlî', desc: 'Kendimiz, anne-babamız ve tüm müminler için bağışlanma duası.', file: 'dua6.html', audio: 'dosyalar/rabbenagfirli.mp3', badge: 'Namaz Duası 6' },
+      { step: 35, cat: 'dua', isDua: true, title: 'Kunut Duası 1', desc: 'Yatsı namazının ardından kılınan vitir namazının 3. rekatında okunan dua.', file: 'dua7.html', audio: 'dosyalar/kunut_1_1.mp3', badge: 'Vitir Duası 1' },
+      { step: 36, cat: 'dua', isDua: true, title: 'Kunut Duası 2', desc: 'Vitir namazında okunan ikinci ve hidayet dolu Kunut duası.', file: 'dua8.html', audio: 'dosyalar/kunut_2_1.mp3', badge: 'Vitir Duası 2' }
+    ];
+
+    let currentLetterViewLevel = 'first4';
+    let quizGameLevel = 'first4';
+    let memoryGameLevel = 'first4';
+    let balloonGameLevel = 'first4';
+    let wheelGameLevel = 'first4';
+    let currentLessonModalIndex = 0;
+
+    /* Harf Seviye Değişimi */
+    function switchLetterViewLevel(level) {
+      currentLetterViewLevel = level;
+      const btn4 = document.getElementById('btnLetterLevelFirst4');
+      const btnAll = document.getElementById('btnLetterLevelAll');
+      const grid4 = document.getElementById('first4LettersGridContainer');
+      const filtersAll = document.getElementById('allLettersFilters');
+      const gridAll = document.getElementById('allLettersGridContainer');
+
+      if (level === 'all') {
+        btn4.classList.remove('active');
+        btnAll.classList.add('active');
+        grid4.style.display = 'none';
+        filtersAll.style.display = 'flex';
+        gridAll.style.display = 'grid';
+        renderAllLettersGrid('all');
+      } else {
+        btnAll.classList.remove('active');
+        btn4.classList.add('active');
+        grid4.style.display = 'grid';
+        filtersAll.style.display = 'none';
+        gridAll.style.display = 'none';
+      }
+    }
+
+    /* Tüm Harfler Izgarasını Çizme */
+    function renderAllLettersGrid(filterCat) {
+      const container = document.getElementById('allLettersGridContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      let list = ALL_28_LETTERS;
+      if (filterCat && filterCat !== 'all') {
+        if (filterCat === 'tabak') {
+          list = list.filter(l => l.category.includes('tabak'));
+        } else if (filterCat === 'noktali') {
+          list = list.filter(l => l.category.includes('noktali'));
+        } else if (filterCat === 'peltek') {
+          list = list.filter(l => l.category.includes('peltek'));
+        } else if (filterCat === 'bogaz') {
+          list = list.filter(l => l.category.includes('bogaz'));
+        } else if (filterCat === 'kalin') {
+          list = list.filter(l => l.category.includes('kalin'));
+        } else if (filterCat === 'noktasiz') {
+          list = list.filter(l => l.category.includes('noktasiz'));
+        }
+      }
+
+      list.forEach(letter => {
+        const card = document.createElement('div');
+        card.className = 'letter-card-compact';
+        card.style.setProperty('--card-color', letter.color);
+        card.onclick = () => playAudioFile(letter.sound, card);
+
+        card.innerHTML = `
+          <div class="card-badge">${letter.num}. Harf</div>
+          <div class="card-tag">${letter.catLabel}</div>
+          <div class="arabic-display">${letter.arabic}</div>
+          <div class="name-title">${letter.name}</div>
+          <div class="sound-sub">${letter.soundGuide}</div>
+          <div class="mahrec-box">💡 <strong>İpucu:</strong> ${letter.mnemonic}</div>
+          <div class="compact-actions" onclick="event.stopPropagation()">
+            <button class="compact-btn compact-btn-primary" onclick="playAudioFile('${letter.sound}', this)">
+              🔊 Adını Dinle
+            </button>
+            <button class="compact-btn compact-btn-hareke" onclick="playAudioFile('${letter.harekeSound}', this)">
+              ✨ Harekeli Dinle
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterAlphabetGrid(cat, btn) {
+      document.querySelectorAll('#allLettersFilters .filter-chip').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      renderAllLettersGrid(cat);
+    }
+
+    /* 28 Ders Adımı Müfredatını Çizme */
+    function renderCurriculumCards(cat) {
+      const container = document.getElementById('curriculumCardsGrid');
+      if (!container) return;
+      container.innerHTML = '';
+
+      let list = ALL_LESSONS_DATA;
+      if (cat && cat !== 'all') {
+        list = list.filter(l => l.cat === cat);
+      }
+
+      list.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'lesson-card';
+
+        const stepText = item.isDua ? `🤲 Dua ${item.step - 28}` : `Adım ${item.step}`;
+
+        card.innerHTML = `
+          <div class="lesson-card-top">
+            <span class="lesson-step-badge">${stepText}</span>
+            <span class="lesson-cat-badge">${item.badge}</span>
+          </div>
+          <div class="lesson-title">${item.title}</div>
+          <div class="lesson-desc">${item.desc}</div>
+          <div class="lesson-actions">
+            <button class="btn-lesson-preview" onclick="playAudioFile('${item.audio}', this)" title="Örnek Sesi Dinle">
+              🔊 Dinle
+            </button>
+            <button class="btn-lesson-open" onclick="openLessonModal(${item.step - 1})" title="Dersi İnteraktif Çalış">
+              🚀 Dersi Aç
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterLessonsGrid(cat, btn) {
+      document.querySelectorAll('#tab-lessons .filter-chip').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      renderCurriculumCards(cat);
+    }
+
+    /* İnteraktif Ders Modalı Açma */
+    function openLessonModal(lessonIndex) {
+      if (lessonIndex < 0) lessonIndex = 0;
+      if (lessonIndex >= ALL_LESSONS_DATA.length) lessonIndex = ALL_LESSONS_DATA.length - 1;
+      currentLessonModalIndex = lessonIndex;
+
+      const item = ALL_LESSONS_DATA[lessonIndex];
+      const modal = document.getElementById('lessonModal');
+      const heading = document.getElementById('modalLessonHeading');
+      const iframe = document.getElementById('modalLessonIframe');
+      const counter = document.getElementById('modalLessonCounter');
+      const extLink = document.getElementById('modalExternalLink');
+
+      heading.textContent = item.title;
+      counter.textContent = `${item.isDua ? 'Namaz Duası' : 'Ders Adımı'} ${lessonIndex + 1} / ${ALL_LESSONS_DATA.length}`;
+      iframe.src = 'dosyalar/' + item.file;
+      extLink.href = 'dosyalar/' + item.file;
+
+      modal.classList.add('active');
+    }
+
+    function closeLessonModal() {
+      const modal = document.getElementById('lessonModal');
+      const iframe = document.getElementById('modalLessonIframe');
+      iframe.src = 'about:blank';
+      modal.classList.remove('active');
+    }
+
+    function navigateLesson(dir) {
+      openLessonModal(currentLessonModalIndex + dir);
+    }
+
+    function openLessonsTab() {
+      const btn = document.querySelector('[data-tab="tab-lessons"]');
+      if (btn) btn.click();
+    }
+
+    function openLettersTab() {
+      const btn = document.querySelector('[data-tab="tab-letters"]');
+      if (btn) {
+        btn.click();
+        switchLetterViewLevel('all');
+      }
+    }
+
+    /* Oyun Seviye Ayarlayıcıları */
+    function setQuizGameLevel(lvl) {
+      quizGameLevel = lvl;
+      document.getElementById('quizBtnLevelFirst4').classList.toggle('active', lvl === 'first4');
+      document.getElementById('quizBtnLevelAll').classList.toggle('active', lvl === 'all');
+      initQuiz();
+    }
+
+    function setMemoryGameLevel(lvl) {
+      memoryGameLevel = lvl;
+      document.getElementById('memBtnLevelFirst4').classList.toggle('active', lvl === 'first4');
+      document.getElementById('memBtnLevelAll').classList.toggle('active', lvl === 'all');
+      resetMemoryGame();
+    }
+
+    function setBalloonGameLevel(lvl) {
+      balloonGameLevel = lvl;
+      document.getElementById('balBtnLevelFirst4').classList.toggle('active', lvl === 'first4');
+      document.getElementById('balBtnLevelAll').classList.toggle('active', lvl === 'all');
+      pickNewBalloonTarget();
+    }
+
+    function setWheelGameLevel(lvl) {
+      wheelGameLevel = lvl;
+      document.getElementById('wheelBtnLevelFirst4').classList.toggle('active', lvl === 'first4');
+      document.getElementById('wheelBtnLevelAll').classList.toggle('active', lvl === 'all');
+      drawWheel();
+    }
+
+
     const LETTERS_DATA = [
       {
         id: 'elif',
@@ -3502,6 +4469,8 @@
           initMemoryGame();
         } else if (tabId === 'tab-wheel') {
           drawWheel();
+        } else if (tabId === 'tab-lessons') {
+          renderCurriculumCards('all');
         }
       });
     });
@@ -4396,6 +5365,18 @@
       drawWheel();
       initQuiz();
       initKaraokeStudio();
+
+      // Sekme yönlendirme kontrolü
+      const savedTab = localStorage.getItem('gotoTab');
+      if (savedTab) {
+        localStorage.removeItem('gotoTab');
+        const targetBtn = document.querySelector(`[data-tab="${savedTab}"]`);
+        if (targetBtn) targetBtn.click();
+      } else if (window.location.hash) {
+        const hashTab = window.location.hash.replace('#', '');
+        const targetBtn = document.querySelector(`[data-tab="${hashTab}"]`);
+        if (targetBtn) targetBtn.click();
+      }
     };
   </script>
 </body>
