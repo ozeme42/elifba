@@ -1,96 +1,117 @@
 /* =========================================================
-   28 ADIM İNTERAKTİF OKUMA ALIŞTIRMALARI & BAŞARI SİSTEMİ
-   Tüm 28 Ders Adımı & 8 Namaz Duası İçin Uçtan Uca Takip
+   ÖĞRENCİ ÇALIŞTIRMA, TEST ETME VE ADIM GEÇİRME MOTORU
+   - Kademeli kilit açma (Gated Progression)
+   - 1. Aşama: Çalışma & Antrenman (Training Workout)
+   - 2. Aşama: Öğrendin mi? Adım Geçme Testi (Audio Exam)
+   - Yalnızca sınavı başarıyla geçen öğrenci bir sonraki adıma geçirilir!
    ========================================================= */
 
 (function() {
-  const STORAGE_KEY = 'elifba_reading_mastery_v2';
+  const STORAGE_KEY = 'elifba_gated_progression_v3';
 
   // Durum Değişkenleri
-  let readItemsSet = new Set();
+  let highestUnlockedStep = 1;
+  let passedStepsSet = new Set();
+  let trainedItemsSet = new Set();
+  let teacherModeUnlocked = false;
   let currentActiveStep = 1;
+  let currentPhase = 'train'; // 'train' veya 'exam'
   let currentDrillFilter = 'all'; // 'all', 'unread', 'read'
-  let currentViewMode = 'grid'; // 'grid', 'flashcard', 'autoloop', 'quiz'
   let currentFlashcardIndex = 0;
-  let autoLoopActive = false;
-  let autoLoopTimer = null;
-  let autoLoopSpeed = 2200; // ms bekleme
   let activeAudioObj = null;
 
-  // 1. Veri Yükleme & Kaydetme
+  // Sınav (Exam) Durum Değişkenleri
+  let examQueue = [];
+  let currentExamIndex = 0;
+  let examCorrectCount = 0;
+  let examTargetItem = null;
+  let examCanAnswer = true;
+
+  // 1. LocalStorage Yükleme & Kaydetme
   function loadStoredProgress() {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const data = JSON.parse(saved);
-        if (Array.isArray(data.readItems)) {
-          readItemsSet = new Set(data.readItems);
+        if (typeof data.highestUnlockedStep === 'number') {
+          highestUnlockedStep = data.highestUnlockedStep;
         }
-        if (data.lastActiveStep && typeof data.lastActiveStep === 'number') {
+        if (Array.isArray(data.passedSteps)) {
+          passedStepsSet = new Set(data.passedSteps);
+        }
+        if (Array.isArray(data.trainedItems)) {
+          trainedItemsSet = new Set(data.trainedItems);
+        }
+        if (typeof data.teacherModeUnlocked === 'boolean') {
+          teacherModeUnlocked = data.teacherModeUnlocked;
+        }
+        if (typeof data.lastActiveStep === 'number' && isStepUnlocked(data.lastActiveStep)) {
           currentActiveStep = data.lastActiveStep;
+        } else {
+          currentActiveStep = highestUnlockedStep;
         }
       }
     } catch (e) {
-      console.warn('LocalStorage progress load error:', e);
+      console.warn('Progression load error:', e);
     }
   }
 
   function saveProgress() {
     try {
       const data = {
-        readItems: Array.from(readItemsSet),
+        highestUnlockedStep: highestUnlockedStep,
+        passedSteps: Array.from(passedStepsSet),
+        trainedItems: Array.from(trainedItemsSet),
+        teacherModeUnlocked: teacherModeUnlocked,
         lastActiveStep: currentActiveStep,
         timestamp: Date.now()
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     } catch (e) {
-      console.warn('LocalStorage progress save error:', e);
+      console.warn('Progression save error:', e);
     }
   }
 
-  // 2. İstatistik Hesaplayıcıları
+  // 2. Kilit Kontrolleri
+  function isStepUnlocked(stepNumber) {
+    if (teacherModeUnlocked) return true;
+    if (stepNumber === 1) return true;
+    if (stepNumber <= highestUnlockedStep) return true;
+    if (passedStepsSet.has(stepNumber - 1)) return true;
+    return false;
+  }
+
+  function isStepPassed(stepNumber) {
+    return passedStepsSet.has(stepNumber);
+  }
+
   function getStepData(stepNumber) {
     if (!window.CURRICULUM_STEPS) return null;
     return window.CURRICULUM_STEPS.find(s => s.step === stepNumber) || window.CURRICULUM_STEPS[0];
   }
 
-  function getStepCompletedCount(stepNumber) {
-    const step = getStepData(stepNumber);
-    if (!step || !step.items) return 0;
-    let count = 0;
-    step.items.forEach(it => {
-      if (readItemsSet.has(it.id)) count++;
-    });
-    return count;
-  }
+  function showLockedToast(stepNumber) {
+    let toast = document.getElementById('lockedToastNotification');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'lockedToastNotification';
+      toast.className = 'locked-toast';
+      document.body.appendChild(toast);
+    }
+    toast.innerHTML = `🔒 <strong>Adım ${stepNumber} Kilitli!</strong> Önce Adım ${stepNumber - 1}'i çalışıp testini geçmelisin!`;
+    toast.classList.add('show');
+    playBoingSound();
 
-  function isStepMastered(stepNumber) {
-    const step = getStepData(stepNumber);
-    if (!step || !step.items || step.items.length === 0) return false;
-    return getStepCompletedCount(stepNumber) === step.items.length;
-  }
-
-  function getTotalItemsCount() {
-    if (!window.CURRICULUM_STEPS) return 777;
-    return window.CURRICULUM_STEPS.reduce((acc, s) => acc + (s.itemCount || 0), 0);
-  }
-
-  function getTotalReadItemsCount() {
-    return readItemsSet.size;
-  }
-
-  function getTotalMasteredStepsCount() {
-    if (!window.CURRICULUM_STEPS) return 0;
-    return window.CURRICULUM_STEPS.filter(s => isStepMastered(s.step)).length;
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 2800);
   }
 
   // 3. Genel Başarı Paneli Render
   function renderMasteryDashboard() {
-    const totalItems = getTotalItemsCount();
-    const readCount = getTotalReadItemsCount();
     const totalSteps = window.CURRICULUM_STEPS ? window.CURRICULUM_STEPS.length : 36;
-    const masteredSteps = getTotalMasteredStepsCount();
-    const percentage = totalItems > 0 ? Math.round((readCount / totalItems) * 100) : 0;
+    const passedCount = passedStepsSet.size;
+    const percentage = Math.round((passedCount / totalSteps) * 100);
 
     const elRead = document.getElementById('totalReadCount');
     const elSteps = document.getElementById('totalMasteredSteps');
@@ -99,19 +120,25 @@
     const elProgressBar = document.getElementById('overallProgressBar');
     const elResumeStep = document.getElementById('resumeStepLabel');
 
-    if (elRead) elRead.textContent = `${readCount} / ${totalItems}`;
-    if (elSteps) elSteps.textContent = `${masteredSteps} / ${totalSteps}`;
-    if (elStars) elStars.textContent = `⭐ ${readCount * 10}`;
-    if (elPercentText) elPercentText.textContent = `%${percentage} Tamamlandı`;
+    if (elRead) elRead.textContent = `${trainedItemsSet.size} Kelime`;
+    if (elSteps) elSteps.textContent = `${passedCount} / ${totalSteps}`;
+    if (elStars) elStars.textContent = `⭐ ${passedCount * 50 + trainedItemsSet.size * 5}`;
+    if (elPercentText) elPercentText.textContent = `%${percentage} Tamamlandı (${passedCount} Adım Geçildi)`;
     if (elProgressBar) elProgressBar.style.width = `${percentage}%`;
 
     const activeStepData = getStepData(currentActiveStep);
     if (elResumeStep && activeStepData) {
       elResumeStep.textContent = activeStepData.shortTitle || `Adım ${currentActiveStep}`;
     }
+
+    const teacherBtn = document.getElementById('btnToggleTeacherMode');
+    if (teacherBtn) {
+      teacherBtn.textContent = teacherModeUnlocked ? '🔓 Veli Modu: Kilitler Açık' : '🔒 Kademeli Kilit Modu Aktif';
+      teacherBtn.style.color = teacherModeUnlocked ? '#10b981' : '#cbd5e1';
+    }
   }
 
-  // 4. Adım Seçici (Navigator) Render
+  // 4. Adım Seçici Haritası (Kilitli & Açık Adımlar)
   function renderStepNavigator(categoryFilter) {
     const container = document.getElementById('stepChipsContainer');
     if (!container || !window.CURRICULUM_STEPS) return;
@@ -123,36 +150,56 @@
     }
 
     list.forEach(step => {
-      const completed = getStepCompletedCount(step.step);
-      const total = step.itemCount || step.items.length;
-      const mastered = (total > 0 && completed === total);
+      const unlocked = isStepUnlocked(step.step);
+      const passed = isStepPassed(step.step);
       const active = (step.step === currentActiveStep);
 
       const card = document.createElement('div');
-      card.className = `step-chip-card ${active ? 'active' : ''} ${mastered ? 'mastered' : ''}`;
+      let statusClass = 'locked';
+      let badgeHtml = '<span class="badge-locked">🔒 Kilitli</span>';
+
+      if (passed) {
+        statusClass = 'passed';
+        badgeHtml = '<span class="badge-passed">👑 Geçildi</span>';
+      } else if (unlocked) {
+        statusClass = (active ? 'unlocked-current active' : 'unlocked');
+        badgeHtml = '<span class="badge-current">🟢 Açık</span>';
+      }
+
+      card.className = `step-chip-card ${statusClass} ${active ? 'active' : ''}`;
+
       card.onclick = () => {
+        if (!isStepUnlocked(step.step)) {
+          card.style.animation = 'shakeCard 0.4s ease-in-out';
+          setTimeout(() => { card.style.animation = ''; }, 400);
+          showLockedToast(step.step);
+          return;
+        }
         window.loadStepDrills(step.step);
       };
 
       const stepPrefix = step.isDua ? `Dua ${step.step - 28}` : `Adım ${step.step}`;
-      const statusIcon = mastered ? '👑 Tamam' : (completed > 0 ? `🔥 ${completed}/${total}` : `⚪ 0/${total}`);
+      const total = step.itemCount || step.items.length;
 
       card.innerHTML = `
         <div class="step-chip-header">
           <span class="step-chip-num">${stepPrefix}</span>
-          <span class="step-chip-badge">${statusIcon}</span>
+          ${badgeHtml}
         </div>
         <div class="step-chip-title" title="${step.title}">${step.shortTitle || step.title}</div>
-        <div class="step-chip-mini-bar">
-          <div class="step-chip-mini-fill" style="width: ${total > 0 ? Math.round((completed / total) * 100) : 0}%"></div>
-        </div>
+        <div style="font-size:0.75rem; color:#64748b; font-weight:700;">${total} Alıştırma</div>
       `;
       container.appendChild(card);
     });
   }
 
-  // 5. Aktif Adım Okuma Alıştırması Yükleme
+  // 5. Adım Yükleme (Çalışma Alanı)
   window.loadStepDrills = function(stepNumber) {
+    if (!isStepUnlocked(stepNumber)) {
+      showLockedToast(stepNumber);
+      return;
+    }
+
     currentActiveStep = stepNumber;
     saveProgress();
 
@@ -173,122 +220,110 @@
     if (elTitle) elTitle.textContent = step.title;
     if (elRule) elRule.textContent = step.desc;
 
-    updateActiveStepMasteryBar();
-    renderDrillItems();
+    // Fazı güncelle (Varsayılan: Çalışma)
+    window.switchStepPhase('train');
 
-    // Reset Flashcard & Loop
-    currentFlashcardIndex = 0;
-    stopStepAutoLoop();
-
-    // Navigator'ı güncelle
-    const activeChip = document.querySelector('.step-chip-card.active');
-    if (activeChip) activeChip.classList.remove('active');
+    updateActiveStepTrainingBar();
     renderStepNavigator(window.currentCurriculumCat || 'all');
     renderMasteryDashboard();
   };
 
-  function updateActiveStepMasteryBar() {
-    const step = getStepData(currentActiveStep);
-    if (!step) return;
+  // 6. Faz Değiştirici: 1. Çalışma & Antrenman vs 2. Sınav & Test
+  window.switchStepPhase = function(phase) {
+    currentPhase = phase;
 
-    const completed = getStepCompletedCount(step.step);
-    const total = step.itemCount || step.items.length;
-    const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
-    const mastered = (total > 0 && completed === total);
+    const btnTrain = document.getElementById('btnPhaseTrain');
+    const btnExam = document.getElementById('btnPhaseExam');
+    const trainArea = document.getElementById('trainingPhaseArea');
+    const examArea = document.getElementById('examPhaseArea');
+
+    if (btnTrain) btnTrain.classList.toggle('active', phase === 'train');
+    if (btnExam) {
+      btnExam.classList.toggle('active', phase === 'exam');
+      btnExam.classList.toggle('test-phase', phase === 'exam');
+    }
+
+    if (phase === 'train') {
+      if (trainArea) trainArea.style.display = 'block';
+      if (examArea) examArea.style.display = 'none';
+      renderDrillItems();
+    } else {
+      if (trainArea) trainArea.style.display = 'none';
+      if (examArea) examArea.style.display = 'block';
+      window.startStepExam();
+    }
+  };
+
+  function updateActiveStepTrainingBar() {
+    const step = getStepData(currentActiveStep);
+    if (!step || !step.items) return;
+
+    let trainedCount = 0;
+    step.items.forEach(it => {
+      if (trainedItemsSet.has(it.id)) trainedCount++;
+    });
+
+    const total = step.items.length;
+    const percent = Math.round((trainedCount / total) * 100);
+    const passed = isStepPassed(step.step);
 
     const elCount = document.getElementById('studioMasteryCount');
     const elFill = document.getElementById('studioMasteryFill');
     const elMsg = document.getElementById('studioMotivateMsg');
 
-    if (elCount) elCount.textContent = `${completed} / ${total} Kelime Başarıyla Okundu (%${percent})`;
+    if (elCount) elCount.textContent = `${trainedCount} / ${total} Kelime Çalışıldı (%${percent})`;
     if (elFill) elFill.style.width = `${percent}%`;
 
     if (elMsg) {
-      if (mastered) {
+      if (passed) {
         elMsg.className = 'mastery-motivate-msg complete';
-        elMsg.innerHTML = '🏆 <strong>MAŞALLAH!</strong> Bu adımdaki tüm kelimeleri eksiksiz okudun! Adım başarıyla tamamlandı 👑 ⭐⭐⭐';
+        elMsg.innerHTML = '👑 <strong>BU ADIM GEÇİLDİ!</strong> Sınavı başarıyla geçtin ve sonraki adımın kilidini açtın!';
+      } else if (trainedCount === total) {
+        elMsg.className = 'mastery-motivate-msg complete';
+        elMsg.innerHTML = '🎉 <strong>Tüm Kelimeleri Çalıştın!</strong> Şimdi aşağıdaki "Sınava Başla" butonuna bas ve adımı geç!';
       } else {
-        const remaining = total - completed;
         elMsg.className = 'mastery-motivate-msg incomplete';
-        elMsg.innerHTML = `⏳ <strong>Çalışmaya Devam!</strong> Bu adımı tamamlamak için kalan <strong>${remaining}</strong> kelimeyi de dinle, tekrar et ve "Ben Okudum"a bas!`;
+        elMsg.innerHTML = `🏋️ <strong>Öğrenciyi Çalıştırma:</strong> Kelimeleri dinle, tekrar et ve "Çalıştım"a bas. Ardından sınava girerek sonraki adımı aç!`;
       }
     }
   }
 
-  // 6. Okuma Maddeleri Grid Render
+  // 7. Çalışma Maddeleri Grid Render
   function renderDrillItems() {
     const grid = document.getElementById('drillItemsGrid');
     const fcView = document.getElementById('flashcardViewContainer');
-    const quizView = document.getElementById('stepQuizContainer');
-
     if (!grid) return;
 
-    if (currentViewMode === 'flashcard') {
+    if (currentDrillFilter === 'flashcard') {
       grid.style.display = 'none';
-      if (quizView) quizView.style.display = 'none';
       if (fcView) {
         fcView.style.display = 'flex';
         renderFlashcardView();
       }
       return;
-    } else if (currentViewMode === 'quiz') {
-      grid.style.display = 'none';
-      if (fcView) fcView.style.display = 'none';
-      if (quizView) {
-        quizView.style.display = 'block';
-        initStepQuiz();
-      }
-      return;
     }
 
-    // Grid Modu
     if (fcView) fcView.style.display = 'none';
-    if (quizView) quizView.style.display = 'none';
     grid.style.display = 'grid';
     grid.innerHTML = '';
 
     const step = getStepData(currentActiveStep);
     if (!step || !step.items) return;
 
-    let items = step.items;
-    if (currentDrillFilter === 'unread') {
-      items = items.filter(it => !readItemsSet.has(it.id));
-    } else if (currentDrillFilter === 'read') {
-      items = items.filter(it => readItemsSet.has(it.id));
-    }
-
-    if (items.length === 0) {
-      grid.innerHTML = `
-        <div style="grid-column: 1 / -1; text-align: center; padding: 40px 20px; background: #f8fafc; border-radius: 16px; border: 2px dashed #cbd5e1;">
-          <div style="font-size: 3rem; margin-bottom: 10px;">🌟</div>
-          <h3 style="color: #1e293b; font-weight: 900; margin-bottom: 6px;">
-            ${currentDrillFilter === 'unread' ? 'Tebrikler! Okunmamış kelime kalmadı!' : 'Henüz bu filtrede kelime yok.'}
-          </h3>
-          <p style="color: #64748b; font-weight: 700;">"Tümü" filtresini seçerek tüm kelimeleri görebilirsin.</p>
-          <button class="tool-btn active" onclick="window.filterDrillItems('all', this)" style="margin: 14px auto 0;">
-            🌈 Tüm Kelimeleri Göster
-          </button>
-        </div>
-      `;
-      return;
-    }
-
-    items.forEach(it => {
-      const isRead = readItemsSet.has(it.id);
+    step.items.forEach(it => {
+      const isTrained = trainedItemsSet.has(it.id);
       const card = document.createElement('div');
-      card.className = `drill-card ${isRead ? 'mastered' : ''}`;
+      card.className = `drill-card ${isTrained ? 'mastered' : ''}`;
       card.id = `card_${it.id}`;
 
-      // Kart tıklanınca sesi çal
-      card.onclick = (e) => {
-        // butonlara tıklandıysa event propagation durdurulmuş olacak
+      card.onclick = () => {
         window.playDrillAudio(it.audio, card);
       };
 
       card.innerHTML = `
         <div class="drill-card-top">
           <span class="drill-item-num">#${it.num}</span>
-          <span class="drill-status-tag" id="tag_${it.id}">${isRead ? '✅ Okundu ⭐' : '⚪ Bekliyor'}</span>
+          <span class="drill-status-tag">${isTrained ? '✓ Çalışıldı' : '⚪ Bekliyor'}</span>
         </div>
         <div class="drill-img-container" title="Dinlemek için tıkla">
           ${it.img ? `<img class="drill-img" src="${it.img}" alt="${it.alt || 'Kelime'}" loading="lazy" />` : `<div style="font-family:'Amiri'; font-size:3rem; color:#1e1b4b;">${it.alt}</div>`}
@@ -304,8 +339,8 @@
           <button class="btn-drill-listen" onclick="window.playDrillAudio('${it.audio}', this.closest('.drill-card'))" title="Sesi Dinle">
             🔊 Dinle
           </button>
-          <button class="btn-drill-confirm" id="btn_confirm_${it.id}" onclick="window.markItemAsRead('${it.id}', ${currentActiveStep}, this.closest('.drill-card'))">
-            ${isRead ? '✓ Okundu' : '🗣️ Okudum'}
+          <button class="btn-drill-confirm" onclick="window.markItemAsTrained('${it.id}', this.closest('.drill-card'))">
+            ${isTrained ? '✓ Tekrar Dinle' : '🗣️ Çalıştım'}
           </button>
         </div>
       `;
@@ -314,58 +349,23 @@
     });
   }
 
-  // 7. Kelimeyi Okundu Olarak İşaretleme & Başarı Tetikleme
-  window.markItemAsRead = function(itemId, stepNumber, cardElement) {
-    const alreadyRead = readItemsSet.has(itemId);
-    
-    // Her iki durumda da ses ve geri bildirim
-    if (!alreadyRead) {
-      readItemsSet.add(itemId);
-      saveProgress();
+  // 8. Kelimeyi Çalışıldı Olarak İşaretleme
+  window.markItemAsTrained = function(itemId, cardElement) {
+    trainedItemsSet.add(itemId);
+    saveProgress();
 
-      // Yıldız ve Efekt
-      if (typeof window.addStars === 'function') {
-        window.addStars(10);
-      }
-      playCheerChime();
-
-      // Kart Efekti
-      if (cardElement) {
-        cardElement.classList.add('mastered');
-        const tag = cardElement.querySelector('.drill-status-tag');
-        if (tag) tag.textContent = '✅ Okundu ⭐';
-        const btn = cardElement.querySelector('.btn-drill-confirm');
-        if (btn) btn.textContent = '✓ Okundu';
-
-        // Konfeti
-        if (typeof window.triggerConfetti === 'function') {
-          window.triggerConfetti();
-        }
-      }
-
-      // Bar & Dashboard Güncelle
-      updateActiveStepMasteryBar();
-      renderMasteryDashboard();
-      renderStepNavigator(window.currentCurriculumCat || 'all');
-
-      // ADIM TAMAMLANDI MI KONTROL ET!
-      const step = getStepData(stepNumber);
-      if (step && isStepMastered(stepNumber)) {
-        setTimeout(() => {
-          showStepMasteryCelebration(step);
-        }, 500);
-      }
-    } else {
-      // Zaten okundu, tekrar pekiştirildi
-      playCheerChime();
-      if (cardElement) {
-        cardElement.style.transform = 'scale(1.05)';
-        setTimeout(() => { cardElement.style.transform = ''; }, 200);
-      }
+    if (cardElement) {
+      cardElement.classList.add('mastered');
+      const tag = cardElement.querySelector('.drill-status-tag');
+      if (tag) tag.textContent = '✓ Çalışıldı';
     }
+
+    playCheerChime();
+    updateActiveStepTrainingBar();
+    renderMasteryDashboard();
   };
 
-  // 8. Ses Çalma
+  // 9. Sesi Çalma
   window.playDrillAudio = function(audioPath, cardElement) {
     if (!audioPath) return;
 
@@ -378,144 +378,14 @@
     if (cardElement) cardElement.classList.add('playing');
 
     activeAudioObj = new Audio(audioPath);
-    activeAudioObj.play().catch(e => {
-      console.log('Audio play error:', e);
-    });
+    activeAudioObj.play().catch(e => console.log('Audio error:', e));
 
     activeAudioObj.onended = () => {
       if (cardElement) cardElement.classList.remove('playing');
     };
   };
 
-  // 9. Neşeli Başarı Çanı (Web Audio Synthesizer)
-  function playCheerChime() {
-    try {
-      const ctx = window.getAudioContext ? window.getAudioContext() : new (window.AudioContext || window.webkitAudioContext)();
-      if (!ctx) return;
-      const now = ctx.currentTime;
-
-      // 3 tonlu melodik çan (C6 - E6 - G6)
-      const freqs = [1046.50, 1318.51, 1567.98];
-      freqs.forEach((freq, idx) => {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(freq, now + idx * 0.08);
-
-        gain.gain.setValueAtTime(0, now + idx * 0.08);
-        gain.gain.linearRampToValueAtTime(0.25, now + idx * 0.08 + 0.02);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.45);
-
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-
-        osc.start(now + idx * 0.08);
-        osc.stop(now + idx * 0.08 + 0.5);
-      });
-    } catch (e) {
-      // fallback
-    }
-  }
-
-  // 10. Triumphant Fanfare (Tören Müziği)
-  function playTriumphantFanfare() {
-    try {
-      const ctx = window.getAudioContext ? window.getAudioContext() : new (window.AudioContext || window.webkitAudioContext)();
-      if (!ctx) return;
-      const now = ctx.currentTime;
-
-      // Fanfare notaları: G4 -> C5 -> E5 -> G5
-      const notes = [
-        { f: 392.00, t: 0.0, d: 0.15 },
-        { f: 523.25, t: 0.16, d: 0.15 },
-        { f: 659.25, t: 0.32, d: 0.18 },
-        { f: 783.99, t: 0.50, d: 0.60 }
-      ];
-
-      notes.forEach(n => {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(n.f, now + n.t);
-
-        gain.gain.setValueAtTime(0, now + n.t);
-        gain.gain.linearRampToValueAtTime(0.3, now + n.t + 0.03);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + n.t + n.d);
-
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-
-        osc.start(now + n.t);
-        osc.stop(now + n.t + n.d + 0.05);
-      });
-    } catch (e) {
-      //
-    }
-  }
-
-  // 11. Grand Step Celebration Modal (Tüm Adım Başarı Töreni)
-  function showStepMasteryCelebration(step) {
-    playTriumphantFanfare();
-    if (typeof window.triggerConfetti === 'function') {
-      window.triggerConfetti();
-      setTimeout(window.triggerConfetti, 400);
-      setTimeout(window.triggerConfetti, 800);
-    }
-
-    const modal = document.getElementById('stepTrophyModal');
-    if (!modal) return;
-
-    const title = document.getElementById('trophyStepTitle');
-    const desc = document.getElementById('trophyStepDesc');
-    const btnNext = document.getElementById('btnTrophyNextStep');
-
-    const nextStepNum = step.step + 1;
-    const hasNext = window.CURRICULUM_STEPS && window.CURRICULUM_STEPS.some(s => s.step === nextStepNum);
-
-    if (title) title.textContent = `🎉 MAŞALLAH! ${step.title} Tamamlandı!`;
-    if (desc) desc.textContent = `Bu adımdaki ${step.itemCount || step.items.length} okuma alıştırmasının hepsini başarıyla tamamlayıp Altın Taç 👑 kazandın!`;
-
-    if (btnNext) {
-      if (hasNext) {
-        btnNext.style.display = 'inline-flex';
-        btnNext.textContent = `🚀 Sonraki Adıma Geç (Adım ${nextStepNum})`;
-        btnNext.onclick = () => {
-          closeStepCelebrationModal();
-          window.loadStepDrills(nextStepNum);
-          document.getElementById('activeStepStudio').scrollIntoView({ behavior: 'smooth' });
-        };
-      } else {
-        btnNext.textContent = `🎓 Tüm Müfredatı Bitirdin! 🏆`;
-        btnNext.onclick = () => { closeStepCelebrationModal(); };
-      }
-    }
-
-    modal.classList.add('active');
-  }
-
-  window.closeStepCelebrationModal = function() {
-    const modal = document.getElementById('stepTrophyModal');
-    if (modal) modal.classList.remove('active');
-  };
-
-  // 12. Filtre ve Görünüm Kontrolleri
-  window.filterDrillItems = function(filterType, btn) {
-    currentDrillFilter = filterType;
-    document.querySelectorAll('#drillFilterGroup .tool-btn').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-    renderDrillItems();
-  };
-
-  window.switchDrillViewMode = function(mode) {
-    currentViewMode = mode;
-    document.querySelectorAll('#drillModeGroup .tool-btn').forEach(b => b.classList.remove('active'));
-    const activeBtn = document.querySelector(`[data-drill-mode="${mode}"]`);
-    if (activeBtn) activeBtn.classList.add('active');
-
-    renderDrillItems();
-  };
-
-  // 13. Flashcard (Büyük Odak Modu) Render
+  // 10. Flashcard Modu
   function renderFlashcardView() {
     const fcView = document.getElementById('flashcardViewContainer');
     if (!fcView) return;
@@ -527,32 +397,32 @@
     if (currentFlashcardIndex >= step.items.length) currentFlashcardIndex = step.items.length - 1;
 
     const it = step.items[currentFlashcardIndex];
-    const isRead = readItemsSet.has(it.id);
+    const isTrained = trainedItemsSet.has(it.id);
 
     fcView.innerHTML = `
       <div class="flashcard-wrapper">
-        <div class="big-flashcard ${isRead ? 'mastered' : ''}" id="bigFlashcardCard">
+        <div class="big-flashcard ${isTrained ? 'mastered' : ''}" id="bigFlashcardCard">
           <div class="fc-top">
             <span class="fc-counter">Kelime ${currentFlashcardIndex + 1} / ${step.items.length}</span>
-            <span class="drill-status-tag">${isRead ? '✅ Başarıyla Okundu ⭐' : '⚪ Henüz Okunmadı'}</span>
+            <span class="drill-status-tag">${isTrained ? '✓ Çalışıldı' : '⚪ Bekliyor'}</span>
           </div>
-          <div class="fc-img-box" onclick="window.playDrillAudio('${it.audio}', this.closest('.big-flashcard'))" title="Dinlemek için tıkla">
+          <div class="fc-img-box" onclick="window.playDrillAudio('${it.audio}', document.getElementById('bigFlashcardCard'))" title="Dinlemek için tıkla">
             ${it.img ? `<img src="${it.img}" alt="${it.alt || 'Kelime'}" />` : `<div style="font-family:'Amiri'; font-size:4rem; color:#1e1b4b;">${it.alt}</div>`}
           </div>
-          <div style="font-size: 0.9rem; color: #64748b; font-weight: 700; margin-bottom: 8px;">
-            💡 Kartın üzerine veya "Sesi Dinle"ye bas, ardından yüksek sesle oku!
+          <div style="font-size: 0.95rem; color: #64748b; font-weight: 800; margin-bottom: 8px;">
+            💡 Kartın üzerine veya "Sesi Dinle"ye bas, ardından yüksek sesle tekrar et!
           </div>
           <div class="fc-nav-row">
-            <button class="btn-fc-nav" onclick="window.navigateFlashcard(-1)" ${currentFlashcardIndex === 0 ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''}>
+            <button class="btn-fc-nav" onclick="window.navigateFlashcard(-1)" ${currentFlashcardIndex === 0 ? 'disabled style="opacity:0.5;"' : ''}>
               ⬅️ Önceki
             </button>
             <button class="btn-fc-nav" onclick="window.playDrillAudio('${it.audio}', document.getElementById('bigFlashcardCard'))" style="background:#eff6ff; border-color:#93c5fd; color:#1e40af;">
               🔊 Sesi Dinle
             </button>
             <button class="btn-fc-confirm" onclick="window.confirmFlashcardCurrent()">
-              ${isRead ? '✓ Okundu' : '🗣️ Okudum! ✅'}
+              ${isTrained ? '✓ Sıradaki' : '🗣️ Çalıştım! ✅'}
             </button>
-            <button class="btn-fc-nav" onclick="window.navigateFlashcard(1)" ${currentFlashcardIndex === step.items.length - 1 ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''}>
+            <button class="btn-fc-nav" onclick="window.navigateFlashcard(1)" ${currentFlashcardIndex === step.items.length - 1 ? 'disabled style="opacity:0.5;"' : ''}>
               Sonraki ➡️
             </button>
           </div>
@@ -560,7 +430,6 @@
       </div>
     `;
 
-    // Otomatik sesi çal
     window.playDrillAudio(it.audio, document.getElementById('bigFlashcardCard'));
   }
 
@@ -573,162 +442,312 @@
     const step = getStepData(currentActiveStep);
     if (!step || !step.items) return;
     const it = step.items[currentFlashcardIndex];
-    if (!it) return;
-
-    window.markItemAsRead(it.id, currentActiveStep, document.getElementById('bigFlashcardCard'));
-
-    // 600ms sonra bir sonraki kelimeye geç
-    setTimeout(() => {
-      if (currentFlashcardIndex < step.items.length - 1) {
-        window.navigateFlashcard(1);
-      }
-    }, 500);
-  };
-
-  // 14. Sürekli Tekrar Modu (Auto-Loop)
-  function stopStepAutoLoop() {
-    autoLoopActive = false;
-    if (autoLoopTimer) {
-      clearTimeout(autoLoopTimer);
-      autoLoopTimer = null;
+    if (it) {
+      window.markItemAsTrained(it.id, document.getElementById('bigFlashcardCard'));
     }
-  }
-
-  window.toggleStepAutoLoop = function() {
-    autoLoopActive = !autoLoopActive;
-    const btn = document.getElementById('btnToggleAutoLoop');
-    if (btn) {
-      btn.textContent = autoLoopActive ? '⏸️ Otomatik Oynatmayı Duraklat' : '▶️ Sırayla Otomatik Oku & Dinle';
-      btn.classList.toggle('active', autoLoopActive);
-    }
-
-    if (autoLoopActive) {
-      runAutoLoopStep(0);
-    } else {
-      stopStepAutoLoop();
+    if (currentFlashcardIndex < step.items.length - 1) {
+      window.navigateFlashcard(1);
     }
   };
 
-  function runAutoLoopStep(index) {
-    if (!autoLoopActive) return;
+  // 11. ADIM GEÇME SINAVI (EXAM & EVALUATION ENGINE)
+  // Bu sınav öğrencinin öğrenip öğrenmediğini bizzat test eder!
+  window.startStepExam = function() {
     const step = getStepData(currentActiveStep);
-    if (!step || !step.items || step.items.length === 0) return;
+    if (!step || !step.items || step.items.length < 2) return;
 
-    if (index >= step.items.length) index = 0; // Başa dön
+    window.switchStepPhase('exam');
 
-    const it = step.items[index];
-    const card = document.getElementById(`card_${it.id}`);
-    if (card) {
-      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+    // Sınav kuyruğu oluştur (Adımdaki maddeleri rastgele sırala)
+    let pool = [...step.items].sort(() => 0.5 - Math.random());
+    // Çok uzun adımlarda en az 8, en fazla 12 soru seç (tüm harfleri test etsin)
+    const testSize = Math.min(pool.length, Math.max(6, Math.min(10, pool.length)));
+    examQueue = pool.slice(0, testSize);
+    currentExamIndex = 0;
+    examCorrectCount = 0;
+    examCanAnswer = true;
 
-    window.playDrillAudio(it.audio, card);
+    loadExamQuestion();
+  };
 
-    autoLoopTimer = setTimeout(() => {
-      runAutoLoopStep(index + 1);
-    }, autoLoopSpeed);
-  }
-
-  // 15. Adım Sonu Testi (Mini Quiz)
-  let quizQuestionIndex = 0;
-  let quizCorrectCount = 0;
-  let currentQuizTarget = null;
-
-  function initStepQuiz() {
-    quizQuestionIndex = 0;
-    quizCorrectCount = 0;
-    loadNextQuizQuestion();
-  }
-
-  function loadNextQuizQuestion() {
-    const quizView = document.getElementById('stepQuizContainer');
-    if (!quizView) return;
+  function loadExamQuestion() {
+    examCanAnswer = true;
+    const examArea = document.getElementById('examPhaseArea');
+    if (!examArea) return;
 
     const step = getStepData(currentActiveStep);
-    if (!step || !step.items || step.items.length < 3) {
-      quizView.innerHTML = '<p style="text-align:center;">Bu adım için yeterli kelime bulunamadı.</p>';
+    if (currentExamIndex >= examQueue.length) {
+      // SINAV BİTTİ! ÖĞRENCİ BAŞARIYLA GEÇTİ!
+      handleExamSuccess();
       return;
     }
 
-    if (quizQuestionIndex >= 4) {
-      // Test bitti
-      quizView.innerHTML = `
-        <div style="text-align:center; padding:30px; background:#f0fdf4; border-radius:20px; border:3px solid #86efac; max-width:550px; margin:0 auto;">
-          <div style="font-size:3.5rem;">🎯 🏆</div>
-          <h3 style="font-size:1.8rem; font-weight:900; color:#15803d; margin:8px 0;">Tebrikler! Testi Bitirdin!</h3>
-          <p style="font-size:1.1rem; font-weight:800; color:#334155;">4 sorudan <strong>${quizCorrectCount}</strong> tanesini doğru bildin!</p>
-          <div style="margin:16px 0;">⭐⭐⭐⭐⭐</div>
-          <button class="tool-btn active" onclick="window.switchDrillViewMode('grid')" style="margin:0 auto; padding:12px 24px; font-size:1rem;">
-            📋 Kelime Alıştırmalarına Dön
-          </button>
-        </div>
-      `;
-      if (quizCorrectCount === 4 && typeof window.addStars === 'function') {
-        window.addStars(30);
-        if (typeof window.triggerConfetti === 'function') window.triggerConfetti();
-      }
-      return;
+    examTargetItem = examQueue[currentExamIndex];
+
+    // 3 veya 4 seçenek hazırla (1 doğru, 2-3 yanıltıcı)
+    let distractors = step.items.filter(it => it.id !== examTargetItem.id).sort(() => 0.5 - Math.random());
+    let choices = [examTargetItem, distractors[0], distractors[1]];
+    if (distractors.length > 2 && window.innerWidth > 600) {
+      choices.push(distractors[2]);
     }
+    choices.sort(() => 0.5 - Math.random());
 
-    // Hedef kelime seç
-    const shuffled = [...step.items].sort(() => 0.5 - Math.random());
-    currentQuizTarget = shuffled[0];
+    const totalQuestions = examQueue.length;
+    const currentQNum = currentExamIndex + 1;
 
-    // 3 seçenek
-    const options = [currentQuizTarget, shuffled[1], shuffled[2]].sort(() => 0.5 - Math.random());
-
-    quizView.innerHTML = `
-      <div style="max-width:600px; margin:0 auto; text-align:center; padding:20px; background:#f8fafc; border-radius:20px; border:2px solid #e2e8f0;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-          <span style="font-weight:900; color:#64748b;">Soru ${quizQuestionIndex + 1} / 4</span>
-          <button class="tool-btn" onclick="window.playDrillAudio('${currentQuizTarget.audio}')" style="background:#eff6ff; color:#1e40af; border-color:#bfdbfe;">
-            🔊 Sesi Tekrar Dinle
-          </button>
+    examArea.innerHTML = `
+      <div class="exam-room-container">
+        <div class="exam-header-bar">
+          <span class="exam-question-badge">📝 Soru ${currentQNum} / ${totalQuestions}</span>
+          <span class="exam-score-tracker">⭐ Doğru: ${examCorrectCount}</span>
         </div>
-        <h3 style="font-size:1.3rem; font-weight:900; color:#0f172a; margin-bottom:18px;">
-          Duyduğun ses hangi kelimeye ait? Tıkla ve bul!
-        </h3>
-        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-bottom:20px;">
-          ${options.map(opt => `
-            <div class="quiz-option-card" onclick="window.handleStepQuizChoice('${opt.id}', this)" style="background:white; border:2.5px solid #cbd5e1; border-radius:16px; padding:16px 10px; cursor:pointer; min-height:110px; display:flex; align-items:center; justify-content:center; transition:all 0.2s;">
-              ${opt.img ? `<img src="${opt.img}" style="max-width:90%; max-height:80px; object-fit:contain;" />` : `<span style="font-family:'Amiri'; font-size:2.5rem;">${opt.alt}</span>`}
+
+        <div class="exam-audio-hero">
+          <button class="btn-exam-speaker pulse-anim" id="btnExamSpeaker" onclick="window.playExamAudio()" title="Sesi Tekrar Çal">
+            🔊
+          </button>
+          <div class="exam-prompt-title">Duyduğun ses hangi kelime/harf?</div>
+          <div class="exam-prompt-sub">Hoparlörden gelen sesi dinle, aşağıdaki kartlardan doğru olanı seç!</div>
+        </div>
+
+        <div class="exam-choices-grid">
+          ${choices.map(c => `
+            <div class="exam-choice-card" onclick="window.submitExamAnswer('${c.id}', this)">
+              ${c.img ? `<img src="${c.img}" alt="${c.alt || 'Seçenek'}" />` : `<span style="font-family:'Amiri'; font-size:3rem;">${c.alt}</span>`}
             </div>
           `).join('')}
         </div>
-        <div id="quizFeedbackBox" style="min-height:30px; font-weight:900; font-size:1.1rem;"></div>
+
+        <div class="exam-feedback-banner" id="examFeedbackBanner">
+          <span style="color:#64748b;">Doğru cevaba tıkla...</span>
+        </div>
       </div>
     `;
 
     // Sesi hemen çal
-    window.playDrillAudio(currentQuizTarget.audio);
+    setTimeout(window.playExamAudio, 300);
   }
 
-  window.handleStepQuizChoice = function(chosenId, elem) {
-    const feedback = document.getElementById('quizFeedbackBox');
-    if (chosenId === currentQuizTarget.id) {
-      elem.style.borderColor = '#10b981';
-      elem.style.background = '#f0fdf4';
-      if (feedback) {
-        feedback.innerHTML = '<span style="color:#10b981;">🎉 Harika! Doğru Bildin!</span>';
-      }
+  window.playExamAudio = function() {
+    if (!examTargetItem) return;
+    const speakerBtn = document.getElementById('btnExamSpeaker');
+    if (speakerBtn) speakerBtn.classList.add('pulse-anim');
+
+    if (activeAudioObj) {
+      activeAudioObj.pause();
+      activeAudioObj.currentTime = 0;
+    }
+
+    activeAudioObj = new Audio(examTargetItem.audio);
+    activeAudioObj.play().catch(e => console.log('Audio error:', e));
+    activeAudioObj.onended = () => {
+      if (speakerBtn) speakerBtn.classList.remove('pulse-anim');
+    };
+  };
+
+  window.submitExamAnswer = function(chosenId, choiceCard) {
+    if (!examCanAnswer) return;
+    examCanAnswer = false;
+
+    const feedback = document.getElementById('examFeedbackBanner');
+
+    if (chosenId === examTargetItem.id) {
+      // DOĞRU CEVAP!
+      choiceCard.classList.add('correct-answer');
+      examCorrectCount++;
       playCheerChime();
-      quizCorrectCount++;
-      quizQuestionIndex++;
-      setTimeout(loadNextQuizQuestion, 1000);
-    } else {
-      elem.style.borderColor = '#ef4444';
-      elem.style.background = '#fef2f2';
-      if (feedback) {
-        feedback.innerHTML = '<span style="color:#ef4444;">Tekrar dene! Sesi dinle.</span>';
+      if (typeof window.triggerConfetti === 'function') {
+        window.triggerConfetti();
       }
-      window.playDrillAudio(currentQuizTarget.audio);
+
+      if (feedback) {
+        feedback.innerHTML = '<span style="color:#10b981;">🎉 HARİKA! DOĞRU CEVAP! 👏</span>';
+      }
+
+      // 1 saniye sonra bir sonraki soruya geç
+      setTimeout(() => {
+        currentExamIndex++;
+        loadExamQuestion();
+      }, 900);
+
+    } else {
+      // YANLIŞ CEVAP!
+      choiceCard.classList.add('wrong-answer');
+      playBoingSound();
+
+      if (feedback) {
+        feedback.innerHTML = '<span style="color:#ef4444;">⚠️ Yanlış! Doğrusunu dinle, testin sonunda tekrar sorulacak!</span>';
+      }
+
+      // Yanlış yapılan soruyu kuyruğun sonuna ekle (öğrenene kadar geçemez!)
+      examQueue.push(examTargetItem);
+
+      // Doğru kartı yeşil göstererek öğret
+      const allCards = document.querySelectorAll('.exam-choice-card');
+      allCards.forEach(card => {
+        const img = card.querySelector('img');
+        if (img && img.src.includes(examTargetItem.img)) {
+          card.classList.add('correct-answer');
+        }
+      });
+
+      // Doğru sesi tekrar dinlet
+      window.playExamAudio();
+
+      setTimeout(() => {
+        currentExamIndex++;
+        loadExamQuestion();
+      }, 2000);
     }
   };
 
-  // 16. Hızlı Adım Değiştirme
+  // 12. SINAVI BAŞARIYLA GEÇME & BİR SONRAKİ ADIMI AÇMA TÖRENİ!
+  function handleExamSuccess() {
+    const step = getStepData(currentActiveStep);
+    if (!step) return;
+
+    // Bu adımı GEÇİLDİ olarak kaydet
+    passedStepsSet.add(step.step);
+
+    // Bir sonraki adımın KİLİDİNİ AÇ!
+    const nextStepNum = step.step + 1;
+    if (nextStepNum > highestUnlockedStep) {
+      highestUnlockedStep = nextStepNum;
+    }
+
+    saveProgress();
+    playTriumphantFanfare();
+
+    if (typeof window.triggerConfetti === 'function') {
+      window.triggerConfetti();
+      setTimeout(window.triggerConfetti, 400);
+      setTimeout(window.triggerConfetti, 800);
+    }
+
+    // Modal Bilgilerini Doldur
+    const modal = document.getElementById('levelUpModal');
+    const title = document.getElementById('levelUpTitle');
+    const desc = document.getElementById('levelUpDesc');
+    const nextBox = document.getElementById('levelUpNextStepBox');
+    const btnAdvance = document.getElementById('btnLevelUpAdvance');
+
+    const nextStepData = getStepData(nextStepNum);
+
+    if (title) title.textContent = `🎉 MAŞALLAH! ${step.title} Geçildi!`;
+    if (desc) desc.textContent = `Öğrenip öğrenmediğin test edildi ve tüm soruları başarıyla cevapladın! Bir sonraki adımın kilidi açıldı! 👑 ⭐⭐⭐`;
+
+    if (nextBox && nextStepData) {
+      nextBox.style.display = 'flex';
+      nextBox.innerHTML = `🔓 <strong>YENİ AÇILAN ADIM:</strong> ${nextStepData.title}`;
+    } else if (nextBox) {
+      nextBox.innerHTML = `🏆 <strong>TEBRİKLER!</strong> Tüm Elifba derslerini ve adımlarını bitirdin!`;
+    }
+
+    if (btnAdvance) {
+      if (nextStepData) {
+        btnAdvance.textContent = `🚀 Adım ${nextStepNum}'e Başla! ➡️`;
+        btnAdvance.onclick = () => {
+          modal.classList.remove('active');
+          window.loadStepDrills(nextStepNum);
+          document.getElementById('activeStepStudio').scrollIntoView({ behavior: 'smooth' });
+        };
+      } else {
+        btnAdvance.textContent = `🎓 Başa Dön ve Tebrikleri Kabul Et!`;
+        btnAdvance.onclick = () => { modal.classList.remove('active'); };
+      }
+    }
+
+    if (modal) modal.classList.add('active');
+
+    renderMasteryDashboard();
+    renderStepNavigator(window.currentCurriculumCat || 'all');
+  }
+
+  // 13. Ses Efektleri (Web Audio API Synthesizer)
+  function playCheerChime() {
+    try {
+      const ctx = window.getAudioContext ? window.getAudioContext() : new (window.AudioContext || window.webkitAudioContext)();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      [1046.50, 1318.51, 1567.98].forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+        gain.gain.setValueAtTime(0, now + idx * 0.08);
+        gain.gain.linearRampToValueAtTime(0.25, now + idx * 0.08 + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.45);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + idx * 0.08);
+        osc.stop(now + idx * 0.08 + 0.5);
+      });
+    } catch (e) {}
+  }
+
+  function playBoingSound() {
+    try {
+      const ctx = window.getAudioContext ? window.getAudioContext() : new (window.AudioContext || window.webkitAudioContext)();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(260, now);
+      osc.frequency.exponentialRampToValueAtTime(110, now + 0.25);
+      gain.gain.setValueAtTime(0.25, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.28);
+    } catch (e) {}
+  }
+
+  function playTriumphantFanfare() {
+    try {
+      const ctx = window.getAudioContext ? window.getAudioContext() : new (window.AudioContext || window.webkitAudioContext)();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      const notes = [
+        { f: 392.00, t: 0.0, d: 0.15 },
+        { f: 523.25, t: 0.16, d: 0.15 },
+        { f: 659.25, t: 0.32, d: 0.18 },
+        { f: 783.99, t: 0.50, d: 0.60 }
+      ];
+      notes.forEach(n => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(n.f, now + n.t);
+        gain.gain.setValueAtTime(0, now + n.t);
+        gain.gain.linearRampToValueAtTime(0.3, now + n.t + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + n.t + n.d);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + n.t);
+        osc.stop(now + n.t + n.d + 0.05);
+      });
+    } catch (e) {}
+  }
+
+  // 14. Öğretmen / Veli Modu (Tüm Kilitleri Açma Seçeneği)
+  window.toggleTeacherMode = function() {
+    teacherModeUnlocked = !teacherModeUnlocked;
+    saveProgress();
+    renderMasteryDashboard();
+    renderStepNavigator(window.currentCurriculumCat || 'all');
+    alert(teacherModeUnlocked ? '🔓 Veli / Öğretmen Modu Açıldı: İstediğiniz adıma serbestçe tıklayabilirsiniz.' : '🔒 Kademeli Kilit Modu Devrede: Adımlar sınavla geçilerek açılır.');
+  };
+
+  // 15. Yardımcı Butonlar
   window.navigateStep = function(direction) {
     const target = currentActiveStep + direction;
     if (target >= 1 && target <= 36) {
+      if (!isStepUnlocked(target)) {
+        showLockedToast(target);
+        return;
+      }
       window.loadStepDrills(target);
       const studio = document.getElementById('activeStepStudio');
       if (studio) studio.scrollIntoView({ behavior: 'smooth' });
@@ -742,16 +761,24 @@
     renderStepNavigator(cat);
   };
 
-  // 17. İlerlemeyi Baştan Başlat
+  window.filterDrillItems = function(filterType, btn) {
+    currentDrillFilter = filterType;
+    document.querySelectorAll('#drillFilterGroup .tool-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    renderDrillItems();
+  };
+
   window.confirmResetAllProgress = function() {
-    const confirmed = confirm('Tüm okuma ilerlemeni ve işaretlerini sıfırlamak istiyor musun?');
+    const confirmed = confirm('Tüm okuma ve sınav ilerlemenizi sıfırlayıp 1. Adımdan tekrar başlamak istiyor musunuz?');
     if (confirmed) {
-      readItemsSet.clear();
+      highestUnlockedStep = 1;
+      passedStepsSet.clear();
+      trainedItemsSet.clear();
       currentActiveStep = 1;
       saveProgress();
       window.loadStepDrills(1);
       renderMasteryDashboard();
-      alert('Tüm ilerleme sıfırlandı. 1. Adımdan başarıyla başlayabilirsin!');
+      alert('Tüm kilitler ve ilerleme sıfırlandı. 1. Adım hazır!');
     }
   };
 
@@ -761,7 +788,7 @@
     if (studio) studio.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // 18. Başlangıç (Init)
+  // 16. Başlangıç (Init)
   window.initMasterySystem = function() {
     loadStoredProgress();
     renderMasteryDashboard();
@@ -769,7 +796,6 @@
     window.loadStepDrills(currentActiveStep);
   };
 
-  // DOM hazır olduğunda başlat
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', window.initMasterySystem);
   } else {

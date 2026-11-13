@@ -3098,6 +3098,7 @@
 
     <!-- SEKME 8: TÜM 28 DERS ADIMI (MÜFREDAT GEZGİNİ & NAMAZ DUALARI) -->
         <!-- SEKME 8: 28 ADIM İNTERAKTİF OKUMA ALIŞTIRMALARI & BAŞARI SİSTEMİ -->
+        <!-- SEKME 8: ÖĞRENCİ ÇALIŞTIRMA, TEST ETME VE ADIM GEÇİRME MOTORU -->
     <section id="tab-lessons" class="view-section">
       
       <!-- 1. GENEL BAŞARI & MÜFREDAT KONTROL MERKEZİ -->
@@ -3106,22 +3107,22 @@
           <div class="dash-title-group">
             <div class="dash-icon">🏆</div>
             <div>
-              <h2>28 Adım Okuma Alıştırmaları & Başarı Takibi</h2>
-              <p>Her adımdaki kelimeleri sırayla dinle, yüksek sesle oku ve "Ben Okudum" butonuna basarak tüm adımları %100 başarıyla tamamla!</p>
+              <h2>28 Adım Kademeli Öğrenme & Test Sistemi</h2>
+              <p>Önce adımı çalış, ardından sınava girip öğrenip öğrenmediğini test et. Sınavı geçince sonraki adımın kilidi açılsın!</p>
             </div>
           </div>
           <div class="dash-stats-row">
             <div class="dash-stat-box">
-              <span class="stat-num" id="totalReadCount">0 / 777</span>
-              <span class="stat-lbl">Okunan Kelime</span>
+              <span class="stat-num" id="totalReadCount">0 Kelime</span>
+              <span class="stat-lbl">Çalışılan</span>
             </div>
             <div class="dash-stat-box">
               <span class="stat-num" id="totalMasteredSteps">0 / 36</span>
-              <span class="stat-lbl">Tamamlanan Adım</span>
+              <span class="stat-lbl">Geçilen Adım</span>
             </div>
             <div class="dash-stat-box highlight-gold">
               <span class="stat-num" id="totalStarsEarned">⭐ 0</span>
-              <span class="stat-lbl">Kazanılan Yıldız</span>
+              <span class="stat-lbl">Kazanılan Puan</span>
             </div>
           </div>
         </div>
@@ -3129,30 +3130,35 @@
         <!-- Genel İlerleme Çubuğu -->
         <div class="dash-progress-wrap">
           <div class="dash-prog-labels">
-            <span>Genel Okuma Başarısı</span>
-            <span id="overallPercentageText">%0 Tamamlandı</span>
+            <span>Genel Müfredat İlerlemesi</span>
+            <span id="overallPercentageText">%0 Tamamlandı (0 Adım Geçildi)</span>
           </div>
           <div class="dash-prog-track">
             <div class="dash-prog-bar" id="overallProgressBar" style="width: 0%"></div>
           </div>
         </div>
 
-        <!-- Hızlı Eylem Düğmeleri -->
+        <!-- Hızlı Eylem & Öğretmen Modu Düğmeleri -->
         <div class="dash-actions">
           <button class="btn-dash-resume" onclick="window.resumeLastActiveStep()">
-            ▶️ Kaldığın Adımdan Devam Et: <strong id="resumeStepLabel" style="margin-left: 4px;">Ders 1</strong>
+            ▶️ Aktif Adıma Devam Et: <strong id="resumeStepLabel" style="margin-left: 4px;">Ders 1</strong>
           </button>
-          <button class="btn-dash-reset" onclick="window.confirmResetAllProgress()">
-            🔄 İlerlemeyi Baştan Başlat
-          </button>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button class="btn-dash-reset" id="btnToggleTeacherMode" onclick="window.toggleTeacherMode()" title="Veli / Öğretmen için kilitleri serbestçe açar veya kapatır">
+              🔒 Kademeli Kilit Modu Aktif
+            </button>
+            <button class="btn-dash-reset" onclick="window.confirmResetAllProgress()">
+              🔄 İlerlemeyi Sıfırla
+            </button>
+          </div>
         </div>
       </div>
 
-      <!-- 2. ADIM SEÇİCİ & KATEGORİ HARİTASI -->
+      <!-- 2. ADIM SEÇİCİ & KADEMELİ KİLİT HARİTASI -->
       <div class="step-nav-section">
         <div class="step-nav-title">
-          <span>🗺️ Adım Seçici & İlerleme Haritası (36 Adım)</span>
-          <span style="font-size: 0.85rem; color: #64748b; font-weight: 700;">Bir adıma tıkla ve alıştırmaya başla!</span>
+          <span>🗺️ Adım Haritası (Sınavı Geçtikçe Adımların Kilidi Açılır)</span>
+          <span style="font-size: 0.85rem; color: #64748b; font-weight: 700;">🟢 Açık • 🔒 Kilitli • 👑 Geçildi</span>
         </div>
 
         <!-- Kategori Çipleri -->
@@ -3167,13 +3173,13 @@
           <button class="filter-chip" onclick="window.filterCurriculumCat('dua', this)">🤲 7. Namaz Duaları (8)</button>
         </div>
 
-        <!-- Adım Çipleri Izgarası -->
+        <!-- Adım Çipleri Izgarası (Kilitli & Açık) -->
         <div class="step-chips-grid" id="stepChipsContainer">
           <!-- JS ile doldurulacak -->
         </div>
       </div>
 
-      <!-- 3. AKTİF ADIM İNTERAKTİF OKUMA ÇALIŞMA ALANI (STUDIO) -->
+      <!-- 3. AKTİF ADIM ÇALIŞMA VE TEST ALANI (STUDIO) -->
       <div class="active-step-studio" id="activeStepStudio">
         
         <!-- Adım Başlığı & Kural Bilgisi -->
@@ -3194,78 +3200,105 @@
             <span id="studioRuleText">Arapça harflerin doğru çıkış yerlerini ve telaffuzlarını dinleyip öğrenin.</span>
           </div>
 
-          <!-- Adım Başarı Çubuğu -->
+          <!-- Adım İlerleme Durumu -->
           <div class="studio-mastery-status">
             <div class="mastery-status-header">
-              <span>🎯 Bu Adımdaki Okuma Başarısı:</span>
+              <span>🎯 Bu Adımdaki Antrenman Durumu:</span>
               <strong id="studioMasteryCount">0 / 29 Kelime (%0)</strong>
             </div>
             <div class="mastery-progress-track">
               <div class="mastery-progress-fill" id="studioMasteryFill" style="width: 0%"></div>
             </div>
             <div class="mastery-motivate-msg incomplete" id="studioMotivateMsg">
-              ⏳ <strong>Çalışmaya Başla!</strong> Kelimeleri tek tek dinle, yüksek sesle oku ve "Ben Okudum"a basarak adımı tamamla!
+              🏋️ <strong>Öğrenciyi Çalıştırma:</strong> Kelimeleri dinle, tekrar et ve "Çalıştım"a bas. Ardından sınava girerek sonraki adımı aç!
             </div>
           </div>
         </div>
 
-        <!-- Araç Çubuğu (Görünüm & Filtreler) -->
-        <div class="studio-toolbar">
-          <div class="tool-group" id="drillModeGroup">
-            <span style="font-weight: 900; font-size: 0.82rem; color: #64748b; margin-right: 2px;">Görünüm:</span>
-            <button class="tool-btn active" data-drill-mode="grid" onclick="window.switchDrillViewMode('grid')">
-              📋 Izgara (Tümü)
-            </button>
-            <button class="tool-btn" data-drill-mode="flashcard" onclick="window.switchDrillViewMode('flashcard')">
-              🔍 Büyük Odak (Flashcard)
-            </button>
-            <button class="tool-btn" data-drill-mode="quiz" onclick="window.switchDrillViewMode('quiz')">
-              🎯 Adım Sonu Testi
-            </button>
-            <button class="tool-btn" id="btnToggleAutoLoop" onclick="window.toggleStepAutoLoop()">
-              ▶️ Sırayla Otomatik Dinle & Oku
-            </button>
+        <!-- 2 AŞAMALI FAZ SEÇİCİ (ÇALIŞMA VS SINAV) -->
+        <div class="phase-selector-bar">
+          <button class="phase-tab-btn active" id="btnPhaseTrain" onclick="window.switchStepPhase('train')">
+            🏋️ 1. Aşama: Çalışma & Antrenman
+          </button>
+          <button class="phase-tab-btn" id="btnPhaseExam" onclick="window.switchStepPhase('exam')">
+            🎯 2. Aşama: Öğrendin mi? Adım Geçme Testi
+          </button>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- 1. AŞAMA ALANI: ÇALIŞMA & ANTRENMAN -->
+        <!-- ============================================ -->
+        <div id="trainingPhaseArea">
+          <!-- Araç Çubuğu -->
+          <div class="studio-toolbar">
+            <div class="tool-group" id="drillFilterGroup">
+              <span style="font-weight: 900; font-size: 0.85rem; color: #64748b;">Görünüm:</span>
+              <button class="tool-btn active" onclick="window.filterDrillItems('all', this)">📋 Tüm Kelimeler</button>
+              <button class="tool-btn" onclick="window.filterDrillItems('flashcard', this)">🔍 Büyük Odak (Flashcard)</button>
+            </div>
+            <div style="font-weight: 800; font-size: 0.85rem; color: #475569;">
+              👂 Dinle ➔ 🗣️ Yüksek Sesle Tekrar Et ➔ 🎯 Sınava Gir
+            </div>
           </div>
 
-          <div class="tool-group" id="drillFilterGroup">
-            <span style="font-weight: 900; font-size: 0.82rem; color: #64748b; margin-right: 2px;">Filtrele:</span>
-            <button class="tool-btn active" onclick="window.filterDrillItems('all', this)">Tümü</button>
-            <button class="tool-btn" onclick="window.filterDrillItems('unread', this)">⏳ Kalanlar (Okunmayanlar)</button>
-            <button class="tool-btn" onclick="window.filterDrillItems('read', this)">✅ Okunanlar</button>
+          <!-- Kelime Kartları Izgarası -->
+          <div class="drill-grid" id="drillItemsGrid">
+            <!-- JS ile doldurulacak -->
+          </div>
+
+          <!-- Flashcard Görünümü -->
+          <div id="flashcardViewContainer" style="display: none;">
+            <!-- JS ile doldurulacak -->
+          </div>
+
+          <!-- Sınava Başla Çağrı Bannerı -->
+          <div class="ready-for-exam-banner">
+            <div style="font-size: 2.8rem; line-height: 1; margin-bottom: 8px;">🎯 📝</div>
+            <h3>Şimdi Bakalım Öğrendin mi?</h3>
+            <p>
+              Bu adımdaki kelimeleri dinleyip tekrar ettiysen, hemen teste gir! Doğru cevapları bularak adımı geç ve bir sonraki adımın kilidini aç!
+            </p>
+            <button class="btn-start-exam-now" onclick="window.startStepExam()">
+              🚀 Sınava Başla & Sonraki Adımı Aç! 🔓
+            </button>
           </div>
         </div>
 
-        <!-- 1. Grid Görünümü -->
-        <div class="drill-grid" id="drillItemsGrid">
-          <!-- JS ile doldurulacak -->
-        </div>
-
-        <!-- 2. Flashcard Görünümü -->
-        <div id="flashcardViewContainer" style="display: none;">
-          <!-- JS ile doldurulacak -->
-        </div>
-
-        <!-- 3. Mini-Quiz Görünümü -->
-        <div id="stepQuizContainer" style="display: none;">
-          <!-- JS ile doldurulacak -->
+        <!-- ============================================ -->
+        <!-- 2. AŞAMA ALANI: SINAV & TEST (EXAM ROOM) -->
+        <!-- ============================================ -->
+        <div id="examPhaseArea" style="display: none;">
+          <!-- JS ile sınav soruları buraya doldurulacak -->
         </div>
 
       </div>
 
     </section>
 
-    <!-- ADIM BAŞARI KUTLAMA MODALI -->
-    <div id="stepTrophyModal" class="step-trophy-modal">
-      <div class="trophy-modal-card">
-        <div class="trophy-badge-icon">👑 🏆 🌟</div>
-        <h2 id="trophyStepTitle">🎉 MAŞALLAH! Adım Tamamlandı!</h2>
-        <p id="trophyStepDesc">Bu adımdaki tüm okuma alıştırmalarını başarıyla bitirdin!</p>
-        <div class="trophy-stars-box">⭐⭐⭐⭐⭐</div>
-        <div class="trophy-actions">
-          <button class="btn-trophy-next" id="btnTrophyNextStep">🚀 Sonraki Adıma Geç ➡️</button>
-          <button class="btn-trophy-repeat" onclick="window.closeStepCelebrationModal()">🔁 Bu Adımı Tekrar İncele</button>
+    <!-- KİLİT AÇILMA & ADIM GEÇME TÖRENİ MODALI (LEVEL UP MODAL) -->
+    <div id="levelUpModal" class="level-up-modal">
+      <div class="level-up-card">
+        <div class="unlock-anim-icon">🔓 🏆 🌟</div>
+        <h2 id="levelUpTitle">🎉 MAŞALLAH! Sınavı Geçtin!</h2>
+        <p id="levelUpDesc">Öğrenip öğrenmediğin başarıyla test edildi! Bir sonraki adımın kilidi açıldı.</p>
+        
+        <div class="unlocked-step-highlight" id="levelUpNextStepBox">
+          🔓 <strong>Yeni Açılan Adım:</strong> Ders 2
+        </div>
+
+        <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+          <button class="btn-advance-step" id="btnLevelUpAdvance">
+            🚀 Sonraki Adıma Başla! ➡️
+          </button>
+          <button class="btn-trophy-repeat" onclick="document.getElementById('levelUpModal').classList.remove('active'); window.switchStepPhase('train');">
+            🔁 Bu Adımı Tekrar İncele
+          </button>
         </div>
       </div>
+    </div>
+
+    <!-- ADIM BAŞARI KUTLAMA MODALI -->
+    
     </div>
 
 
