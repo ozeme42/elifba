@@ -5778,8 +5778,16 @@ window.CURRICULUM_STEPS = [
     "title": "Dua 6: Rabbenâğfirlî Duası",
     "shortTitle": "Rabbenâğfirlî Duası",
     "desc": "Anne, baba ve tüm inananlar için bağışlanma duası.",
-    "itemCount": 0,
-    "items": [],
+    "itemCount": 1,
+    "items": [
+      {
+        "id": "dua6_1",
+        "num": 1,
+        "audio": "dosyalar/rabbenagfirli.mp3",
+        "img": "dosyalar/3-32.png",
+        "alt": "Rabbenâğfirlî Duası"
+      }
+    ],
     "isDua": true
   },
   {
@@ -5907,3 +5915,11 @@ window.CURRICULUM_STEPS = [
     "isDua": true
   }
 ];
+
+// Alias desteği ve Node.js ortamı desteği
+if (typeof window !== 'undefined') {
+  window.CURRICULUM_DATA = window.CURRICULUM_STEPS;
+}
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = window.CURRICULUM_STEPS;
+}

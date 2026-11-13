@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sesli Adım Avcısı - Sesi Dinle, Doğruyu Bul!</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a0ca3;
+      --accent: #4cc9f0;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --purple: #7209b7;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.07);
+      --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 20px 25px -5px rgba(67, 97, 238, 0.15);
+      --border-radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 40%, #fdf2f8 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Üst Navigasyon & Kontrol Çubuğu */
+    header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      padding: 12px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #4361ee, #7209b7);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: white;
+      box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+    }
+
+    .brand-text h1 {
+      font-size: 1.25rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #1e3a8a, #7209b7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.2;
+    }
+
+    .brand-text p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .score-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #fef3c7;
+      color: #92400e;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      border: 1.5px solid #fde68a;
+    }
+
+    .btn-nav-action {
+      background: white;
+      border: 1.5px solid #cbd5e1;
+      padding: 8px 14px;
+      border-radius: 12px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .btn-nav-action:hover {
+      background: #f1f5f9;
+      border-color: #94a3b8;
+      transform: translateY(-1px);
+    }
+
+    .btn-nav-action.active {
+      background: #4361ee;
+      border-color: #4361ee;
+      color: white;
+    }
+
+    /* Adım Gezinme Barı (Step Bar) */
+    .step-control-bar {
+      max-width: 1200px;
+      margin: 14px auto 0 auto;
+      padding: 0 16px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .step-selector-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 280px;
+    }
+
+    .btn-step-nav {
+      background: white;
+      border: 2px solid #e2e8f0;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      font-weight: 900;
+      color: #334155;
+    }
+
+    .btn-step-nav:hover:not(:disabled) {
+      background: #4361ee;
+      border-color: #4361ee;
+      color: white;
+      transform: scale(1.05);
+    }
+
+    .btn-step-nav:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .step-dropdown-select {
+      flex: 1;
+      padding: 10px 16px;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 800;
+      border-radius: 14px;
+      border: 2px solid #cbd5e1;
+      background: white;
+      color: #1e293b;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .step-dropdown-select:focus {
+      border-color: #4361ee;
+    }
+
+    /* Ana Oyun Konteyneri */
+    main {
+      flex: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 14px 16px 40px 16px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* SESLİ HEDEF KAHRAMAN ALANI (Audio Hero) */
+    .audio-hero-card {
+      background: white;
+      border-radius: 24px;
+      padding: 20px 24px;
+      box-shadow: 0 10px 30px rgba(67, 97, 238, 0.1);
+      border: 2px solid #e0e7ff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .audio-hero-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, #4361ee, #4cc9f0, #f72585);
+    }
+
+    .step-badge-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #eef2ff;
+      color: #3730a3;
+      padding: 4px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .hero-speaker-wrapper {
+      position: relative;
+      margin: 10px 0 14px 0;
+    }
+
+    .btn-hero-speaker {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      border: 4px solid #c7d2fe;
+      background: linear-gradient(135deg, #4361ee, #3a0ca3);
+      color: white;
+      font-size: 40px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 12px 28px rgba(67, 97, 238, 0.35);
+      transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      outline: none;
+    }
+
+    .btn-hero-speaker:hover {
+      transform: scale(1.08);
+      box-shadow: 0 16px 36px rgba(67, 97, 238, 0.45);
+    }
+
+    .btn-hero-speaker:active {
+      transform: scale(0.95);
+    }
+
+    .btn-hero-speaker.pulse-anim {
+      animation: speakerPulse 1.2s infinite;
+      border-color: #f72585;
+      background: linear-gradient(135deg, #f72585, #7209b7);
+    }
+
+    @keyframes speakerPulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(247, 37, 133, 0.7);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 0 0 20px rgba(247, 37, 133, 0);
+        transform: scale(1.06);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(247, 37, 133, 0);
+        transform: scale(1);
+      }
+    }
+
+    .hero-prompt-title {
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: #1e293b;
+      margin-bottom: 4px;
+    }
+
+    .hero-prompt-sub {
+      font-size: 0.95rem;
+      color: #64748b;
+      font-weight: 600;
+      max-width: 600px;
+    }
+
+    /* İlerleme Çubuğu */
+    .step-progress-wrapper {
+      width: 100%;
+      max-width: 640px;
+      margin-top: 14px;
+    }
+
+    .progress-stats {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #475569;
+      margin-bottom: 6px;
+    }
+
+    .progress-bar-track {
+      width: 100%;
+      height: 12px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #10b981, #3b82f6);
+      border-radius: 999px;
+      transition: width 0.4s ease;
+      width: 0%;
+    }
+
+    /* GERİ BİLDİRİM BANNERI (Feedback Banner) */
+    .feedback-banner {
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.05rem;
+      font-weight: 800;
+      padding: 6px 16px;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    .feedback-banner.correct {
+      background: #dcfce7;
+      color: #15803d;
+      border: 1.5px solid #86efac;
+      animation: popSuccess 0.4s ease;
+    }
+
+    .feedback-banner.wrong {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 1.5px solid #fca5a5;
+      animation: shakeWrong 0.4s ease;
+    }
+
+    @keyframes popSuccess {
+      0% { transform: scale(0.9); opacity: 0; }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes shakeWrong {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+
+    /* ======================================================== */
+    /* EKRANDAKİ TÜM SEÇENEKLER TABLOSU (ALL ITEMS GRID)       */
+    /* ======================================================== */
+    .cards-board-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+      padding: 0 4px;
+    }
+
+    .cards-board-title {
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cards-board-hint {
+      font-size: 0.85rem;
+      color: #64748b;
+      font-weight: 700;
+    }
+
+    .options-grid-board {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 12px;
+      direction: rtl; /* Arapça okuma yönü (sağdan sola) */
+      margin-top: 10px;
+    }
+
+    @media (min-width: 640px) {
+      .options-grid-board {
+        grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+        gap: 14px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .options-grid-board {
+        grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+        gap: 16px;
+      }
+    }
+
+    /* KART TASARIMI */
+    .item-card {
+      background: white;
+      border-radius: 18px;
+      border: 2.5px solid #e2e8f0;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+      aspect-ratio: 1 / 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      padding: 10px;
+    }
+
+    .item-card:hover:not(.solved) {
+      transform: translateY(-4px) scale(1.03);
+      border-color: #4361ee;
+      box-shadow: 0 12px 24px rgba(67, 97, 238, 0.18);
+    }
+
+    .item-card:active:not(.solved) {
+      transform: scale(0.96);
+    }
+
+    .item-card img {
+      max-width: 88%;
+      max-height: 88%;
+      object-fit: contain;
+      pointer-events: none;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.06));
+    }
+
+    .item-card .card-arabic-fallback {
+      font-family: 'Amiri', serif;
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: #1e293b;
+      line-height: 1;
+    }
+
+    .item-card .item-num-badge {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: #94a3b8;
+      background: #f8fafc;
+      padding: 2px 6px;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* Kart Durumu: Doğru Bulundu (Solved) */
+    .item-card.solved {
+      background: #f0fdf4;
+      border-color: #22c55e;
+      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15);
+      cursor: default;
+    }
+
+    .item-card.solved::after {
+      content: '✓';
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 24px;
+      height: 24px;
+      background: #22c55e;
+      color: white;
+      font-size: 14px;
+      font-weight: 900;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(34, 197, 94, 0.4);
+      animation: badgePop 0.35s ease;
+    }
+
+    @keyframes badgePop {
+      0% { transform: scale(0); }
+      70% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    /* Kart Durumu: Yanlış Tıklanan (Shake Effect) */
+    .item-card.card-shake {
+      animation: shakeCard 0.4s ease;
+      border-color: #ef4444 !important;
+      background: #fef2f2;
+    }
+
+    @keyframes shakeCard {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+
+    /* Kart Durumu: Doğru Tıklama Anı (Flash Effect) */
+    .item-card.correct-flash {
+      animation: flashSuccess 0.5s ease;
+    }
+
+    @keyframes flashSuccess {
+      0% { transform: scale(0.95); background: #bbf7d0; }
+      50% { transform: scale(1.08); background: #86efac; }
+      100% { transform: scale(1); background: #f0fdf4; }
+    }
+
+    /* ======================================================== */
+    /* BÜYÜK ADIM GEÇME KUTLAMA MODALI (VICTORY MODAL)           */
+    /* ======================================================== */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      animation: fadeInModal 0.3s ease;
+    }
+
+    @keyframes fadeInModal {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .victory-modal-card {
+      background: white;
+      border-radius: 28px;
+      padding: 36px 30px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+      border: 3px solid #818cf8;
+      position: relative;
+      animation: zoomInCard 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes zoomInCard {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .victory-icon-big {
+      font-size: 70px;
+      line-height: 1;
+      margin-bottom: 12px;
+      animation: bounceIcon 1s infinite alternate;
+    }
+
+    @keyframes bounceIcon {
+      from { transform: translateY(0); }
+      to { transform: translateY(-10px); }
+    }
+
+    .victory-modal-card h2 {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: #1e1b4b;
+      margin-bottom: 8px;
+    }
+
+    .victory-modal-card p {
+      font-size: 1rem;
+      color: #64748b;
+      font-weight: 700;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .victory-stats-box {
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 12px 16px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-around;
+      font-weight: 800;
+    }
+
+    .btn-next-step-big {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: none;
+      padding: 16px 28px;
+      border-radius: 16px;
+      font-family: inherit;
+      font-size: 1.15rem;
+      font-weight: 900;
+      cursor: pointer;
+      width: 100%;
+      box-shadow: 0 10px 20px rgba(16, 185, 129, 0.35);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .btn-next-step-big:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px rgba(16, 185, 129, 0.45);
+    }
+
+    .btn-replay-step {
+      background: transparent;
+      border: 2px solid #cbd5e1;
+      color: #475569;
+      padding: 12px 20px;
+      border-radius: 14px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.2s;
+    }
+
+    .btn-replay-step:hover {
+      background: #f1f5f9;
+      border-color: #94a3b8;
+    }
+
+    /* Konfeti Canvası */
+    #confettiCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1001;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="confettiCanvas"></canvas>
+
+  <!-- Üst Başlık & Kontroller -->
+  <header>
+    <a href="oyunlar.html" class="brand" title="Ana Sayfaya Dön">
+      <div class="brand-icon">📖</div>
+      <div class="brand-text">
+        <h1>Sesli Adım Avcısı</h1>
+        <p>Sesi Dinle, Ekrandaki Doğru Kartı Bul!</p>
+      </div>
+    </a>
+
+    <div class="header-actions">
+      <div class="score-badge">
+        <span>⭐ Skor:</span>
+        <span id="scoreDisplay">0</span>
+      </div>
+
+      <button class="btn-nav-action" id="btnTeacherMode" onclick="toggleTeacherMode()" title="Tüm adımların kilidini aç">
+        <span>🔓 Öğretmen Modu</span>
+      </button>
+
+      <a href="oyunlar.html" class="btn-nav-action">
+        <span>🎮 Diğer Oyunlar</span>
+      </a>
+
+      <a href="cuz.html" class="btn-nav-action">
+        <span>📖 Cüz Oku</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Adım Gezinme Barı -->
+  <div class="step-control-bar">
+    <div class="step-selector-box">
+      <button class="btn-step-nav" id="btnPrevStep" onclick="navigateStep(-1)" title="Önceki Adım">◀</button>
+      <select class="step-dropdown-select" id="stepSelect" onchange="onStepSelectChange(this.value)">
+        <!-- JS ile 36 adım doldurulacak -->
+      </select>
+      <button class="btn-step-nav" id="btnNextStep" onclick="navigateStep(1)" title="Sonraki Adım">▶</button>
+    </div>
+  </div>
+
+  <!-- Ana Oyun Alanı -->
+  <main>
+    <!-- Sesli Hedef Alanı -->
+    <div class="audio-hero-card">
+      <div class="step-badge-indicator" id="stepBadgeText">Adım 1: Harfler</div>
+
+      <div class="hero-speaker-wrapper">
+        <button class="btn-hero-speaker pulse-anim" id="btnHeroSpeaker" onclick="playCurrentTargetAudio()" title="Sesi Tekrar Çal (Boşluk Tuşu)">
+          🔊
+        </button>
+      </div>
+
+      <div class="hero-prompt-title">Duyduğun ses hangisi?</div>
+      <div class="hero-prompt-sub">
+        Yukarıdaki hoparlörden gelen sesi dinle, aşağıdaki kartlar arasından doğru olanı bulup tıkla!
+      </div>
+
+      <div class="step-progress-wrapper">
+        <div class="progress-stats">
+          <span id="progressText">🎯 0 / 28 Tamamlandı</span>
+          <span id="percentText">%0</span>
+        </div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="progressBarFill"></div>
+        </div>
+      </div>
+
+      <div class="feedback-banner" id="feedbackBanner" style="margin-top: 10px;">
+        <span style="color: #64748b;">Hoparlördeki sesi dinle ve seçeneğini işaretle...</span>
+      </div>
+    </div>
+
+    <!-- Ekrandaki Seçenekler Başlığı -->
+    <div class="cards-board-header">
+      <div class="cards-board-title">
+        <span>📋 Bu Adımdaki Tüm Seçenekler</span>
+      </div>
+      <div class="cards-board-hint">
+        💡 Kalan kartlar arasından sesi bul!
+      </div>
+    </div>
+
+    <!-- EKRANDA ADIMIN İÇİNDEKİ HER ŞEY SEÇENEK OLARAK DURUYOR -->
+    <div class="options-grid-board" id="optionsGridBoard">
+      <!-- JS ile adımın tüm kartları buraya eklenir -->
+    </div>
+  </main>
+
+  <!-- KUTLAMA & ADIM GEÇME MODALI -->
+  <div class="modal-overlay" id="victoryModal">
+    <div class="victory-modal-card">
+      <div class="victory-icon-big">🏆 🎉 🌟</div>
+      <h2>MAŞALLAH!</h2>
+      <p id="victoryModalText">
+        Bu adımdaki tüm kelimeleri ve harfleri başarıyla dinleyip buldun!
+      </p>
+
+      <div class="victory-stats-box">
+        <div>⭐ Toplam Puan: <span id="modalFinalScore">0</span></div>
+        <div>✅ Adım: <span id="modalCompletedStep">1</span></div>
+      </div>
+
+      <button class="btn-next-step-big" id="btnModalNextStep" onclick="advanceToNextStep()">
+        <span>🚀 Sonraki Adıma Başla! ➡️</span>
+      </button>
+
+      <button class="btn-replay-step" onclick="replayCurrentStep()">
+        <span>🔁 Bu Adımı Tekrar Oyna</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Müfredat Veritabanı -->
+  <script src="curriculum_data.js"></script>
+
+  <script>
+    /* ======================================================== */
+    /* SESLİ ADIM AVCISI MOTORU (AUDIO STEP MASTER ENGINE)      */
+    /* ======================================================== */
+
+    const STORAGE_KEY = 'elifba_sesli_adimlar_v1';
+    let currentStepNum = 1;
+    let highestUnlocked = 1;
+    let teacherMode = false;
+    let totalScore = 0;
+
+    let currentStepData = null;
+    let remainingPool = [];
+    let solvedIds = new Set();
+    let currentTarget = null;
+    let canClickCard = true;
+    let activeAudio = null;
+
+    // Web Audio Sentetik Ses Efektleri (Ding / Buzzer / Fanfare)
+    let audioCtx = null;
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playDingSound() {
+      try {
+        const ctx = getAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        const now = ctx.currentTime;
+        osc.frequency.setValueAtTime(587.33, now); // D5
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.15); // A5
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+        osc.start(now);
+        osc.stop(now + 0.35);
+      } catch (e) {}
+    }
+
+    function playWrongSound() {
+      try {
+        const ctx = getAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'triangle';
+        const now = ctx.currentTime;
+        osc.frequency.setValueAtTime(180, now);
+        osc.frequency.setValueAtTime(130, now + 0.12);
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+        osc.start(now);
+        osc.stop(now + 0.3);
+      } catch (e) {}
+    }
+
+    function playVictoryFanfare() {
+      try {
+        const ctx = getAudioContext();
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+        notes.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.type = 'sine';
+          const startTime = ctx.currentTime + (idx * 0.12);
+          osc.frequency.setValueAtTime(freq, startTime);
+          gain.gain.setValueAtTime(0.3, startTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, startTime + 0.35);
+          osc.start(startTime);
+          osc.stop(startTime + 0.35);
+        });
+      } catch (e) {}
+    }
+
+    // 1. İlerleme Yükleme & Kaydetme
+    function loadSavedProgress() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const data = JSON.parse(raw);
+          highestUnlocked = data.highestUnlocked || 1;
+          totalScore = data.totalScore || 0;
+          currentStepNum = Math.min(data.lastStep || 1, highestUnlocked);
+        }
+      } catch (e) {}
+      updateScoreBadge();
+    }
+
+    function saveProgress() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          highestUnlocked,
+          totalScore,
+          lastStep: currentStepNum
+        }));
+      } catch (e) {}
+    }
+
+    function updateScoreBadge() {
+      const el = document.getElementById('scoreDisplay');
+      if (el) el.textContent = totalScore;
+    }
+
+    // 2. Adım Seçici Menüsünü Doldur
+    function populateStepDropdown() {
+      const select = document.getElementById('stepSelect');
+      if (!select || !window.CURRICULUM_STEPS) return;
+
+      select.innerHTML = '';
+      window.CURRICULUM_STEPS.forEach((step, idx) => {
+        const opt = document.createElement('option');
+        opt.value = step.step;
+
+        const isLocked = !teacherMode && step.step > highestUnlocked;
+        opt.disabled = isLocked;
+
+        let icon = '🔒 ';
+        if (step.step < highestUnlocked) icon = '⭐ ';
+        else if (step.step === highestUnlocked) icon = '🔓 ';
+        if (teacherMode) icon = '📖 ';
+
+        opt.textContent = `${icon} Adım ${step.step}: ${step.shortTitle || step.title} (${step.items ? step.items.length : 0} madde)`;
+        select.appendChild(opt);
+      });
+
+      select.value = currentStepNum;
+      updateStepNavButtons();
+    }
+
+    function updateStepNavButtons() {
+      const prevBtn = document.getElementById('btnPrevStep');
+      const nextBtn = document.getElementById('btnNextStep');
+      if (prevBtn) prevBtn.disabled = currentStepNum <= 1;
+      if (nextBtn) {
+        const maxSteps = window.CURRICULUM_STEPS ? window.CURRICULUM_STEPS.length : 36;
+        nextBtn.disabled = currentStepNum >= maxSteps || (!teacherMode && currentStepNum >= highestUnlocked);
+      }
+    }
+
+    function onStepSelectChange(val) {
+      loadStep(parseInt(val, 10));
+    }
+
+    function navigateStep(delta) {
+      const target = currentStepNum + delta;
+      const maxSteps = window.CURRICULUM_STEPS ? window.CURRICULUM_STEPS.length : 36;
+      if (target >= 1 && target <= maxSteps) {
+        if (teacherMode || target <= highestUnlocked) {
+          loadStep(target);
+        }
+      }
+    }
+
+    function toggleTeacherMode() {
+      teacherMode = !teacherMode;
+      const btn = document.getElementById('btnTeacherMode');
+      if (btn) {
+        btn.classList.toggle('active', teacherMode);
+        btn.innerHTML = teacherMode ? '🔓 <strong>Öğretmen: AÇIK</strong>' : '🔓 Öğretmen Modu';
+      }
+      populateStepDropdown();
+    }
+
+    // 3. Adımı Yükle ve Ekranı Kur
+    function loadStep(stepNum) {
+      if (!window.CURRICULUM_STEPS) return;
+
+      const step = window.CURRICULUM_STEPS.find(s => s.step === stepNum);
+      if (!step || !step.items || step.items.length === 0) {
+        alert('Bu adım için alıştırma bulunamadı!');
+        return;
+      }
+
+      currentStepNum = stepNum;
+      currentStepData = step;
+      solvedIds = new Set();
+      remainingPool = [...step.items].sort(() => 0.5 - Math.random());
+      currentTarget = null;
+      canClickCard = true;
+
+      // Dropdown güncelle
+      const select = document.getElementById('stepSelect');
+      if (select) select.value = stepNum;
+      updateStepNavButtons();
+
+      // Başlık ve Rozet
+      const badge = document.getElementById('stepBadgeText');
+      if (badge) badge.textContent = `Adım ${step.step}: ${step.shortTitle || step.title}`;
+
+      // İlerleme Çubuğu Sıfırla
+      updateProgressBar();
+
+      // GERİ BİLDİRİM
+      showFeedback('neutral', 'Hoparlördeki sesi dinle ve aşağıdaki kartlardan doğru olanı seç!');
+
+      // EKRANDA ADIMIN İÇİNDEKİ HER ŞEYİ SEÇENEK OLARAK ÇİZ!
+      renderAllStepCards();
+
+      // Sesi ilk kez otomatik çal
+      pickNextTargetAndPlay();
+    }
+
+    // 4. EKRANA TÜM KARTLARI BAS
+    function renderAllStepCards() {
+      const grid = document.getElementById('optionsGridBoard');
+      if (!grid || !currentStepData) return;
+
+      grid.innerHTML = '';
+
+      currentStepData.items.forEach((item, idx) => {
+        const card = document.createElement('div');
+        card.className = 'item-card';
+        card.id = `card_${item.id}`;
+        card.dataset.id = item.id;
+
+        // Numara etiketi
+        const numBadge = document.createElement('span');
+        numBadge.className = 'item-num-badge';
+        numBadge.textContent = idx + 1;
+        card.appendChild(numBadge);
+
+        // Resim veya Metin
+        if (item.img) {
+          const img = document.createElement('img');
+          img.src = item.img;
+          img.alt = item.alt || 'Harf';
+          img.loading = 'lazy';
+          img.onerror = () => {
+            img.style.display = 'none';
+            const span = document.createElement('span');
+            span.className = 'card-arabic-fallback';
+            span.textContent = item.alt || '؟';
+            card.appendChild(span);
+          };
+          card.appendChild(img);
+        } else {
+          const span = document.createElement('span');
+          span.className = 'card-arabic-fallback';
+          span.textContent = item.alt || '؟';
+          card.appendChild(span);
+        }
+
+        // Tıklama Olayı
+        card.onclick = () => onCardClicked(item, card);
+
+        grid.appendChild(card);
+      });
+    }
+
+    // 5. Karışık Sırayla Yeni Bir Hedef Seç ve Çal
+    function pickNextTargetAndPlay() {
+      if (remainingPool.length === 0) {
+        // TÜMÜ BULUNDU! ADIM TAMAMLANDI!
+        handleStepCompleted();
+        return;
+      }
+
+      currentTarget = remainingPool[0]; // Kuyruğun başındaki rastgele hedef
+      canClickCard = true;
+
+      // Sesi çal
+      setTimeout(playCurrentTargetAudio, 400);
+    }
+
+    // 6. Hedef Sesini Çal
+    function playCurrentTargetAudio() {
+      if (!currentTarget || !currentTarget.audio) return;
+
+      const speakerBtn = document.getElementById('btnHeroSpeaker');
+      if (speakerBtn) speakerBtn.classList.add('pulse-anim');
+
+      if (activeAudio) {
+        activeAudio.pause();
+        activeAudio.currentTime = 0;
+      }
+
+      activeAudio = new Audio(currentTarget.audio);
+      activeAudio.play().catch(e => {
+        console.log('Audio autoplay blocked, click speaker to play.');
+      });
+
+      activeAudio.onended = () => {
+        if (speakerBtn) speakerBtn.classList.remove('pulse-anim');
+      };
+    }
+
+    // 7. Karta Tıklandığında Doğruluk Kontrolü
+    function onCardClicked(item, cardEl) {
+      if (!canClickCard || !currentTarget) return;
+
+      // Zaten çözülmüş karta basıldıysa sesi tekrar çalsın
+      if (solvedIds.has(item.id)) {
+        const snd = new Audio(item.audio);
+        snd.play().catch(() => {});
+        return;
+      }
+
+      canClickCard = false;
+
+      if (item.id === currentTarget.id) {
+        // === DOĞRU CEVAP! ===
+        playDingSound();
+        solvedIds.add(item.id);
+        remainingPool.shift(); // Hedefi kuyruktan çıkar
+
+        // Kart Görsel Geri Bildirimi
+        cardEl.classList.add('correct-flash');
+        setTimeout(() => {
+          cardEl.classList.remove('correct-flash');
+          cardEl.classList.add('solved');
+        }, 300);
+
+        // Skor ve İlerleme
+        totalScore += 10;
+        updateScoreBadge();
+        saveProgress();
+        updateProgressBar();
+
+        showFeedback('correct', '🎉 Harikasın! Doğru harfi buldun! Sıradaki ses geliyor...');
+
+        // 800ms sonra bir sonraki karışık sese geç
+        setTimeout(() => {
+          pickNextTargetAndPlay();
+        }, 800);
+
+      } else {
+        // === YANLIŞ CEVAP! ===
+        playWrongSound();
+        cardEl.classList.add('card-shake');
+        setTimeout(() => {
+          cardEl.classList.remove('card-shake');
+        }, 500);
+
+        showFeedback('wrong', '🤔 Tekrar dinle! Sesi bir daha çalıyorum, ekrandan dikkatle ara...');
+
+        // Sesi tekrar hatırlat
+        setTimeout(() => {
+          playCurrentTargetAudio();
+          canClickCard = true;
+        }, 600);
+      }
+    }
+
+    // 8. İlerleme Çubuğunu Güncelle
+    function updateProgressBar() {
+      if (!currentStepData || !currentStepData.items) return;
+      const total = currentStepData.items.length;
+      const count = solvedIds.size;
+      const pct = Math.round((count / total) * 100);
+
+      const progText = document.getElementById('progressText');
+      const pctText = document.getElementById('percentText');
+      const barFill = document.getElementById('progressBarFill');
+
+      if (progText) progText.textContent = `🎯 ${count} / ${total} Tamamlandı`;
+      if (pctText) pctText.textContent = `%${pct}`;
+      if (barFill) barFill.style.width = `${pct}%`;
+    }
+
+    function showFeedback(type, message) {
+      const banner = document.getElementById('feedbackBanner');
+      if (!banner) return;
+      banner.className = `feedback-banner ${type}`;
+      banner.innerHTML = message;
+    }
+
+    // 9. Adım Tamamlandığında Büyük Kutlama
+    function handleStepCompleted() {
+      playVictoryFanfare();
+      triggerConfetti();
+
+      // Bir sonraki adımın kilidini aç
+      if (currentStepNum >= highestUnlocked) {
+        highestUnlocked = currentStepNum + 1;
+        saveProgress();
+      }
+
+      populateStepDropdown();
+
+      // Modalı Aç
+      const modal = document.getElementById('victoryModal');
+      const modalText = document.getElementById('victoryModalText');
+      const finalScore = document.getElementById('modalFinalScore');
+      const compStep = document.getElementById('modalCompletedStep');
+      const nextBtn = document.getElementById('btnModalNextStep');
+
+      if (modalText) {
+        modalText.innerHTML = `<strong>Tebrikler!</strong> Adım ${currentStepNum} içindeki tüm <strong>${currentStepData.items.length}</strong> harf ve kelimeyi başarıyla dinleyip buldun!`;
+      }
+      if (finalScore) finalScore.textContent = totalScore;
+      if (compStep) compStep.textContent = currentStepNum;
+
+      const maxSteps = window.CURRICULUM_STEPS ? window.CURRICULUM_STEPS.length : 36;
+      if (currentStepNum >= maxSteps) {
+        if (nextBtn) nextBtn.style.display = 'none';
+      } else {
+        if (nextBtn) {
+          nextBtn.style.display = 'flex';
+          nextBtn.innerHTML = `<span>🚀 Sonraki Adıma Başla! (Adım ${currentStepNum + 1}) ➡️</span>`;
+        }
+      }
+
+      if (modal) modal.classList.add('active');
+    }
+
+    function advanceToNextStep() {
+      const modal = document.getElementById('victoryModal');
+      if (modal) modal.classList.remove('active');
+      const maxSteps = window.CURRICULUM_STEPS ? window.CURRICULUM_STEPS.length : 36;
+      if (currentStepNum < maxSteps) {
+        loadStep(currentStepNum + 1);
+      }
+    }
+
+    function replayCurrentStep() {
+      const modal = document.getElementById('victoryModal');
+      if (modal) modal.classList.remove('active');
+      loadStep(currentStepNum);
+    }
+
+    // 10. Konfeti Animasyonu
+    function triggerConfetti() {
+      const canvas = document.getElementById('confettiCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const pieces = [];
+      const colors = ['#f43f5e', '#ec4899', '#8b5cf6', '#3b82f6', '#10b981', '#f59e0b'];
+
+      for (let i = 0; i < 120; i++) {
+        pieces.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          size: Math.random() * 9 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          vx: Math.random() * 4 - 2,
+          vy: Math.random() * 4 + 3,
+          rot: Math.random() * 360,
+          vrot: Math.random() * 6 - 3
+        });
+      }
+
+      let animId;
+      let frame = 0;
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pieces.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.rot += p.vrot;
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rot * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          ctx.restore();
+        });
+
+        frame++;
+        if (frame < 180) {
+          animId = requestAnimationFrame(animate);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+      animate();
+    }
+
+    // Klavye Kısayolları (Boşluk ile sesi tekrar dinleme)
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        playCurrentTargetAudio();
+      }
+    });
+
+    // Başlangıç
+    window.addEventListener('DOMContentLoaded', () => {
+      loadSavedProgress();
+      populateStepDropdown();
+      loadStep(currentStepNum);
+    });
+  </script>
+</body>
+</html>

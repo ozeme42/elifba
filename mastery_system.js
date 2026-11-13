@@ -456,14 +456,13 @@
   };
 
   // 11. ADIM GEÇME SINAVI MOTORU (START EXAM ENGINE)
+  // Ekranda adımın içindeki HER ŞEY seçenek olarak durur, sesler karışık çalar, öğrenci doğruyu bulur!
   function startExamEngine() {
     const step = getStepData(currentActiveStep);
-    if (!step || !step.items || step.items.length < 2) return;
+    if (!step || !step.items || step.items.length === 0) return;
 
-    // Sınav kuyruğu oluştur (Adımdaki maddeleri rastgele karıştır)
-    let pool = [...step.items].sort(() => 0.5 - Math.random());
-    const testSize = Math.min(pool.length, Math.max(4, Math.min(8, pool.length)));
-    examQueue = pool.slice(0, testSize);
+    // Sınav kuyruğu oluştur (Adımdaki TÜM maddeleri rastgele karıştır)
+    examQueue = [...step.items].sort(() => 0.5 - Math.random());
     currentExamIndex = 0;
     examCorrectCount = 0;
     examCanAnswer = true;
@@ -478,7 +477,7 @@
 
     const step = getStepData(currentActiveStep);
     if (currentExamIndex >= examQueue.length) {
-      // SINAV BİTTİ! ÖĞRENCİ BAŞARIYLA GEÇTİ!
+      // SINAV BİTTİ! ÖĞRENCİ ADIMDAKİ HER ŞEYİ BAŞARIYLA GEÇTİ!
       handleExamSuccess();
       return;
     }
@@ -489,14 +488,8 @@
       return;
     }
 
-    // Seçenekler hazırla (1 doğru, diğerleri adımdaki diğer kelimeler)
-    let distractors = step.items.filter(it => it.id !== examTargetItem.id).sort(() => 0.5 - Math.random());
-    let choices = [examTargetItem];
-    for (let d of distractors) {
-      if (choices.length >= 4) break;
-      choices.push(d);
-    }
-    choices.sort(() => 0.5 - Math.random());
+    // EKRANDA ADIMIN İÇİNDEKİ HER ŞEY SEÇENEK OLARAK DURUYOR!
+    let choices = [...step.items];
 
     const totalQuestions = examQueue.length;
     const currentQNum = currentExamIndex + 1;
@@ -505,33 +498,39 @@
       <div class="exam-room-container">
         <div class="exam-header-bar">
           <span class="exam-question-badge">📝 Soru ${currentQNum} / ${totalQuestions}</span>
-          <span class="exam-score-tracker">⭐ Doğru: ${examCorrectCount}</span>
+          <span class="exam-score-tracker">⭐ Bulunan: ${examCorrectCount} / ${step.items.length}</span>
         </div>
 
         <div class="exam-audio-hero">
-          <button class="btn-exam-speaker pulse-anim" id="btnExamSpeaker" onclick="window.playExamAudio()" title="Sesi Tekrar Çal">
+          <button class="btn-exam-speaker pulse-anim" id="btnExamSpeaker" onclick="window.playExamAudio()" title="Sesi Tekrar Çal (Boşluk Tuşu)">
             🔊
           </button>
           <div class="exam-prompt-title">Duyduğun ses hangi kelime/harf?</div>
-          <div class="exam-prompt-sub">Hoparlörden gelen sesi dinle, aşağıdaki kartlardan doğru olanı seç!</div>
+          <div class="exam-prompt-sub">Hoparlörden gelen sesi dinle, aşağıdaki tüm seçenekler arasından doğru olanı bul!</div>
         </div>
 
-        <div class="exam-choices-grid">
-          ${choices.map(c => `
-            <div class="exam-choice-card" onclick="window.submitExamAnswer('${c.id}', this)">
-              ${c.img ? `<img src="${c.img}" alt="${c.alt || 'Seçenek'}" />` : `<span style="font-family:'Amiri'; font-size:3rem;">${c.alt}</span>`}
+        <div style="margin: 12px 4px 6px 4px; font-weight: 800; font-size: 0.95rem; color: #475569; display: flex; justify-content: space-between; align-items: center; direction: rtl;">
+          <span>📋 Bu Adımdaki Tüm Seçenekler (Doğruyu Tıkla):</span>
+          <span style="font-size: 0.85rem; color: #64748b;">Toplam: ${choices.length} Kart</span>
+        </div>
+
+        <div class="exam-choices-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(115px, 1fr)); gap: 12px; direction: rtl;">
+          ${choices.map((c, idx) => `
+            <div class="exam-choice-card" id="exam_card_${c.id}" data-id="${c.id}" onclick="window.submitExamAnswer('${c.id}', this)" style="position:relative; aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; padding:8px;">
+              <span style="position:absolute; top:4px; left:4px; font-size:0.7rem; font-weight:800; color:#94a3b8; background:#f8fafc; padding:1px 5px; border-radius:4px; border:1px solid #e2e8f0;">${idx + 1}</span>
+              ${c.img ? `<img src="${c.img}" alt="${c.alt || 'Seçenek'}" style="max-width:85%; max-height:85%; object-fit:contain;" />` : `<span style="font-family:'Amiri'; font-size:2.8rem; font-weight:700;">${c.alt}</span>`}
             </div>
           `).join('')}
         </div>
 
-        <div class="exam-feedback-banner" id="examFeedbackBanner">
-          <span style="color:#64748b;">Doğru cevaba tıkla...</span>
+        <div class="exam-feedback-banner" id="examFeedbackBanner" style="margin-top:14px;">
+          <span style="color:#64748b;">Hoparlördeki sesi dinle ve aşağıdaki seçeneklerden doğru olanı işaretle...</span>
         </div>
       </div>
     `;
 
     // Sesi hemen çal
-    setTimeout(window.playExamAudio, 300);
+    setTimeout(window.playExamAudio, 350);
   }
 
   window.playExamAudio = function() {
@@ -553,12 +552,12 @@
 
   window.submitExamAnswer = function(chosenId, choiceCard) {
     if (!examCanAnswer) return;
-    examCanAnswer = false;
 
     const feedback = document.getElementById('examFeedbackBanner');
 
     if (chosenId === examTargetItem.id) {
       // DOĞRU CEVAP!
+      examCanAnswer = false;
       choiceCard.classList.add('correct-answer');
       examCorrectCount++;
       playCheerChime();
@@ -567,14 +566,14 @@
       }
 
       if (feedback) {
-        feedback.innerHTML = '<span style="color:#10b981;">🎉 HARİKA! DOĞRU CEVAP! 👏</span>';
+        feedback.innerHTML = '<span style="color:#10b981; font-weight:900;">🎉 HARİKA! DOĞRU CEVAP! 👏 Sıradaki ses geliyor...</span>';
       }
 
-      // 1 saniye sonra bir sonraki soruya geç
+      // 800ms sonra bir sonraki soruya geç
       setTimeout(() => {
         currentExamIndex++;
         loadExamQuestion();
-      }, 900);
+      }, 800);
 
     } else {
       // YANLIŞ CEVAP!
@@ -582,28 +581,17 @@
       playBoingSound();
 
       if (feedback) {
-        feedback.innerHTML = '<span style="color:#ef4444;">⚠️ Yanlış! Doğrusunu dinle, testin sonunda tekrar sorulacak!</span>';
+        feedback.innerHTML = '<span style="color:#ef4444; font-weight:800;">⚠️ Tekrar dene! Sesi bir daha dinle ve doğru kartı bul!</span>';
       }
 
       // Yanlış bilinen soruyu kuyruğun sonuna ekle (öğrenene kadar geçemez!)
       examQueue.push(examTargetItem);
 
-      // Doğru kartı yeşil göstererek öğret
-      const allCards = document.querySelectorAll('.exam-choice-card');
-      allCards.forEach(card => {
-        const img = card.querySelector('img');
-        if (img && img.src.includes(examTargetItem.img)) {
-          card.classList.add('correct-answer');
-        }
-      });
-
       // Doğru sesi tekrar dinlet
-      window.playExamAudio();
-
       setTimeout(() => {
-        currentExamIndex++;
-        loadExamQuestion();
-      }, 2000);
+        window.playExamAudio();
+        choiceCard.classList.remove('wrong-answer');
+      }, 700);
     }
   };
 
