@@ -16,7 +16,7 @@
   let teacherModeUnlocked = false;
   let currentActiveStep = 1;
   let currentPhase = 'train'; // 'train' veya 'exam'
-  let currentDrillFilter = 'all'; // 'all', 'unread', 'read'
+  let currentDrillFilter = 'all'; // 'all', 'flashcard'
   let currentFlashcardIndex = 0;
   let activeAudioObj = null;
 
@@ -220,7 +220,7 @@
     if (elTitle) elTitle.textContent = step.title;
     if (elRule) elRule.textContent = step.desc;
 
-    // Fazı güncelle (Varsayılan: Çalışma)
+    // Varsayılan olarak Antrenman modunu aç
     window.switchStepPhase('train');
 
     updateActiveStepTrainingBar();
@@ -228,7 +228,7 @@
     renderMasteryDashboard();
   };
 
-  // 6. Faz Değiştirici: 1. Çalışma & Antrenman vs 2. Sınav & Test
+  // 6. Faz Değiştirici: 1. Çalışma & Antrenman vs 2. Sınav & Test (REKÜRSİYONSUZ)
   window.switchStepPhase = function(phase) {
     currentPhase = phase;
 
@@ -250,8 +250,13 @@
     } else {
       if (trainArea) trainArea.style.display = 'none';
       if (examArea) examArea.style.display = 'block';
-      window.startStepExam();
+      startExamEngine();
     }
+  };
+
+  // Sınava Başla Butonu Tıklanınca
+  window.startStepExam = function() {
+    window.switchStepPhase('exam');
   };
 
   function updateActiveStepTrainingBar() {
@@ -450,25 +455,21 @@
     }
   };
 
-  // 11. ADIM GEÇME SINAVI (EXAM & EVALUATION ENGINE)
-  // Bu sınav öğrencinin öğrenip öğrenmediğini bizzat test eder!
-  window.startStepExam = function() {
+  // 11. ADIM GEÇME SINAVI MOTORU (START EXAM ENGINE)
+  function startExamEngine() {
     const step = getStepData(currentActiveStep);
     if (!step || !step.items || step.items.length < 2) return;
 
-    window.switchStepPhase('exam');
-
-    // Sınav kuyruğu oluştur (Adımdaki maddeleri rastgele sırala)
+    // Sınav kuyruğu oluştur (Adımdaki maddeleri rastgele karıştır)
     let pool = [...step.items].sort(() => 0.5 - Math.random());
-    // Çok uzun adımlarda en az 8, en fazla 12 soru seç (tüm harfleri test etsin)
-    const testSize = Math.min(pool.length, Math.max(6, Math.min(10, pool.length)));
+    const testSize = Math.min(pool.length, Math.max(4, Math.min(8, pool.length)));
     examQueue = pool.slice(0, testSize);
     currentExamIndex = 0;
     examCorrectCount = 0;
     examCanAnswer = true;
 
     loadExamQuestion();
-  };
+  }
 
   function loadExamQuestion() {
     examCanAnswer = true;
@@ -483,12 +484,17 @@
     }
 
     examTargetItem = examQueue[currentExamIndex];
+    if (!examTargetItem) {
+      handleExamSuccess();
+      return;
+    }
 
-    // 3 veya 4 seçenek hazırla (1 doğru, 2-3 yanıltıcı)
+    // Seçenekler hazırla (1 doğru, diğerleri adımdaki diğer kelimeler)
     let distractors = step.items.filter(it => it.id !== examTargetItem.id).sort(() => 0.5 - Math.random());
-    let choices = [examTargetItem, distractors[0], distractors[1]];
-    if (distractors.length > 2 && window.innerWidth > 600) {
-      choices.push(distractors[2]);
+    let choices = [examTargetItem];
+    for (let d of distractors) {
+      if (choices.length >= 4) break;
+      choices.push(d);
     }
     choices.sort(() => 0.5 - Math.random());
 
@@ -579,7 +585,7 @@
         feedback.innerHTML = '<span style="color:#ef4444;">⚠️ Yanlış! Doğrusunu dinle, testin sonunda tekrar sorulacak!</span>';
       }
 
-      // Yanlış yapılan soruyu kuyruğun sonuna ekle (öğrenene kadar geçemez!)
+      // Yanlış bilinen soruyu kuyruğun sonuna ekle (öğrenene kadar geçemez!)
       examQueue.push(examTargetItem);
 
       // Doğru kartı yeşil göstererek öğret
