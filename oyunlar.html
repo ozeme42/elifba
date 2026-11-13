@@ -2274,6 +2274,7 @@
     }
 
 </style>
+  <link rel="stylesheet" href="mastery_styles.css">
 </head>
 <body>
 
@@ -2300,7 +2301,7 @@
         <span id="streakCount">0</span> Seri
       </div>
       <button class="btn-sound-toggle" id="btnSoundToggle" title="Oyun Efekt Seslerini Aç/Kapat">🔊</button>
-      <button class="stat-badge" style="border:none; cursor:pointer; background:#ecfdf5; color:#065f46; font-weight:800;" onclick="openLessonsTab()" title="28 Ders Adımını İncele">🎓 28 Ders</button>
+      <button class="stat-badge" style="border:none; cursor:pointer; background:#ecfdf5; color:#065f46; font-weight:800;" onclick="openLessonsTab()" title="28 Adım Okuma Alıştırmaları">🎓 28 Adım Okuma</button>
       <button class="stat-badge" style="border:none; cursor:pointer; background:#eff6ff; color:#1e40af; font-weight:800;" onclick="openPrintTab()" title="Yazdırılabilir Çalışma Sayfalarını Aç">🖨️ Yazdır (A4)</button>
       <a href="elifba.htm" style="text-decoration:none;" class="stat-badge" title="Tüm Elifba Derslerine Dön">🏠 Ana Sayfa</a>
     </div>
@@ -2315,7 +2316,7 @@
     <button class="tab-btn" data-tab="tab-balloons">🎈 5. Balon Patlatmaca</button>
     <button class="tab-btn" data-tab="tab-memory">🃏 6. Hafıza Kartları</button>
     <button class="tab-btn" data-tab="tab-wheel">🎡 7. Şans Çarkı</button>
-    <button class="tab-btn" data-tab="tab-lessons" style="background:#f0fdf4; border:2px solid #86efac; color:#15803d; font-weight:900;">🎓 8. 28 Ders Adımı (Tüm Müfredat)</button>
+    <button class="tab-btn" data-tab="tab-lessons" style="background:#f0fdf4; border:2px solid #86efac; color:#15803d; font-weight:900;">🎓 8. 28 Adım Okuma Alıştırmaları & Başarı Takibi</button>
     <button class="tab-btn" data-tab="tab-print" style="background:#fef2f2; border:2px solid #fecaca; color:#991b1b;">🖨️ 9. Sayfa Sayfa Yazdır</button>
   </nav>
 
@@ -2530,6 +2531,17 @@
       </div>
 
       <!-- Alt Kategori Butonları -->
+            <!-- 28 Adım Okuma Alıştırmaları Yönlendirme Bannerı -->
+      <div style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 14px 22px; border-radius: 18px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; box-shadow: var(--shadow);">
+        <div>
+          <div style="font-weight: 900; font-size: 1.15rem; margin-bottom: 3px;">🎓 28 Ders Adımının Tamamını Okuma Alıştırması Olarak Çalışmak İster misiniz?</div>
+          <div style="font-size: 0.92rem; opacity: 0.95; font-weight: 600;">Harfler, Harekeler, Cezim, Med, Şedde ve Tenvinlerin tamamında 745 kelimeyi tek tek dinleyip başarılı olana kadar çalışabileceğiniz stüdyo hazır!</div>
+        </div>
+        <button onclick="document.querySelector(\'[data-tab=\\'tab-lessons\\']\').click()" style="background: white; color: #065f46; border: none; padding: 12px 24px; border-radius: 50px; font-weight: 900; font-size: 0.95rem; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: transform 0.2s;" onmouseover="this.style.transform=\'scale(1.05)\'" onmouseout="this.style.transform=\'scale(1)\'">
+          🚀 28 Adım Okuma Alıştırmalarına Git ➔
+        </button>
+      </div>
+
       <div class="reading-subtabs">
         <button class="read-subtab-btn active" onclick="switchReadingMode('stage-words', this)">
           📖 1. Kelimeler & Karaoke Takip
@@ -3085,31 +3097,176 @@
   
 
     <!-- SEKME 8: TÜM 28 DERS ADIMI (MÜFREDAT GEZGİNİ & NAMAZ DUALARI) -->
+        <!-- SEKME 8: 28 ADIM İNTERAKTİF OKUMA ALIŞTIRMALARI & BAŞARI SİSTEMİ -->
     <section id="tab-lessons" class="view-section">
-      <div class="curriculum-section-header">
-        <h2>🎓 Kur'an-ı Kerim Elifbası: 28 Adımlık Tam Müfredat</h2>
-        <p>
-          Harflerden başlayıp harekeler, cezm, med, şedde, tenvin kuralları ve namaz dualarına kadar 28 adımın tamamı sesli ve açıklamalı olarak elinizin altında!
-        </p>
+      
+      <!-- 1. GENEL BAŞARI & MÜFREDAT KONTROL MERKEZİ -->
+      <div class="mastery-dashboard">
+        <div class="dash-top">
+          <div class="dash-title-group">
+            <div class="dash-icon">🏆</div>
+            <div>
+              <h2>28 Adım Okuma Alıştırmaları & Başarı Takibi</h2>
+              <p>Her adımdaki kelimeleri sırayla dinle, yüksek sesle oku ve "Ben Okudum" butonuna basarak tüm adımları %100 başarıyla tamamla!</p>
+            </div>
+          </div>
+          <div class="dash-stats-row">
+            <div class="dash-stat-box">
+              <span class="stat-num" id="totalReadCount">0 / 777</span>
+              <span class="stat-lbl">Okunan Kelime</span>
+            </div>
+            <div class="dash-stat-box">
+              <span class="stat-num" id="totalMasteredSteps">0 / 36</span>
+              <span class="stat-lbl">Tamamlanan Adım</span>
+            </div>
+            <div class="dash-stat-box highlight-gold">
+              <span class="stat-num" id="totalStarsEarned">⭐ 0</span>
+              <span class="stat-lbl">Kazanılan Yıldız</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Genel İlerleme Çubuğu -->
+        <div class="dash-progress-wrap">
+          <div class="dash-prog-labels">
+            <span>Genel Okuma Başarısı</span>
+            <span id="overallPercentageText">%0 Tamamlandı</span>
+          </div>
+          <div class="dash-prog-track">
+            <div class="dash-prog-bar" id="overallProgressBar" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <!-- Hızlı Eylem Düğmeleri -->
+        <div class="dash-actions">
+          <button class="btn-dash-resume" onclick="window.resumeLastActiveStep()">
+            ▶️ Kaldığın Adımdan Devam Et: <strong id="resumeStepLabel" style="margin-left: 4px;">Ders 1</strong>
+          </button>
+          <button class="btn-dash-reset" onclick="window.confirmResetAllProgress()">
+            🔄 İlerlemeyi Baştan Başlat
+          </button>
+        </div>
       </div>
 
-      <!-- Müfredat Kategori Filtreleri -->
-      <div class="filter-chips-container">
-        <button class="filter-chip active" onclick="filterLessonsGrid('all', this)">🌟 Tüm Adımlar (28 Ders + 8 Dua)</button>
-        <button class="filter-chip" onclick="filterLessonsGrid('hareke', this)">🟢 1. Harfler & Harekeler (Ders 1-8)</button>
-        <button class="filter-chip" onclick="filterLessonsGrid('cezm', this)">🔵 2. Cezm & Kelimeler (Ders 9-11)</button>
-        <button class="filter-chip" onclick="filterLessonsGrid('med', this)">🟣 3. Med (Uzatma) Harfleri (Ders 12-16)</button>
-        <button class="filter-chip" onclick="filterLessonsGrid('sedde', this)">🔴 4. Şedde (Ders 17-19)</button>
-        <button class="filter-chip" onclick="filterLessonsGrid('tenvin', this)">🟠 5. Tenvinler (Ders 20-22)</button>
-        <button class="filter-chip" onclick="filterLessonsGrid('tecvid', this)">🟤 6. İleri Tecvid Kuralları (Ders 23-28)</button>
-        <button class="filter-chip" onclick="filterLessonsGrid('dua', this)">🤲 7. Namaz Duaları (8 Dua)</button>
+      <!-- 2. ADIM SEÇİCİ & KATEGORİ HARİTASI -->
+      <div class="step-nav-section">
+        <div class="step-nav-title">
+          <span>🗺️ Adım Seçici & İlerleme Haritası (36 Adım)</span>
+          <span style="font-size: 0.85rem; color: #64748b; font-weight: 700;">Bir adıma tıkla ve alıştırmaya başla!</span>
+        </div>
+
+        <!-- Kategori Çipleri -->
+        <div class="filter-chips-container" id="curriculumCatFilter" style="margin-bottom: 14px;">
+          <button class="filter-chip active" onclick="window.filterCurriculumCat('all', this)">🌟 Tüm Adımlar (36)</button>
+          <button class="filter-chip" onclick="window.filterCurriculumCat('hareke', this)">🟢 1. Harfler & Harekeler (1-8)</button>
+          <button class="filter-chip" onclick="window.filterCurriculumCat('cezm', this)">🔵 2. Cezimli Okuma (9-11)</button>
+          <button class="filter-chip" onclick="window.filterCurriculumCat('med', this)">🟣 3. Med Harfleri (12-16)</button>
+          <button class="filter-chip" onclick="window.filterCurriculumCat('sedde', this)">🔴 4. Şeddeli Okuma (17-19)</button>
+          <button class="filter-chip" onclick="window.filterCurriculumCat('tenvin', this)">🟠 5. Tenvinler (20-22)</button>
+          <button class="filter-chip" onclick="window.filterCurriculumCat('tecvid', this)">🟤 6. İleri Tecvid (23-28)</button>
+          <button class="filter-chip" onclick="window.filterCurriculumCat('dua', this)">🤲 7. Namaz Duaları (8)</button>
+        </div>
+
+        <!-- Adım Çipleri Izgarası -->
+        <div class="step-chips-grid" id="stepChipsContainer">
+          <!-- JS ile doldurulacak -->
+        </div>
       </div>
 
-      <!-- 28 Ders Kartları Izgarası -->
-      <div class="curriculum-grid" id="curriculumCardsGrid">
-        <!-- JavaScript ile dinamik olarak doldurulacak -->
+      <!-- 3. AKTİF ADIM İNTERAKTİF OKUMA ÇALIŞMA ALANI (STUDIO) -->
+      <div class="active-step-studio" id="activeStepStudio">
+        
+        <!-- Adım Başlığı & Kural Bilgisi -->
+        <div class="studio-step-banner">
+          <div class="studio-step-meta">
+            <span class="studio-cat-tag" id="studioCatTag">1. Harfler & Harekeler</span>
+            <span class="studio-step-tag" id="studioStepTag">Adım 1 / 28</span>
+          </div>
+          <div class="studio-title-row">
+            <h2 id="studioTitle">Ders 1: Harfler</h2>
+            <div style="display:flex; gap:8px;">
+              <button class="tool-btn" onclick="window.navigateStep(-1)" title="Önceki Adım">⬅️ Önceki</button>
+              <button class="tool-btn" onclick="window.navigateStep(1)" title="Sonraki Adım">Sonraki ➡️</button>
+            </div>
+          </div>
+          <div class="studio-rule-box">
+            <span class="rule-icon">💡</span>
+            <span id="studioRuleText">Arapça harflerin doğru çıkış yerlerini ve telaffuzlarını dinleyip öğrenin.</span>
+          </div>
+
+          <!-- Adım Başarı Çubuğu -->
+          <div class="studio-mastery-status">
+            <div class="mastery-status-header">
+              <span>🎯 Bu Adımdaki Okuma Başarısı:</span>
+              <strong id="studioMasteryCount">0 / 29 Kelime (%0)</strong>
+            </div>
+            <div class="mastery-progress-track">
+              <div class="mastery-progress-fill" id="studioMasteryFill" style="width: 0%"></div>
+            </div>
+            <div class="mastery-motivate-msg incomplete" id="studioMotivateMsg">
+              ⏳ <strong>Çalışmaya Başla!</strong> Kelimeleri tek tek dinle, yüksek sesle oku ve "Ben Okudum"a basarak adımı tamamla!
+            </div>
+          </div>
+        </div>
+
+        <!-- Araç Çubuğu (Görünüm & Filtreler) -->
+        <div class="studio-toolbar">
+          <div class="tool-group" id="drillModeGroup">
+            <span style="font-weight: 900; font-size: 0.82rem; color: #64748b; margin-right: 2px;">Görünüm:</span>
+            <button class="tool-btn active" data-drill-mode="grid" onclick="window.switchDrillViewMode('grid')">
+              📋 Izgara (Tümü)
+            </button>
+            <button class="tool-btn" data-drill-mode="flashcard" onclick="window.switchDrillViewMode('flashcard')">
+              🔍 Büyük Odak (Flashcard)
+            </button>
+            <button class="tool-btn" data-drill-mode="quiz" onclick="window.switchDrillViewMode('quiz')">
+              🎯 Adım Sonu Testi
+            </button>
+            <button class="tool-btn" id="btnToggleAutoLoop" onclick="window.toggleStepAutoLoop()">
+              ▶️ Sırayla Otomatik Dinle & Oku
+            </button>
+          </div>
+
+          <div class="tool-group" id="drillFilterGroup">
+            <span style="font-weight: 900; font-size: 0.82rem; color: #64748b; margin-right: 2px;">Filtrele:</span>
+            <button class="tool-btn active" onclick="window.filterDrillItems('all', this)">Tümü</button>
+            <button class="tool-btn" onclick="window.filterDrillItems('unread', this)">⏳ Kalanlar (Okunmayanlar)</button>
+            <button class="tool-btn" onclick="window.filterDrillItems('read', this)">✅ Okunanlar</button>
+          </div>
+        </div>
+
+        <!-- 1. Grid Görünümü -->
+        <div class="drill-grid" id="drillItemsGrid">
+          <!-- JS ile doldurulacak -->
+        </div>
+
+        <!-- 2. Flashcard Görünümü -->
+        <div id="flashcardViewContainer" style="display: none;">
+          <!-- JS ile doldurulacak -->
+        </div>
+
+        <!-- 3. Mini-Quiz Görünümü -->
+        <div id="stepQuizContainer" style="display: none;">
+          <!-- JS ile doldurulacak -->
+        </div>
+
       </div>
+
     </section>
+
+    <!-- ADIM BAŞARI KUTLAMA MODALI -->
+    <div id="stepTrophyModal" class="step-trophy-modal">
+      <div class="trophy-modal-card">
+        <div class="trophy-badge-icon">👑 🏆 🌟</div>
+        <h2 id="trophyStepTitle">🎉 MAŞALLAH! Adım Tamamlandı!</h2>
+        <p id="trophyStepDesc">Bu adımdaki tüm okuma alıştırmalarını başarıyla bitirdin!</p>
+        <div class="trophy-stars-box">⭐⭐⭐⭐⭐</div>
+        <div class="trophy-actions">
+          <button class="btn-trophy-next" id="btnTrophyNextStep">🚀 Sonraki Adıma Geç ➡️</button>
+          <button class="btn-trophy-repeat" onclick="window.closeStepCelebrationModal()">🔁 Bu Adımı Tekrar İncele</button>
+        </div>
+      </div>
+    </div>
 
 
     <!-- SEKME 9: ADIM ADIM YAZDIRILABİLİR ÇALIŞMA SAYFALARI (A4 BASKI) -->
@@ -3689,20 +3846,7 @@
     </section>
 
   
-  <!-- İNTERAKTİF DERS İNCELEME MODALI -->
-  <div id="lessonModal" class="lesson-modal-overlay">
-    <div class="lesson-modal-content">
-      <div class="lesson-modal-header">
-        <div class="lesson-modal-title" id="modalLessonTitle">
-          <span>📖</span> <span id="modalLessonHeading">Ders Adı</span>
-        </div>
-        <div style="display: flex; gap: 8px; align-items: center;">
-          <a id="modalExternalLink" href="#" target="_blank" style="text-decoration:none; background:#eff6ff; color:#1d4ed8; padding:6px 14px; border-radius:12px; font-size:0.85rem; font-weight:800;">
-            ↗️ Tam Ekranda Aç
-          </a>
-          <button class="lesson-modal-close" onclick="closeLessonModal()" title="Kapat">✕</button>
-        </div>
-      </div>
+  
       <div class="lesson-modal-body">
         <iframe id="modalLessonIframe" class="lesson-modal-iframe" src="about:blank"></iframe>
       </div>
@@ -4470,7 +4614,9 @@
         } else if (tabId === 'tab-wheel') {
           drawWheel();
         } else if (tabId === 'tab-lessons') {
-          renderCurriculumCards('all');
+          if (typeof window.initMasterySystem === 'function') {
+            window.initMasterySystem();
+          }
         }
       });
     });
@@ -5379,5 +5525,7 @@
       }
     };
   </script>
+  <script src="curriculum_data.js"></script>
+  <script src="mastery_system.js"></script>
 </body>
 </html>

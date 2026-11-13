@@ -1,0 +1,841 @@
+
+    /* =========================================================
+       28 ADIM İNTERAKTİF OKUMA ALIŞTIRMALARI & BAŞARI SİSTEMİ
+       ========================================================= */
+    .mastery-dashboard {
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 60%, #4338ca 100%);
+      color: white;
+      border-radius: var(--radius);
+      padding: 26px 30px;
+      margin-bottom: 25px;
+      box-shadow: 0 15px 35px -5px rgba(49, 46, 129, 0.4);
+      position: relative;
+      overflow: hidden;
+      border: 2px solid rgba(255, 255, 255, 0.15);
+    }
+    .mastery-dashboard::before {
+      content: '';
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(247, 37, 133, 0.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .dash-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .dash-title-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .dash-icon {
+      width: 58px;
+      height: 58px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
+      flex-shrink: 0;
+    }
+    .dash-title-group h2 {
+      font-size: 1.7rem;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
+    }
+    .dash-title-group p {
+      font-size: 0.95rem;
+      color: #c7d2fe;
+      font-weight: 600;
+      max-width: 550px;
+      line-height: 1.4;
+    }
+
+    .dash-stats-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .dash-stat-box {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(10px);
+      border: 1.5px solid rgba(255, 255, 255, 0.18);
+      border-radius: 16px;
+      padding: 10px 18px;
+      text-align: center;
+      min-width: 110px;
+      transition: transform 0.2s;
+    }
+    .dash-stat-box:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.18);
+    }
+    .dash-stat-box.highlight-gold {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(217, 119, 6, 0.25));
+      border-color: rgba(251, 191, 36, 0.5);
+    }
+    .dash-stat-box .stat-num {
+      display: block;
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1.1;
+    }
+    .dash-stat-box.highlight-gold .stat-num {
+      color: #fde047;
+    }
+    .dash-stat-box .stat-lbl {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #c7d2fe;
+      margin-top: 3px;
+    }
+
+    .dash-progress-wrap {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 16px;
+      padding: 14px 18px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .dash-prog-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.88rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: #e0e7ff;
+    }
+    .dash-prog-track {
+      height: 14px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+    .dash-prog-bar {
+      height: 100%;
+      border-radius: 10px;
+      background: linear-gradient(90deg, #10b981 0%, #06b6d4 50%, #f59e0b 100%);
+      transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.6);
+    }
+
+    .dash-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .btn-dash-resume {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+      transition: all 0.2s;
+    }
+    .btn-dash-resume:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+    }
+    .btn-dash-reset {
+      background: transparent;
+      color: #cbd5e1;
+      border: 1.5px solid rgba(255, 255, 255, 0.2);
+      padding: 8px 16px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-dash-reset:hover {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: #ef4444;
+      color: #fca5a5;
+    }
+
+    /* Adım Haritası / Seçici Ribbon */
+    .step-nav-section {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 25px;
+      border: 2px solid #e2e8f0;
+    }
+    .step-nav-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: #0f172a;
+    }
+
+    .step-chips-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 10px;
+      max-height: 280px;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+    .step-chips-grid::-webkit-scrollbar {
+      width: 6px;
+    }
+    .step-chips-grid::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 10px;
+    }
+
+    .step-chip-card {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 10px 12px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+    }
+    .step-chip-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+      background: #f0f4ff;
+    }
+    .step-chip-card.active {
+      background: linear-gradient(135deg, #eff6ff, #dbeafe);
+      border-color: var(--primary);
+      box-shadow: 0 4px 14px rgba(67, 97, 238, 0.25);
+      transform: scale(1.02);
+    }
+    .step-chip-card.mastered {
+      background: #f0fdf4;
+      border-color: #86efac;
+    }
+    .step-chip-card.mastered.active {
+      border-color: #10b981;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
+    }
+
+    .step-chip-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .step-chip-num {
+      font-size: 0.75rem;
+      font-weight: 900;
+      color: var(--primary);
+      background: white;
+      padding: 2px 7px;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+    }
+    .step-chip-badge {
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+    .step-chip-title {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #1e293b;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.2;
+    }
+    .step-chip-mini-bar {
+      height: 5px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .step-chip-mini-fill {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 4px;
+      transition: width 0.3s;
+    }
+    .step-chip-card.mastered .step-chip-mini-fill {
+      background: #10b981;
+    }
+
+    /* Aktif Adım Okuma Stüdyosu (Workspace) */
+    .active-step-studio {
+      background: white;
+      border-radius: 24px;
+      padding: 28px 24px;
+      box-shadow: var(--shadow-lg);
+      border: 2px solid #e2e8f0;
+      margin-bottom: 35px;
+      position: relative;
+    }
+
+    .studio-step-banner {
+      background: linear-gradient(135deg, #f8fafc, #edf2f7);
+      border-radius: 18px;
+      padding: 20px 24px;
+      border: 2px solid #e2e8f0;
+      margin-bottom: 22px;
+      position: relative;
+    }
+    .studio-step-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+    .studio-cat-tag {
+      font-size: 0.78rem;
+      font-weight: 900;
+      color: white;
+      background: var(--step-color, var(--primary));
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+    .studio-step-tag {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #475569;
+      background: white;
+      padding: 4px 10px;
+      border-radius: 12px;
+      border: 1px solid #cbd5e1;
+    }
+
+    .studio-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .studio-title-row h2 {
+      font-size: 1.85rem;
+      font-weight: 900;
+      color: #0f172a;
+      line-height: 1.2;
+    }
+
+    .studio-rule-box {
+      background: white;
+      border: 1.5px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      color: #334155;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      line-height: 1.45;
+    }
+    .studio-rule-box .rule-icon {
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    /* Adım Hedef / İlerleme Çubuğu */
+    .studio-mastery-status {
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 14px 18px;
+    }
+    .mastery-status-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 800;
+      font-size: 0.92rem;
+      margin-bottom: 8px;
+    }
+    .mastery-progress-track {
+      height: 12px;
+      background: #e2e8f0;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .mastery-progress-fill {
+      height: 100%;
+      border-radius: 10px;
+      background: linear-gradient(90deg, var(--primary), #10b981);
+      transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .mastery-motivate-msg {
+      font-size: 0.88rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .mastery-motivate-msg.incomplete {
+      color: #b45309;
+    }
+    .mastery-motivate-msg.complete {
+      color: #059669;
+    }
+
+    /* Çalışma Araç Çubuğu (Toolbar) */
+    .studio-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+      background: #f8fafc;
+      padding: 12px 16px;
+      border-radius: 16px;
+      border: 1.5px solid #e2e8f0;
+    }
+    .tool-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .tool-btn {
+      padding: 8px 16px;
+      border-radius: 50px;
+      border: 1.5px solid #cbd5e1;
+      background: white;
+      font-weight: 800;
+      font-size: 0.85rem;
+      color: #475569;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .tool-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: #eff6ff;
+    }
+    .tool-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 4px 10px rgba(67, 97, 238, 0.25);
+    }
+
+    /* Okuma Kartları Izgarası (Drill Grid) */
+    .drill-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 16px;
+    }
+
+    .drill-card {
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor: pointer;
+      overflow: hidden;
+    }
+    .drill-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary);
+    }
+    .drill-card.playing {
+      border-color: #3b82f6;
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+      animation: pulseBorder 1.2s infinite;
+    }
+    @keyframes pulseBorder {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+    .drill-card.mastered {
+      background: #f0fdf4;
+      border-color: #86efac;
+    }
+    .drill-card.mastered:hover {
+      border-color: #10b981;
+    }
+
+    .drill-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 8px;
+    }
+    .drill-item-num {
+      font-size: 0.75rem;
+      font-weight: 900;
+      color: #64748b;
+      background: #f1f5f9;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+    .drill-status-tag {
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: #f1f5f9;
+      color: #64748b;
+    }
+    .drill-card.mastered .drill-status-tag {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .drill-img-container {
+      width: 100%;
+      min-height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 8px 0 12px;
+      padding: 6px;
+      background: #ffffff;
+      border-radius: 12px;
+      position: relative;
+    }
+    .drill-img {
+      max-width: 95%;
+      max-height: 85px;
+      object-fit: contain;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+      transition: transform 0.2s;
+    }
+    .drill-card:hover .drill-img {
+      transform: scale(1.08);
+    }
+
+    .drill-sound-waves {
+      display: none;
+      position: absolute;
+      bottom: 2px;
+      gap: 3px;
+      align-items: flex-end;
+      height: 16px;
+    }
+    .drill-card.playing .drill-sound-waves {
+      display: flex;
+    }
+    .wave-bar {
+      width: 3px;
+      background: #3b82f6;
+      border-radius: 3px;
+      animation: waveMove 0.8s infinite ease-in-out;
+    }
+    .wave-bar:nth-child(1) { height: 6px; animation-delay: 0.1s; }
+    .wave-bar:nth-child(2) { height: 14px; animation-delay: 0.2s; }
+    .wave-bar:nth-child(3) { height: 10px; animation-delay: 0.3s; }
+    .wave-bar:nth-child(4) { height: 16px; animation-delay: 0.4s; }
+    .wave-bar:nth-child(5) { height: 8px; animation-delay: 0.5s; }
+    @keyframes waveMove {
+      0%, 100% { transform: scaleY(0.4); }
+      50% { transform: scaleY(1); }
+    }
+
+    .drill-actions {
+      display: flex;
+      gap: 6px;
+      width: 100%;
+      margin-top: 6px;
+    }
+    .btn-drill-listen {
+      flex: 1;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1.5px solid #bfdbfe;
+      background: #eff6ff;
+      color: #1e40af;
+      font-weight: 800;
+      font-size: 0.82rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: all 0.15s;
+    }
+    .btn-drill-listen:hover {
+      background: #dbeafe;
+      transform: scale(1.02);
+    }
+    .btn-drill-confirm {
+      flex: 1.2;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: none;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      font-weight: 800;
+      font-size: 0.82rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: all 0.15s;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+    .btn-drill-confirm:hover {
+      filter: brightness(1.1);
+      transform: scale(1.03);
+    }
+    .drill-card.mastered .btn-drill-confirm {
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1.5px solid #a7f3d0;
+      box-shadow: none;
+    }
+
+    /* Flashcard (Büyük Odak Modu) */
+    .flashcard-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 10px;
+    }
+    .big-flashcard {
+      background: white;
+      border-radius: 28px;
+      width: 100%;
+      max-width: 620px;
+      min-height: 380px;
+      padding: 30px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+      border: 3px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .big-flashcard.mastered {
+      background: #f0fdf4;
+      border-color: #86efac;
+    }
+    .big-flashcard .fc-top {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      align-items: center;
+    }
+    .big-flashcard .fc-counter {
+      font-size: 1rem;
+      font-weight: 900;
+      color: #64748b;
+      background: #f1f5f9;
+      padding: 4px 14px;
+      border-radius: 20px;
+    }
+    .big-flashcard .fc-img-box {
+      width: 100%;
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+    }
+    .big-flashcard .fc-img-box img {
+      max-width: 85%;
+      max-height: 160px;
+      object-fit: contain;
+      image-rendering: -webkit-optimize-contrast;
+      transition: transform 0.2s;
+    }
+    .big-flashcard .fc-img-box:hover img {
+      transform: scale(1.12);
+    }
+    .fc-nav-row {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
+    .btn-fc-nav {
+      padding: 12px 24px;
+      border-radius: 50px;
+      border: 2px solid #cbd5e1;
+      background: white;
+      font-weight: 800;
+      font-size: 1rem;
+      color: #334155;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-fc-nav:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .btn-fc-confirm {
+      flex: 1;
+      max-width: 240px;
+      padding: 14px 20px;
+      border-radius: 50px;
+      border: none;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      font-weight: 900;
+      font-size: 1.1rem;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.35);
+      transition: all 0.2s;
+    }
+    .btn-fc-confirm:hover {
+      transform: scale(1.03);
+      box-shadow: 0 8px 22px rgba(16, 185, 129, 0.45);
+    }
+
+    /* Adım Sonu Başarı Töreni Modalı (Grand Trophy Modal) */
+    .step-trophy-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .step-trophy-modal.active {
+      display: flex;
+    }
+    .trophy-modal-card {
+      background: white;
+      border-radius: 32px;
+      max-width: 580px;
+      width: 100%;
+      padding: 40px 32px;
+      text-align: center;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.5);
+      position: relative;
+      animation: popInModal 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border: 4px solid #fef08a;
+    }
+    @keyframes popInModal {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .trophy-badge-icon {
+      font-size: 5rem;
+      line-height: 1;
+      margin-bottom: 12px;
+      filter: drop-shadow(0 10px 15px rgba(245, 158, 11, 0.4));
+      animation: floatTrophy 2s ease-in-out infinite;
+    }
+    @keyframes floatTrophy {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .trophy-modal-card h2 {
+      font-size: 2.1rem;
+      font-weight: 900;
+      color: #1e1b4b;
+      margin-bottom: 8px;
+    }
+    .trophy-modal-card p {
+      font-size: 1.05rem;
+      color: #475569;
+      font-weight: 700;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+    .trophy-stars-box {
+      font-size: 2.4rem;
+      letter-spacing: 6px;
+      margin-bottom: 24px;
+      color: #f59e0b;
+    }
+    .trophy-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-trophy-next {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 50px;
+      font-weight: 900;
+      font-size: 1.1rem;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.45);
+      transition: all 0.2s;
+    }
+    .btn-trophy-next:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 12px 30px rgba(16, 185, 129, 0.55);
+    }
+    .btn-trophy-repeat {
+      background: #f1f5f9;
+      color: #334155;
+      border: 2px solid #cbd5e1;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-trophy-repeat:hover {
+      background: #e2e8f0;
+    }
