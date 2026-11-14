@@ -456,21 +456,28 @@
   };
 
   // 11. ADIM GEÇME SINAVI MOTORU (START EXAM ENGINE)
-  // KESİNLİKLE 4'LÜ SÜTUN DÜZENİ & SIRAYLA TIKLAMAYI ÖNLEME KORUMASI
+  // KESİNLİKLE 4'LÜ SÜTUN DÜZENİ, YANLIŞLAR KAPANMAZ & HER HARF 3 KEZ SORULUR
   let examConsecutiveWrong = 0;
-  let examDisabledCardIds = new Set();
+  let examItemHits = {};
+  const EXAM_REQUIRED_HITS = 3; // Her harf ve kelime 3 kez sorulup tamamlanır
 
   function startExamEngine() {
     const step = getStepData(currentActiveStep);
     if (!step || !step.items || step.items.length === 0) return;
 
-    // Sınav kuyruğu oluştur (Adımdaki TÜM maddeleri rastgele karıştır)
-    examQueue = [...step.items].sort(() => 0.5 - Math.random());
+    // Her maddeyi 3 kez sorulacak şekilde havuza ekle ve karıştır
+    examItemHits = {};
+    step.items.forEach(it => { examItemHits[it.id] = 0; });
+
+    examQueue = [];
+    for (let r = 0; r < EXAM_REQUIRED_HITS; r++) {
+      examQueue.push(...[...step.items].sort(() => 0.5 - Math.random()));
+    }
+
     currentExamIndex = 0;
     examCorrectCount = 0;
     examCanAnswer = true;
     examConsecutiveWrong = 0;
-    examDisabledCardIds.clear();
 
     loadExamQuestion();
   }
@@ -478,35 +485,49 @@
   function loadExamQuestion() {
     examCanAnswer = true;
     examConsecutiveWrong = 0;
-    examDisabledCardIds.clear();
 
     const examArea = document.getElementById('examPhaseArea');
     if (!examArea) return;
 
     const step = getStepData(currentActiveStep);
-    if (currentExamIndex >= examQueue.length) {
-      // SINAV BİTTİ! ÖĞRENCİ ADIMDAKİ HER ŞEYİ BAŞARIYLA GEÇTİ!
+
+    // Henüz 3 kez bilinmemiş hedefleri filtrele
+    const unmastered = examQueue.filter(it => (examItemHits[it.id] || 0) < EXAM_REQUIRED_HITS);
+
+    if (unmastered.length === 0) {
+      // SINAV BİTTİ! TÜM HARFLER 3'ER KEZ BAŞARIYLA GEÇİLDİ!
       handleExamSuccess();
       return;
     }
 
-    examTargetItem = examQueue[currentExamIndex];
-    if (!examTargetItem) {
-      handleExamSuccess();
-      return;
+    // Aynı soruyu üst üste getirmemeye çalış
+    let chosen = unmastered[0];
+    if (unmastered.length > 1 && examTargetItem && unmastered[0].id === examTargetItem.id) {
+      const alt = unmastered.find(i => i.id !== examTargetItem.id);
+      if (alt) chosen = alt;
     }
+
+    examTargetItem = chosen;
+    const qIdx = examQueue.indexOf(examTargetItem);
+    if (qIdx !== -1) examQueue.splice(qIdx, 1);
 
     // SIRAYLA TIKLAMAYI ÖNLEMEK İÇİN KARTLAR TAHTAYA KARIŞIK DİZİLİR
     let choices = [...step.items].sort(() => 0.5 - Math.random());
 
-    const totalQuestions = examQueue.length;
-    const currentQNum = currentExamIndex + 1;
+    const totalTargetHits = step.items.length * EXAM_REQUIRED_HITS;
+    let totalCompletedHits = 0;
+    let completedItemsCount = 0;
+    Object.values(examItemHits).forEach(h => {
+      const capped = Math.min(EXAM_REQUIRED_HITS, h);
+      totalCompletedHits += capped;
+      if (capped >= EXAM_REQUIRED_HITS) completedItemsCount++;
+    });
 
     examArea.innerHTML = `
       <div class="exam-room-container">
         <div class="exam-header-bar">
-          <span class="exam-question-badge">📝 Soru ${currentQNum} / ${totalQuestions}</span>
-          <span class="exam-score-tracker">⭐ Bulunan: ${examCorrectCount} / ${step.items.length}</span>
+          <span class="exam-question-badge">📝 ${totalCompletedHits} / ${totalTargetHits} Doğru (3 Tekrar Kuralı)</span>
+          <span class="exam-score-tracker">⭐ Tamamlanan: ${completedItemsCount} / ${step.items.length} Harf (3x)</span>
         </div>
 
         <div class="exam-audio-hero">
@@ -517,17 +538,27 @@
           <div class="exam-prompt-sub">Hoparlörden gelen sesi dinle, aşağıdaki 4'lü sütun seçenekler arasından doğru olanı bul!</div>
         </div>
 
-        <div style="margin: 12px auto 6px auto; max-width: 960px; font-weight: 800; font-size: 0.95rem; color: #475569; display: flex; justify-content: space-between; align-items: center; direction: rtl;">
-          <span>📋 4'lü Sütun Seçenek Tablosu (Boşluksuz & Dev Boyut):</span>
-          <span style="font-size: 0.85rem; color: #166534; background: #f0fdf4; border: 1px solid #86efac; padding: 2px 10px; border-radius: 999px;">🛡️ Sırayla Tıklama Engeli Aktif</span>
+        <div style="margin: 12px auto 6px auto; max-width: 960px; font-weight: 800; font-size: 0.95rem; color: #475569; display: flex; justify-content: space-between; align-items: center; direction: rtl; flex-wrap: wrap; gap: 8px;">
+          <span>📋 4'lü Sütun Seçenek Tablosu (Boşluksuz):</span>
+          <span style="font-size: 0.85rem; color: #92400e; background: #fef3c7; border: 1px solid #fde68a; padding: 2px 10px; border-radius: 999px;">⭐ Her Harf 3 Kez Sorulur & Yanlışlar Kapanmaz</span>
         </div>
 
         <div class="exam-choices-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0px; direction: rtl; max-width: 960px; margin: 14px auto;">
-          ${choices.map((c) => `
-            <div class="exam-choice-card" id="exam_card_${c.id}" data-id="${c.id}" onclick="window.submitExamAnswer('${c.id}', this)">
-              ${c.img ? `<img src="${c.img}" alt="${c.alt || 'Seçenek'}" />` : `<span style="font-family:'Amiri'; font-size:3.8rem; font-weight:700;">${c.alt}</span>`}
-            </div>
-          `).join('')}
+          ${choices.map((c) => {
+            const hits = examItemHits[c.id] || 0;
+            const isSolved = hits >= EXAM_REQUIRED_HITS;
+            let starText = '';
+            if (isSolved) starText = '⭐⭐⭐ ✓';
+            else if (hits === 2) starText = '⭐⭐ (2/3)';
+            else if (hits === 1) starText = '⭐ (1/3)';
+
+            return `
+              <div class="exam-choice-card ${isSolved ? 'correct-answer' : ''}" id="exam_card_${c.id}" data-id="${c.id}" onclick="window.submitExamAnswer('${c.id}', this)">
+                ${starText ? `<span class="card-stars-badge" style="position:absolute; top:4px; right:4px; font-size:0.72rem; font-weight:900; background:${isSolved ? '#22c55e' : '#fef3c7'}; color:${isSolved ? '#fff' : '#92400e'}; border:1px solid ${isSolved ? '#16a34a' : '#fde68a'}; padding:1px 5px; border-radius:999px; z-index:2;">${starText}</span>` : ''}
+                ${c.img ? `<img src="${c.img}" alt="${c.alt || 'Seçenek'}" />` : `<span style="font-family:'Amiri'; font-size:3.8rem; font-weight:700;">${c.alt}</span>`}
+              </div>
+            `;
+          }).join('')}
         </div>
 
         <div class="exam-feedback-banner" id="examFeedbackBanner" style="margin-top:14px;">
@@ -559,7 +590,13 @@
 
   window.submitExamAnswer = function(chosenId, choiceCard) {
     if (!examCanAnswer) return;
-    if (examDisabledCardIds.has(chosenId)) return;
+
+    // 3 kez tamamlanmış karta basılırsa sadece ses çalsın
+    if ((examItemHits[chosenId] || 0) >= EXAM_REQUIRED_HITS) {
+      const snd = new Audio(examTargetItem.audio);
+      snd.play().catch(() => {});
+      return;
+    }
 
     const feedback = document.getElementById('examFeedbackBanner');
     const grid = document.querySelector('.exam-choices-grid');
@@ -568,29 +605,36 @@
       // DOĞRU CEVAP!
       examCanAnswer = false;
       choiceCard.classList.add('correct-answer');
-      examCorrectCount++;
       playCheerChime();
       if (typeof window.triggerConfetti === 'function') {
         window.triggerConfetti();
       }
 
-      if (feedback) {
-        feedback.innerHTML = '<span style="color:#10b981; font-weight:900;">🎉 HARİKA! DOĞRU CEVAP! 👏 Sıradaki ses geliyor...</span>';
+      const currentHits = (examItemHits[chosenId] || 0) + 1;
+      examItemHits[chosenId] = currentHits;
+
+      if (currentHits >= EXAM_REQUIRED_HITS) {
+        if (feedback) {
+          feedback.innerHTML = `<span style="color:#10b981; font-weight:900;">🏆 MAŞALLAH! Bu harf 3 kez doğru bilinerek tamamlandı! (3/3) 👏</span>`;
+        }
+      } else {
+        if (feedback) {
+          feedback.innerHTML = `<span style="color:#10b981; font-weight:900;">🎉 HARİKA! ${currentHits}. tekrar tamamlandı (${currentHits}/3). Sıradaki ses geliyor...</span>`;
+        }
       }
 
       // 800ms sonra bir sonraki soruya geç
       setTimeout(() => {
-        currentExamIndex++;
         loadExamQuestion();
       }, 800);
 
     } else {
-      // YANLIŞ CEVAP! (SIRAYLA TIKLAMAYI ENGELLEME MOTORU)
-      examCanAnswer = false; // Tahtayı derhal kilitle!
+      // YANLIŞ CEVAP! (YANLIŞLAR ASLA KAPANMAZ!)
+      examCanAnswer = false; // Hızlı tıklamayı önlemek için kısa süreli kilit
       examConsecutiveWrong++;
-      examDisabledCardIds.add(chosenId);
 
-      choiceCard.classList.add('wrong-answer', 'guess-disabled');
+      // Kart sallansın ama KAPANMASIN (kart açık kalır!)
+      choiceCard.classList.add('wrong-answer');
       setTimeout(() => {
         choiceCard.classList.remove('wrong-answer');
       }, 500);
@@ -600,20 +644,19 @@
       if (grid) grid.classList.add('grid-locked');
 
       if (examConsecutiveWrong >= 3) {
-        // Sırayla rastgele deneme yapan öğrenciye uyarı ve kartları yeniden karıştırma!
         if (feedback) {
-          feedback.innerHTML = '<span style="color:#ef4444; font-weight:800;">⚠️ <strong>Sırayla tıklama önlendi!</strong> Önce sesi dinle 🎧 (Kartlar karıştırılıyor...)</span>';
+          feedback.innerHTML = '<span style="color:#ef4444; font-weight:800;">⚠️ <strong>Sesi dinle!</strong> Ezbere tıklama, sesi dinleyip öyle bul 🎧 (Kartlar karıştırılıyor...)</span>';
         }
         setTimeout(() => {
           loadExamQuestion();
         }, 800);
       } else {
         if (feedback) {
-          feedback.innerHTML = '<span style="color:#ef4444; font-weight:800;">🤔 <strong>Yanlış kart!</strong> Lütfen önce sesi dinle, ardından doğru olanı seç...</span>';
+          feedback.innerHTML = '<span style="color:#ef4444; font-weight:800;">🤔 <strong>Yanlış kart!</strong> Kartlar açık kalıyor, sesi bir daha dinle ve doğru olanı seç...</span>';
         }
       }
 
-      // Yanlış bilinen soruyu kuyruğun sonuna ekle (öğrenene kadar geçemez!)
+      // Yanlış bilinen soruyu tekrar sorulmak üzere kuyruğa ekle
       examQueue.push(examTargetItem);
 
       // Doğru sesi tekrar dinlet
@@ -621,11 +664,11 @@
         window.playExamAudio();
       }, 300);
 
-      // 1.5 saniye sonra tahta kilidini aç (hızlı tıklamayı engeller)
+      // 1.2 saniye sonra tahta kilidini aç (öğrenci tekrar deneyebilir, KARTLAR KAPANMAZ!)
       setTimeout(() => {
         if (grid) grid.classList.remove('grid-locked');
         examCanAnswer = true;
-      }, 1500);
+      }, 1200);
     }
   };
 

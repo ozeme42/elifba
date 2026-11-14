@@ -586,39 +586,37 @@
       100% { transform: scale(1); }
     }
 
-    /* SIRAYLA TIKLAMAYI ENGELLEME: Yanlış tıklanan kart bu turda kilitlenir */
-    .item-card.guess-disabled {
-      opacity: 0.45 !important;
-      background: #f8fafc !important;
-      border-color: #fca5a5 !important;
-      cursor: not-allowed !important;
-      pointer-events: none !important;
-      filter: grayscale(0.5);
-    }
-
-    .item-card.guess-disabled::after {
-      content: '✕';
+    /* KART ÜZERİNDEKİ 3 TEKRAR YILDIZ GÖSTERGESİ */
+    .card-stars-badge {
       position: absolute;
-      top: 6px;
-      right: 6px;
-      width: 22px;
-      height: 22px;
-      background: #ef4444;
-      color: white;
-      font-size: 13px;
+      top: 4px;
+      right: 4px;
+      font-size: 0.72rem;
       font-weight: 900;
-      border-radius: 50%;
-      display: flex;
+      color: #92400e;
+      background: rgba(254, 243, 199, 0.95);
+      border: 1px solid #fde68a;
+      padding: 1px 6px;
+      border-radius: 999px;
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);
+      gap: 2px;
+      z-index: 3;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
     }
 
-    /* Kart Durumu: Yanlış Tıklanan (Shake Effect) */
+    .item-card.solved .card-stars-badge {
+      background: #16a34a !important;
+      color: white !important;
+      border-color: #15803d !important;
+    }
+
+    /* Kart Durumu: Yanlış Tıklanan (Shake Effect - KARTLAR ASLA KAPANMAZ!) */
     .item-card.card-shake {
       animation: shakeCard 0.4s ease;
-      border-color: #ef4444 !important;
       background: #fef2f2 !important;
+      box-shadow: inset 0 0 0 3px #ef4444 !important;
+      z-index: 3;
     }
 
     @keyframes shakeCard {
@@ -1087,11 +1085,14 @@
       populateStepDropdown();
     }
 
-    // SIRAYLA TIKLAMAYI ÖNLEME DEĞİŞKENLERİ
+    // 3 TEKRAR MASTER KURALI & SIRAYLA TIKLAMAYI ÖNLEME MOTORU
+    const REQUIRED_HITS_PER_ITEM = 3; // Her harf ve kelime 3 kez doğru bilinerek tamamlanır!
+    window.REQUIRED_HITS_PER_ITEM = REQUIRED_HITS_PER_ITEM;
+    let itemHits = {}; // item.id -> kaç kez doğru bilindi (0, 1, 2, 3)
+    window.itemHits = itemHits;
     let shuffleBoard = true; // Tahtada kartları karışık diz (Sırayla tıklamayı önlemek için varsayılan: AÇIK)
     let currentBoardItems = []; // Tahtada dizili olan kartlar
     let consecutiveWrongGuesses = 0; // Bu soru için ardışık yapılan yanlış tıklama sayısı
-    let currentQuestionWrongIds = new Set(); // Bu soruda yanlış tıklanıp kilitlenen kartlar
     let currentQuestionLives = 3; // 3 can
 
     function toggleBoardShuffle() {
@@ -1111,6 +1112,23 @@
       el.innerHTML = `${hearts} <span>${currentQuestionLives} Can</span>`;
     }
 
+    function updateCardStarBadge(itemId, hits) {
+      const badge = document.getElementById(`stars_${itemId}`);
+      if (!badge) return;
+      if (hits >= REQUIRED_HITS_PER_ITEM) {
+        badge.innerHTML = '⭐⭐⭐ ✓';
+        badge.style.display = 'inline-flex';
+      } else if (hits === 2) {
+        badge.innerHTML = '⭐⭐ (2/3)';
+        badge.style.display = 'inline-flex';
+      } else if (hits === 1) {
+        badge.innerHTML = '⭐ (1/3)';
+        badge.style.display = 'inline-flex';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
     // 3. Adımı Yükle ve Ekranı Kur
     function loadStep(stepNum) {
       if (!window.CURRICULUM_STEPS) return;
@@ -1124,11 +1142,19 @@
       currentStepNum = stepNum;
       currentStepData = step;
       solvedIds = new Set();
-      remainingPool = [...step.items].sort(() => 0.5 - Math.random());
+      itemHits = {};
+      step.items.forEach(it => { itemHits[it.id] = 0; });
+
+      // Her maddeyi 3 kez sorulacak şekilde havuza ekle ve karıştır
+      remainingPool = [];
+      for (let r = 0; r < REQUIRED_HITS_PER_ITEM; r++) {
+        const round = [...step.items].sort(() => 0.5 - Math.random());
+        remainingPool.push(...round);
+      }
+
       currentTarget = null;
       canClickCard = true;
       consecutiveWrongGuesses = 0;
-      currentQuestionWrongIds.clear();
       currentQuestionLives = 3;
       updateLivesDisplay();
 
@@ -1145,7 +1171,7 @@
       updateProgressBar();
 
       // GERİ BİLDİRİM
-      showFeedback('neutral', 'Hoparlördeki sesi dinle ve 4 sütunlu kartlar arasından doğru olanı seç!');
+      showFeedback('neutral', 'Hoparlördeki sesi dinle! Her harfi/kelimeyi 3 kez bularak adımı tamamla.');
 
       // EKRANDA ADIMIN İÇİNDEKİ HER ŞEYİ 4'LÜ SÜTUN SEÇENEK OLARAK ÇİZ!
       renderAllStepCards();
@@ -1154,7 +1180,7 @@
       pickNextTargetAndPlay();
     }
 
-    // 4. EKRANA TÜM KARTLARI 4'LÜ SÜTUN DÜZENİNDE BAS
+    // 4. EKRANA TÜM KARTLARI 4'LÜ SÜTUN DÜZENİNDE BAS (YANLIŞLAR ASLA KAPANMAZ!)
     function renderAllStepCards() {
       const grid = document.getElementById('optionsGridBoard');
       if (!grid || !currentStepData) return;
@@ -1174,12 +1200,34 @@
         card.id = `card_${item.id}`;
         card.dataset.id = item.id;
 
-        if (solvedIds.has(item.id)) {
+        const hits = itemHits[item.id] || 0;
+        if (hits >= REQUIRED_HITS_PER_ITEM) {
           card.classList.add('solved');
         }
-        if (currentQuestionWrongIds.has(item.id)) {
-          card.classList.add('guess-disabled');
+
+        // Yıldız Rozeti (3 Tekrar Durumu)
+        const starBadge = document.createElement('span');
+        starBadge.className = 'card-stars-badge';
+        starBadge.id = `stars_${item.id}`;
+        if (hits >= REQUIRED_HITS_PER_ITEM) {
+          starBadge.innerHTML = '⭐⭐⭐ ✓';
+          starBadge.style.display = 'inline-flex';
+        } else if (hits === 2) {
+          starBadge.innerHTML = '⭐⭐ (2/3)';
+          starBadge.style.display = 'inline-flex';
+        } else if (hits === 1) {
+          starBadge.innerHTML = '⭐ (1/3)';
+          starBadge.style.display = 'inline-flex';
+        } else {
+          starBadge.style.display = 'none';
         }
+        card.appendChild(starBadge);
+
+        // Numara etiketi
+        const numBadge = document.createElement('span');
+        numBadge.className = 'item-num-badge';
+        numBadge.textContent = idx + 1;
+        card.appendChild(numBadge);
 
         // Resim veya Metin
         if (item.img) {
@@ -1202,42 +1250,51 @@
           card.appendChild(span);
         }
 
-        // Tıklama Olayı
+        // Tıklama Olayı (Kart her zaman tıklanabilir, yanlışlar asla kapanmaz)
         card.onclick = () => onCardClicked(item, card);
 
         grid.appendChild(card);
       });
     }
 
-    // Sırayla tıklayanlar için kalan kartları yeniden karıştır
+    // Kalan kartları yeniden karıştır
     function reshuffleUnsolvedCards() {
       if (!currentStepData) return;
       renderAllStepCards();
       setTimeout(playCurrentTargetAudio, 400);
     }
 
-    // 5. Karışık Sırayla Yeni Bir Hedef Seç ve Çal
+    // 5. Karışık Sırayla Yeni Bir Hedef Seç ve Çal (3 Tekrar Havuzu)
     function pickNextTargetAndPlay() {
-      if (remainingPool.length === 0) {
-        // TÜMÜ BULUNDU! ADIM TAMAMLANDI!
+      // Henüz 3 kez bilinmemiş hedefleri filtrele
+      const unmastered = remainingPool.filter(item => (itemHits[item.id] || 0) < REQUIRED_HITS_PER_ITEM);
+
+      if (unmastered.length === 0) {
+        // TÜM HARFLER/KELİMELER 3'ER KEZ BAŞARIYLA BİLİNDİ! ADIM TAMAMLANDI!
         handleStepCompleted();
         return;
       }
 
-      currentTarget = remainingPool[0]; // Kuyruğun başındaki rastgele hedef
+      // Aynı hedefi peş peşe sormamaya çalış (varsa başka bir hedef seç)
+      let chosen = unmastered[0];
+      if (unmastered.length > 1 && currentTarget && unmastered[0].id === currentTarget.id) {
+        const alt = unmastered.find(i => i.id !== currentTarget.id);
+        if (alt) chosen = alt;
+      }
+
+      currentTarget = chosen;
+
+      // Seçilen hedefi havuzdan 1 adet eksilt
+      const poolIdx = remainingPool.indexOf(currentTarget);
+      if (poolIdx !== -1) remainingPool.splice(poolIdx, 1);
+
       canClickCard = true;
       consecutiveWrongGuesses = 0;
-      currentQuestionWrongIds.clear();
       currentQuestionLives = 3;
       updateLivesDisplay();
 
       const board = document.getElementById('optionsGridBoard');
       if (board) board.classList.remove('board-locked');
-
-      // Önceki soruda devre dışı kalan kırmızı kartların işaretini temizle
-      document.querySelectorAll('.item-card.guess-disabled').forEach(c => {
-        c.classList.remove('guess-disabled');
-      });
 
       // Sesi çal
       setTimeout(playCurrentTargetAudio, 400);
@@ -1265,12 +1322,14 @@
       };
     }
 
-    // 7. KARTA TIKLANDIĞINDA: SIRAYLA TIKLAMAYI ÖNLEYEN DENETİM MOTORU
+    // 7. KARTA TIKLANDIĞINDA: YANLIŞLAR KAPANMAZ + 3 TEKRAR KURALI
     function onCardClicked(item, cardEl) {
       if (!canClickCard || !currentTarget) return;
 
-      // Zaten çözülmüşse veya bu soruda yanlış tahmin edilip engellenmişse tıklanmasın
-      if (solvedIds.has(item.id) || currentQuestionWrongIds.has(item.id)) {
+      // 3 kez doğru bilinmiş karta tıklanırsa sadece sesini dinletsin
+      if ((itemHits[item.id] || 0) >= REQUIRED_HITS_PER_ITEM) {
+        const snd = new Audio(item.audio);
+        snd.play().catch(() => {});
         return;
       }
 
@@ -1278,15 +1337,26 @@
         // === DOĞRU CEVAP! ===
         canClickCard = false;
         playDingSound();
-        solvedIds.add(item.id);
-        remainingPool.shift(); // Hedefi kuyruktan çıkar
+
+        const currentHits = (itemHits[item.id] || 0) + 1;
+        itemHits[item.id] = currentHits;
 
         // Kart Görsel Geri Bildirimi
         cardEl.classList.add('correct-flash');
         setTimeout(() => {
           cardEl.classList.remove('correct-flash');
+        }, 400);
+
+        // Yıldız rozetini güncelle
+        updateCardStarBadge(item.id, currentHits);
+
+        if (currentHits >= REQUIRED_HITS_PER_ITEM) {
+          solvedIds.add(item.id);
           cardEl.classList.add('solved');
-        }, 300);
+          showFeedback('correct', `🏆 <strong>MAŞALLAH!</strong> Bu kartı 3 kez doğru bildin ve tamamladın! (3/3)`);
+        } else {
+          showFeedback('correct', `🎉 <strong>Harika!</strong> ${currentHits}. tekrar tamamlandı (${currentHits}/3). Sıradaki ses geliyor...`);
+        }
 
         // Skor ve İlerleme
         totalScore += 10;
@@ -1294,24 +1364,26 @@
         saveProgress();
         updateProgressBar();
 
-        showFeedback('correct', '🎉 Harikasın! Doğru kartı buldun! 👏 Sıradaki ses geliyor...');
-
-        // 800ms sonra bir sonraki karışık sese geç
+        // Sıradaki sese geç
         setTimeout(() => {
           pickNextTargetAndPlay();
-        }, 800);
+        }, 850);
 
       } else {
-        // === YANLIŞ CEVAP! (SIRAYLA TIKLAMAYI ENGELLEME MOTORU) ===
-        canClickCard = false; // Tahtayı derhal kilitle!
+        // === YANLIŞ CEVAP! (YANLIŞLAR ASLA KAPANMAZ!) ===
+        canClickCard = false; // Hızlı tıklamayı önlemek için kısa süreli kilit
         consecutiveWrongGuesses++;
-        currentQuestionWrongIds.add(item.id);
 
-        // Tıklanan yanlış karta engel işareti koy ve salla
-        cardEl.classList.add('card-shake', 'guess-disabled');
+        // Yanlış olan soru tekrar sorulmak üzere havuza geri eklenir
+        if (!remainingPool.some(it => it.id === currentTarget.id)) {
+          remainingPool.push(currentTarget);
+        }
+
+        // Kart sallansın ama KAPANMASIN (kart açık kalır!)
+        cardEl.classList.add('card-shake');
         setTimeout(() => {
           cardEl.classList.remove('card-shake');
-        }, 500);
+        }, 450);
 
         playWrongSound();
 
@@ -1319,27 +1391,20 @@
         currentQuestionLives = Math.max(0, currentQuestionLives - 1);
         updateLivesDisplay();
 
-        // Tahtayı 1.5 saniye boyunca tamamen kilitle (ardışık hızlı tıklanamaz!)
         const board = document.getElementById('optionsGridBoard');
         if (board) board.classList.add('board-locked');
 
         if (consecutiveWrongGuesses >= 3) {
-          // Sırayla rastgele deneme yapan öğrenciye ceza: Puan düş ve kartları karıştır!
           totalScore = Math.max(0, totalScore - 2);
           updateScoreBadge();
-
-          showFeedback('wrong', '⚠️ <strong>Sırayla tıklama önlendi!</strong> Önce sesi dikkatle dinle 🎧 (Kartlar karıştırılıyor...)');
-
+          showFeedback('wrong', '⚠️ <strong>Sesi dinle!</strong> Ezbere tıklama, sesi dinleyip öyle bul 🎧 (Kartlar karıştırılıyor...)');
           setTimeout(() => {
             reshuffleUnsolvedCards();
             currentQuestionLives = 3;
             updateLivesDisplay();
-          }, 800);
-
-        } else if (consecutiveWrongGuesses === 2) {
-          showFeedback('wrong', '🚫 <strong>Dikkatli ol!</strong> Ezbere sırayla tıklama, hoparlördeki sesi dinle!');
+          }, 700);
         } else {
-          showFeedback('wrong', '🤔 <strong>Yanlış kart!</strong> Lütfen önce sesi dinle, ardından doğru olanı seç...');
+          showFeedback('wrong', '🤔 <strong>Yanlış kart!</strong> Kartlar açık kalıyor, sesi bir daha dinle ve doğru olanı bul...');
         }
 
         // Doğru sesi tekrar dinlet
@@ -1347,26 +1412,32 @@
           playCurrentTargetAudio();
         }, 300);
 
-        // 1.5 saniye sonra tahta kilidini aç (hızlı tıklamayı engeller)
+        // 1.2 saniye sonra tahta kilidini aç (öğrenci tekrar deneyebilir, KARTLAR KAPANMAZ!)
         setTimeout(() => {
           if (board) board.classList.remove('board-locked');
           canClickCard = true;
-        }, 1500);
+        }, 1200);
       }
     }
 
-    // 8. İlerleme Çubuğunu Güncelle
+    // 8. İlerleme Çubuğunu Güncelle (3 Tekrar Hesabı)
     function updateProgressBar() {
       if (!currentStepData || !currentStepData.items) return;
-      const total = currentStepData.items.length;
-      const count = solvedIds.size;
-      const pct = Math.round((count / total) * 100);
+      const totalItems = currentStepData.items.length;
+      const totalRequiredHits = totalItems * REQUIRED_HITS_PER_ITEM;
+
+      let totalHits = 0;
+      Object.values(itemHits).forEach(h => { totalHits += Math.min(REQUIRED_HITS_PER_ITEM, h); });
+
+      const pct = Math.round((totalHits / totalRequiredHits) * 100);
 
       const progText = document.getElementById('progressText');
       const pctText = document.getElementById('percentText');
       const barFill = document.getElementById('progressBarFill');
 
-      if (progText) progText.textContent = `🎯 ${count} / ${total} Tamamlandı`;
+      if (progText) {
+        progText.textContent = `🎯 ${totalHits} / ${totalRequiredHits} Doğru (${solvedIds.size} / ${totalItems} Tamamlandı)`;
+      }
       if (pctText) pctText.textContent = `%${pct}`;
       if (barFill) barFill.style.width = `${pct}%`;
     }
@@ -1377,6 +1448,13 @@
       banner.className = `feedback-banner ${type}`;
       banner.innerHTML = message;
     }
+
+    window.loadStep = loadStep;
+    window.onCardClicked = onCardClicked;
+    window.getCurrentTarget = () => currentTarget;
+    window.setCurrentTarget = (t) => { currentTarget = t; };
+    window.setCanClickCard = (v) => { canClickCard = v; };
+    window.getItemHits = () => itemHits;
 
     // 9. Adım Tamamlandığında Büyük Kutlama
     function handleStepCompleted() {
@@ -1399,7 +1477,7 @@
       const nextBtn = document.getElementById('btnModalNextStep');
 
       if (modalText) {
-        modalText.innerHTML = `<strong>Tebrikler!</strong> Adım ${currentStepNum} içindeki tüm <strong>${currentStepData.items.length}</strong> harf ve kelimeyi başarıyla dinleyip buldun!`;
+        modalText.innerHTML = `<strong>Tebrikler!</strong> Adım ${currentStepNum} içindeki tüm <strong>${currentStepData.items.length}</strong> harf ve kelimeyi <strong>3'er kez</strong> başarıyla dinleyip tamamladın!`;
       }
       if (finalScore) finalScore.textContent = totalScore;
       if (compStep) compStep.textContent = currentStepNum;
