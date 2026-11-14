@@ -517,15 +517,15 @@
           <div class="exam-prompt-sub">Hoparlörden gelen sesi dinle, aşağıdaki 4'lü sütun seçenekler arasından doğru olanı bul!</div>
         </div>
 
-        <div style="margin: 12px auto 6px auto; max-width: 860px; font-weight: 800; font-size: 0.95rem; color: #475569; display: flex; justify-content: space-between; align-items: center; direction: rtl;">
-          <span>📋 4'lü Sütun Seçenek Tablosu:</span>
+        <div style="margin: 12px auto 6px auto; max-width: 960px; font-weight: 800; font-size: 0.95rem; color: #475569; display: flex; justify-content: space-between; align-items: center; direction: rtl;">
+          <span>📋 4'lü Sütun Seçenek Tablosu (Boşluksuz & Dev Boyut):</span>
           <span style="font-size: 0.85rem; color: #166534; background: #f0fdf4; border: 1px solid #86efac; padding: 2px 10px; border-radius: 999px;">🛡️ Sırayla Tıklama Engeli Aktif</span>
         </div>
 
-        <div class="exam-choices-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; direction: rtl; max-width: 860px; margin: 12px auto;">
+        <div class="exam-choices-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0px; direction: rtl; max-width: 960px; margin: 14px auto;">
           ${choices.map((c) => `
             <div class="exam-choice-card" id="exam_card_${c.id}" data-id="${c.id}" onclick="window.submitExamAnswer('${c.id}', this)">
-              ${c.img ? `<img src="${c.img}" alt="${c.alt || 'Seçenek'}" />` : `<span style="font-family:'Amiri'; font-size:2.8rem; font-weight:700;">${c.alt}</span>`}
+              ${c.img ? `<img src="${c.img}" alt="${c.alt || 'Seçenek'}" />` : `<span style="font-family:'Amiri'; font-size:3.8rem; font-weight:700;">${c.alt}</span>`}
             </div>
           `).join('')}
         </div>
