@@ -456,7 +456,10 @@
   };
 
   // 11. ADIM GEÇME SINAVI MOTORU (START EXAM ENGINE)
-  // Ekranda adımın içindeki HER ŞEY seçenek olarak durur, sesler karışık çalar, öğrenci doğruyu bulur!
+  // KESİNLİKLE 4'LÜ SÜTUN DÜZENİ & SIRAYLA TIKLAMAYI ÖNLEME KORUMASI
+  let examConsecutiveWrong = 0;
+  let examDisabledCardIds = new Set();
+
   function startExamEngine() {
     const step = getStepData(currentActiveStep);
     if (!step || !step.items || step.items.length === 0) return;
@@ -466,12 +469,17 @@
     currentExamIndex = 0;
     examCorrectCount = 0;
     examCanAnswer = true;
+    examConsecutiveWrong = 0;
+    examDisabledCardIds.clear();
 
     loadExamQuestion();
   }
 
   function loadExamQuestion() {
     examCanAnswer = true;
+    examConsecutiveWrong = 0;
+    examDisabledCardIds.clear();
+
     const examArea = document.getElementById('examPhaseArea');
     if (!examArea) return;
 
@@ -488,8 +496,8 @@
       return;
     }
 
-    // EKRANDA ADIMIN İÇİNDEKİ HER ŞEY SEÇENEK OLARAK DURUYOR!
-    let choices = [...step.items];
+    // SIRAYLA TIKLAMAYI ÖNLEMEK İÇİN KARTLAR TAHTAYA KARIŞIK DİZİLİR
+    let choices = [...step.items].sort(() => 0.5 - Math.random());
 
     const totalQuestions = examQueue.length;
     const currentQNum = currentExamIndex + 1;
@@ -506,25 +514,24 @@
             🔊
           </button>
           <div class="exam-prompt-title">Duyduğun ses hangi kelime/harf?</div>
-          <div class="exam-prompt-sub">Hoparlörden gelen sesi dinle, aşağıdaki tüm seçenekler arasından doğru olanı bul!</div>
+          <div class="exam-prompt-sub">Hoparlörden gelen sesi dinle, aşağıdaki 4'lü sütun seçenekler arasından doğru olanı bul!</div>
         </div>
 
-        <div style="margin: 12px 4px 6px 4px; font-weight: 800; font-size: 0.95rem; color: #475569; display: flex; justify-content: space-between; align-items: center; direction: rtl;">
-          <span>📋 Bu Adımdaki Tüm Seçenekler (Doğruyu Tıkla):</span>
-          <span style="font-size: 0.85rem; color: #64748b;">Toplam: ${choices.length} Kart</span>
+        <div style="margin: 12px auto 6px auto; max-width: 860px; font-weight: 800; font-size: 0.95rem; color: #475569; display: flex; justify-content: space-between; align-items: center; direction: rtl;">
+          <span>📋 4'lü Sütun Seçenek Tablosu:</span>
+          <span style="font-size: 0.85rem; color: #166534; background: #f0fdf4; border: 1px solid #86efac; padding: 2px 10px; border-radius: 999px;">🛡️ Sırayla Tıklama Engeli Aktif</span>
         </div>
 
-        <div class="exam-choices-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(115px, 1fr)); gap: 12px; direction: rtl;">
-          ${choices.map((c, idx) => `
-            <div class="exam-choice-card" id="exam_card_${c.id}" data-id="${c.id}" onclick="window.submitExamAnswer('${c.id}', this)" style="position:relative; aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; padding:8px;">
-              <span style="position:absolute; top:4px; left:4px; font-size:0.7rem; font-weight:800; color:#94a3b8; background:#f8fafc; padding:1px 5px; border-radius:4px; border:1px solid #e2e8f0;">${idx + 1}</span>
-              ${c.img ? `<img src="${c.img}" alt="${c.alt || 'Seçenek'}" style="max-width:85%; max-height:85%; object-fit:contain;" />` : `<span style="font-family:'Amiri'; font-size:2.8rem; font-weight:700;">${c.alt}</span>`}
+        <div class="exam-choices-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; direction: rtl; max-width: 860px; margin: 12px auto;">
+          ${choices.map((c) => `
+            <div class="exam-choice-card" id="exam_card_${c.id}" data-id="${c.id}" onclick="window.submitExamAnswer('${c.id}', this)">
+              ${c.img ? `<img src="${c.img}" alt="${c.alt || 'Seçenek'}" />` : `<span style="font-family:'Amiri'; font-size:2.8rem; font-weight:700;">${c.alt}</span>`}
             </div>
           `).join('')}
         </div>
 
         <div class="exam-feedback-banner" id="examFeedbackBanner" style="margin-top:14px;">
-          <span style="color:#64748b;">Hoparlördeki sesi dinle ve aşağıdaki seçeneklerden doğru olanı işaretle...</span>
+          <span style="color:#64748b;">Hoparlördeki sesi dinle ve 4 sütunlu kartlardan doğru olanı işaretle...</span>
         </div>
       </div>
     `;
@@ -552,8 +559,10 @@
 
   window.submitExamAnswer = function(chosenId, choiceCard) {
     if (!examCanAnswer) return;
+    if (examDisabledCardIds.has(chosenId)) return;
 
     const feedback = document.getElementById('examFeedbackBanner');
+    const grid = document.querySelector('.exam-choices-grid');
 
     if (chosenId === examTargetItem.id) {
       // DOĞRU CEVAP!
@@ -576,12 +585,32 @@
       }, 800);
 
     } else {
-      // YANLIŞ CEVAP!
-      choiceCard.classList.add('wrong-answer');
+      // YANLIŞ CEVAP! (SIRAYLA TIKLAMAYI ENGELLEME MOTORU)
+      examCanAnswer = false; // Tahtayı derhal kilitle!
+      examConsecutiveWrong++;
+      examDisabledCardIds.add(chosenId);
+
+      choiceCard.classList.add('wrong-answer', 'guess-disabled');
+      setTimeout(() => {
+        choiceCard.classList.remove('wrong-answer');
+      }, 500);
+
       playBoingSound();
 
-      if (feedback) {
-        feedback.innerHTML = '<span style="color:#ef4444; font-weight:800;">⚠️ Tekrar dene! Sesi bir daha dinle ve doğru kartı bul!</span>';
+      if (grid) grid.classList.add('grid-locked');
+
+      if (examConsecutiveWrong >= 3) {
+        // Sırayla rastgele deneme yapan öğrenciye uyarı ve kartları yeniden karıştırma!
+        if (feedback) {
+          feedback.innerHTML = '<span style="color:#ef4444; font-weight:800;">⚠️ <strong>Sırayla tıklama önlendi!</strong> Önce sesi dinle 🎧 (Kartlar karıştırılıyor...)</span>';
+        }
+        setTimeout(() => {
+          loadExamQuestion();
+        }, 800);
+      } else {
+        if (feedback) {
+          feedback.innerHTML = '<span style="color:#ef4444; font-weight:800;">🤔 <strong>Yanlış kart!</strong> Lütfen önce sesi dinle, ardından doğru olanı seç...</span>';
+        }
       }
 
       // Yanlış bilinen soruyu kuyruğun sonuna ekle (öğrenene kadar geçemez!)
@@ -590,8 +619,13 @@
       // Doğru sesi tekrar dinlet
       setTimeout(() => {
         window.playExamAudio();
-        choiceCard.classList.remove('wrong-answer');
-      }, 700);
+      }, 300);
+
+      // 1.5 saniye sonra tahta kilidini aç (hızlı tıklamayı engeller)
+      setTimeout(() => {
+        if (grid) grid.classList.remove('grid-locked');
+        examCanAnswer = true;
+      }, 1500);
     }
   };
 

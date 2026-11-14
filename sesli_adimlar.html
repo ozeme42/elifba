@@ -404,7 +404,7 @@
     }
 
     /* ======================================================== */
-    /* EKRANDAKİ TÜM SEÇENEKLER TABLOSU (ALL ITEMS GRID)       */
+    /* EKRANDAKİ TÜM SEÇENEKLER TABLOSU: KESİNLİKLE 4'LÜ SÜTUN */
     /* ======================================================== */
     .cards-board-header {
       display: flex;
@@ -412,6 +412,9 @@
       align-items: center;
       margin-top: 8px;
       padding: 0 4px;
+      max-width: 860px;
+      margin: 12px auto 0 auto;
+      width: 100%;
     }
 
     .cards-board-title {
@@ -429,25 +432,49 @@
       font-weight: 700;
     }
 
+    /* 4'LÜ SÜTUN DÜZENİ (TAM 4 SÜTUN) */
     .options-grid-board {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      display: grid !important;
+      grid-template-columns: repeat(4, 1fr) !important;
       gap: 12px;
       direction: rtl; /* Arapça okuma yönü (sağdan sola) */
-      margin-top: 10px;
+      margin: 12px auto 0 auto;
+      max-width: 860px;
+      width: 100%;
+      transition: opacity 0.2s ease, filter 0.2s ease;
     }
 
-    @media (min-width: 640px) {
+    .options-grid-board.board-locked {
+      pointer-events: none !important;
+      opacity: 0.7;
+      filter: grayscale(0.2);
+    }
+
+    @media (max-width: 640px) {
       .options-grid-board {
-        grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
-        gap: 14px;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 6px;
+        margin-top: 8px;
+        padding: 0 2px;
       }
-    }
 
-    @media (min-width: 1024px) {
-      .options-grid-board {
-        grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
-        gap: 16px;
+      .item-card {
+        border-radius: 12px;
+        padding: 4px 2px;
+        border-width: 2px;
+      }
+
+      .item-card img {
+        max-width: 90%;
+        max-height: 90%;
+      }
+
+      .item-card .card-arabic-fallback {
+        font-size: 1.8rem;
+      }
+
+      .item-card .item-num-badge {
+        display: none;
       }
     }
 
@@ -469,13 +496,13 @@
       padding: 10px;
     }
 
-    .item-card:hover:not(.solved) {
+    .item-card:hover:not(.solved):not(.guess-disabled) {
       transform: translateY(-4px) scale(1.03);
       border-color: #4361ee;
       box-shadow: 0 12px 24px rgba(67, 97, 238, 0.18);
     }
 
-    .item-card:active:not(.solved) {
+    .item-card:active:not(.solved):not(.guess-disabled) {
       transform: scale(0.96);
     }
 
@@ -510,8 +537,8 @@
 
     /* Kart Durumu: Doğru Bulundu (Solved) */
     .item-card.solved {
-      background: #f0fdf4;
-      border-color: #22c55e;
+      background: #f0fdf4 !important;
+      border-color: #22c55e !important;
       box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15);
       cursor: default;
     }
@@ -541,11 +568,39 @@
       100% { transform: scale(1); }
     }
 
+    /* SIRAYLA TIKLAMAYI ENGELLEME: Yanlış tıklanan kart bu turda kilitlenir */
+    .item-card.guess-disabled {
+      opacity: 0.45 !important;
+      background: #f8fafc !important;
+      border-color: #fca5a5 !important;
+      cursor: not-allowed !important;
+      pointer-events: none !important;
+      filter: grayscale(0.5);
+    }
+
+    .item-card.guess-disabled::after {
+      content: '✕';
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 22px;
+      height: 22px;
+      background: #ef4444;
+      color: white;
+      font-size: 13px;
+      font-weight: 900;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);
+    }
+
     /* Kart Durumu: Yanlış Tıklanan (Shake Effect) */
     .item-card.card-shake {
       animation: shakeCard 0.4s ease;
       border-color: #ef4444 !important;
-      background: #fef2f2;
+      background: #fef2f2 !important;
     }
 
     @keyframes shakeCard {
@@ -725,6 +780,10 @@
         <span id="scoreDisplay">0</span>
       </div>
 
+      <button class="btn-nav-action active" id="btnShuffleToggle" onclick="toggleBoardShuffle()" title="Kartların sırayla dizilmesini önler, yerlerini karıştırarak ezberi engeller">
+        <span>🔀 Karışık Diziliş: AÇIK</span>
+      </button>
+
       <button class="btn-nav-action" id="btnTeacherMode" onclick="toggleTeacherMode()" title="Tüm adımların kilidini aç">
         <span>🔓 Öğretmen Modu</span>
       </button>
@@ -764,7 +823,17 @@
 
       <div class="hero-prompt-title">Duyduğun ses hangisi?</div>
       <div class="hero-prompt-sub">
-        Yukarıdaki hoparlörden gelen sesi dinle, aşağıdaki kartlar arasından doğru olanı bulup tıkla!
+        Hoparlördeki sesi dinle, aşağıdaki 4'lü sütun kartlar arasından doğru olanı bul!
+      </div>
+
+      <!-- Can ve Sırayla Tıklama Koruma Durumu -->
+      <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin: 10px 0 6px 0; flex-wrap:wrap;">
+        <div id="livesIndicator" style="background:#fee2e2; border:1.5px solid #fca5a5; padding:4px 14px; border-radius:999px; font-weight:800; font-size:0.9rem; color:#b91c1c; display:inline-flex; align-items:center; gap:6px;">
+          ❤️ ❤️ ❤️ <span>3 Can</span>
+        </div>
+        <div style="background:#f0fdf4; border:1.5px solid #86efac; padding:4px 14px; border-radius:999px; font-weight:800; font-size:0.85rem; color:#166534; display:inline-flex; align-items:center; gap:6px;">
+          🛡️ Sırayla Tıklama Önleme Aktif
+        </div>
       </div>
 
       <div class="step-progress-wrapper">
@@ -778,21 +847,21 @@
       </div>
 
       <div class="feedback-banner" id="feedbackBanner" style="margin-top: 10px;">
-        <span style="color: #64748b;">Hoparlördeki sesi dinle ve seçeneğini işaretle...</span>
+        <span style="color: #64748b;">Hoparlördeki sesi dinle ve 4 sütunlu tablodan doğru kartı seç...</span>
       </div>
     </div>
 
-    <!-- Ekrandaki Seçenekler Başlığı -->
+    <!-- Ekrandaki Seçenekler Başlığı (4'lü Sütun Vurgusu) -->
     <div class="cards-board-header">
       <div class="cards-board-title">
-        <span>📋 Bu Adımdaki Tüm Seçenekler</span>
+        <span>📋 4'lü Sütun Seçenek Tablosu</span>
       </div>
       <div class="cards-board-hint">
-        💡 Kalan kartlar arasından sesi bul!
+        💡 Kartlar karıştırılmıştır, sese odaklan!
       </div>
     </div>
 
-    <!-- EKRANDA ADIMIN İÇİNDEKİ HER ŞEY SEÇENEK OLARAK DURUYOR -->
+    <!-- EKRANDA ADIMIN İÇİNDEKİ HER ŞEY 4'LÜ SÜTUN SEÇENEK OLARAK DURUYOR -->
     <div class="options-grid-board" id="optionsGridBoard">
       <!-- JS ile adımın tüm kartları buraya eklenir -->
     </div>
@@ -1000,6 +1069,30 @@
       populateStepDropdown();
     }
 
+    // SIRAYLA TIKLAMAYI ÖNLEME DEĞİŞKENLERİ
+    let shuffleBoard = true; // Tahtada kartları karışık diz (Sırayla tıklamayı önlemek için varsayılan: AÇIK)
+    let currentBoardItems = []; // Tahtada dizili olan kartlar
+    let consecutiveWrongGuesses = 0; // Bu soru için ardışık yapılan yanlış tıklama sayısı
+    let currentQuestionWrongIds = new Set(); // Bu soruda yanlış tıklanıp kilitlenen kartlar
+    let currentQuestionLives = 3; // 3 can
+
+    function toggleBoardShuffle() {
+      shuffleBoard = !shuffleBoard;
+      const btn = document.getElementById('btnShuffleToggle');
+      if (btn) {
+        btn.classList.toggle('active', shuffleBoard);
+        btn.innerHTML = shuffleBoard ? '<span>🔀 Karışık Diziliş: AÇIK</span>' : '<span>📋 Sıralı Diziliş</span>';
+      }
+      renderAllStepCards();
+    }
+
+    function updateLivesDisplay() {
+      const el = document.getElementById('livesIndicator');
+      if (!el) return;
+      const hearts = '❤️ '.repeat(currentQuestionLives) + '🤍 '.repeat(Math.max(0, 3 - currentQuestionLives));
+      el.innerHTML = `${hearts} <span>${currentQuestionLives} Can</span>`;
+    }
+
     // 3. Adımı Yükle ve Ekranı Kur
     function loadStep(stepNum) {
       if (!window.CURRICULUM_STEPS) return;
@@ -1016,6 +1109,10 @@
       remainingPool = [...step.items].sort(() => 0.5 - Math.random());
       currentTarget = null;
       canClickCard = true;
+      consecutiveWrongGuesses = 0;
+      currentQuestionWrongIds.clear();
+      currentQuestionLives = 3;
+      updateLivesDisplay();
 
       // Dropdown güncelle
       const select = document.getElementById('stepSelect');
@@ -1030,33 +1127,41 @@
       updateProgressBar();
 
       // GERİ BİLDİRİM
-      showFeedback('neutral', 'Hoparlördeki sesi dinle ve aşağıdaki kartlardan doğru olanı seç!');
+      showFeedback('neutral', 'Hoparlördeki sesi dinle ve 4 sütunlu kartlar arasından doğru olanı seç!');
 
-      // EKRANDA ADIMIN İÇİNDEKİ HER ŞEYİ SEÇENEK OLARAK ÇİZ!
+      // EKRANDA ADIMIN İÇİNDEKİ HER ŞEYİ 4'LÜ SÜTUN SEÇENEK OLARAK ÇİZ!
       renderAllStepCards();
 
       // Sesi ilk kez otomatik çal
       pickNextTargetAndPlay();
     }
 
-    // 4. EKRANA TÜM KARTLARI BAS
+    // 4. EKRANA TÜM KARTLARI 4'LÜ SÜTUN DÜZENİNDE BAS
     function renderAllStepCards() {
       const grid = document.getElementById('optionsGridBoard');
       if (!grid || !currentStepData) return;
 
       grid.innerHTML = '';
 
-      currentStepData.items.forEach((item, idx) => {
+      if (shuffleBoard) {
+        // Sırayla tıklamayı önlemek için kartlar tahtaya karışık dizilir
+        currentBoardItems = [...currentStepData.items].sort(() => 0.5 - Math.random());
+      } else {
+        currentBoardItems = [...currentStepData.items];
+      }
+
+      currentBoardItems.forEach((item, idx) => {
         const card = document.createElement('div');
         card.className = 'item-card';
         card.id = `card_${item.id}`;
         card.dataset.id = item.id;
 
-        // Numara etiketi
-        const numBadge = document.createElement('span');
-        numBadge.className = 'item-num-badge';
-        numBadge.textContent = idx + 1;
-        card.appendChild(numBadge);
+        if (solvedIds.has(item.id)) {
+          card.classList.add('solved');
+        }
+        if (currentQuestionWrongIds.has(item.id)) {
+          card.classList.add('guess-disabled');
+        }
 
         // Resim veya Metin
         if (item.img) {
@@ -1086,6 +1191,13 @@
       });
     }
 
+    // Sırayla tıklayanlar için kalan kartları yeniden karıştır
+    function reshuffleUnsolvedCards() {
+      if (!currentStepData) return;
+      renderAllStepCards();
+      setTimeout(playCurrentTargetAudio, 400);
+    }
+
     // 5. Karışık Sırayla Yeni Bir Hedef Seç ve Çal
     function pickNextTargetAndPlay() {
       if (remainingPool.length === 0) {
@@ -1096,6 +1208,18 @@
 
       currentTarget = remainingPool[0]; // Kuyruğun başındaki rastgele hedef
       canClickCard = true;
+      consecutiveWrongGuesses = 0;
+      currentQuestionWrongIds.clear();
+      currentQuestionLives = 3;
+      updateLivesDisplay();
+
+      const board = document.getElementById('optionsGridBoard');
+      if (board) board.classList.remove('board-locked');
+
+      // Önceki soruda devre dışı kalan kırmızı kartların işaretini temizle
+      document.querySelectorAll('.item-card.guess-disabled').forEach(c => {
+        c.classList.remove('guess-disabled');
+      });
 
       // Sesi çal
       setTimeout(playCurrentTargetAudio, 400);
@@ -1123,21 +1247,18 @@
       };
     }
 
-    // 7. Karta Tıklandığında Doğruluk Kontrolü
+    // 7. KARTA TIKLANDIĞINDA: SIRAYLA TIKLAMAYI ÖNLEYEN DENETİM MOTORU
     function onCardClicked(item, cardEl) {
       if (!canClickCard || !currentTarget) return;
 
-      // Zaten çözülmüş karta basıldıysa sesi tekrar çalsın
-      if (solvedIds.has(item.id)) {
-        const snd = new Audio(item.audio);
-        snd.play().catch(() => {});
+      // Zaten çözülmüşse veya bu soruda yanlış tahmin edilip engellenmişse tıklanmasın
+      if (solvedIds.has(item.id) || currentQuestionWrongIds.has(item.id)) {
         return;
       }
 
-      canClickCard = false;
-
       if (item.id === currentTarget.id) {
         // === DOĞRU CEVAP! ===
+        canClickCard = false;
         playDingSound();
         solvedIds.add(item.id);
         remainingPool.shift(); // Hedefi kuyruktan çıkar
@@ -1155,7 +1276,7 @@
         saveProgress();
         updateProgressBar();
 
-        showFeedback('correct', '🎉 Harikasın! Doğru harfi buldun! Sıradaki ses geliyor...');
+        showFeedback('correct', '🎉 Harikasın! Doğru kartı buldun! 👏 Sıradaki ses geliyor...');
 
         // 800ms sonra bir sonraki karışık sese geç
         setTimeout(() => {
@@ -1163,20 +1284,56 @@
         }, 800);
 
       } else {
-        // === YANLIŞ CEVAP! ===
-        playWrongSound();
-        cardEl.classList.add('card-shake');
+        // === YANLIŞ CEVAP! (SIRAYLA TIKLAMAYI ENGELLEME MOTORU) ===
+        canClickCard = false; // Tahtayı derhal kilitle!
+        consecutiveWrongGuesses++;
+        currentQuestionWrongIds.add(item.id);
+
+        // Tıklanan yanlış karta engel işareti koy ve salla
+        cardEl.classList.add('card-shake', 'guess-disabled');
         setTimeout(() => {
           cardEl.classList.remove('card-shake');
         }, 500);
 
-        showFeedback('wrong', '🤔 Tekrar dinle! Sesi bir daha çalıyorum, ekrandan dikkatle ara...');
+        playWrongSound();
 
-        // Sesi tekrar hatırlat
+        // Can azalt
+        currentQuestionLives = Math.max(0, currentQuestionLives - 1);
+        updateLivesDisplay();
+
+        // Tahtayı 1.5 saniye boyunca tamamen kilitle (ardışık hızlı tıklanamaz!)
+        const board = document.getElementById('optionsGridBoard');
+        if (board) board.classList.add('board-locked');
+
+        if (consecutiveWrongGuesses >= 3) {
+          // Sırayla rastgele deneme yapan öğrenciye ceza: Puan düş ve kartları karıştır!
+          totalScore = Math.max(0, totalScore - 2);
+          updateScoreBadge();
+
+          showFeedback('wrong', '⚠️ <strong>Sırayla tıklama önlendi!</strong> Önce sesi dikkatle dinle 🎧 (Kartlar karıştırılıyor...)');
+
+          setTimeout(() => {
+            reshuffleUnsolvedCards();
+            currentQuestionLives = 3;
+            updateLivesDisplay();
+          }, 800);
+
+        } else if (consecutiveWrongGuesses === 2) {
+          showFeedback('wrong', '🚫 <strong>Dikkatli ol!</strong> Ezbere sırayla tıklama, hoparlördeki sesi dinle!');
+        } else {
+          showFeedback('wrong', '🤔 <strong>Yanlış kart!</strong> Lütfen önce sesi dinle, ardından doğru olanı seç...');
+        }
+
+        // Doğru sesi tekrar dinlet
         setTimeout(() => {
           playCurrentTargetAudio();
+        }, 300);
+
+        // 1.5 saniye sonra tahta kilidini aç (hızlı tıklamayı engeller)
+        setTimeout(() => {
+          if (board) board.classList.remove('board-locked');
           canClickCard = true;
-        }, 600);
+        }, 1500);
       }
     }
 
