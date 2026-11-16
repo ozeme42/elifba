@@ -1017,7 +1017,10 @@
       } catch (e) {}
     }
 
-    // 1. İlerleme Yükleme & Kaydetme
+    // 1. İlerleme Yükleme & Kaydetme (Doğru Cevaplar Kalıcı Olarak Saklanır)
+    let stepMasteryData = {}; // { [stepNum]: { [itemId]: hits } }
+    window.stepMasteryData = stepMasteryData;
+
     function loadSavedProgress() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
@@ -1026,6 +1029,10 @@
           highestUnlocked = data.highestUnlocked || 1;
           totalScore = data.totalScore || 0;
           currentStepNum = Math.min(data.lastStep || 1, highestUnlocked);
+          if (data.stepMasteryData && typeof data.stepMasteryData === 'object') {
+            stepMasteryData = data.stepMasteryData;
+            window.stepMasteryData = stepMasteryData;
+          }
         }
       } catch (e) {}
       updateScoreBadge();
@@ -1036,7 +1043,8 @@
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
           highestUnlocked,
           totalScore,
-          lastStep: currentStepNum
+          lastStep: currentStepNum,
+          stepMasteryData
         }));
       } catch (e) {}
     }
@@ -1150,8 +1158,8 @@
       }
     }
 
-    // 3. Adımı Yükle ve Ekranı Kur
-    function loadStep(stepNum) {
+    // 3. Adımı Yükle ve Ekranı Kur (Doğru Cevaplar Saklanır, Silinmez)
+    function loadStep(stepNum, reset = false) {
       if (!window.CURRICULUM_STEPS) return;
 
       const step = window.CURRICULUM_STEPS.find(s => s.step === stepNum);
@@ -1162,16 +1170,42 @@
 
       currentStepNum = stepNum;
       currentStepData = step;
-      solvedIds = new Set();
-      itemHits = {};
-      step.items.forEach(it => { itemHits[it.id] = 0; });
 
-      // Her maddeyi 3 kez sorulacak şekilde havuza ekle ve karıştır
-      remainingPool = [];
-      for (let r = 0; r < REQUIRED_HITS_PER_ITEM; r++) {
-        const round = [...step.items].sort(() => 0.5 - Math.random());
-        remainingPool.push(...round);
+      // Bu adımın doğru cevaplarını hafızadan yükle veya başlat
+      if (!stepMasteryData[stepNum] || reset) {
+        stepMasteryData[stepNum] = {};
+        step.items.forEach(it => { stepMasteryData[stepNum][it.id] = 0; });
       }
+
+      // Eksik madde varsa 0 olarak tamamla
+      step.items.forEach(it => {
+        if (typeof stepMasteryData[stepNum][it.id] !== 'number') {
+          stepMasteryData[stepNum][it.id] = 0;
+        }
+      });
+
+      itemHits = stepMasteryData[stepNum];
+
+      // 3 kez doğru bilinmiş olanları solvedIds kümesine ekle
+      solvedIds = new Set();
+      step.items.forEach(it => {
+        if ((itemHits[it.id] || 0) >= REQUIRED_HITS_PER_ITEM) {
+          solvedIds.add(it.id);
+        }
+      });
+
+      // Soru havuzu: Sadece HENÜZ 3 kez bilinmemiş hedeflerin kalan haklarını ekle!
+      remainingPool = [];
+      step.items.forEach(it => {
+        const hits = itemHits[it.id] || 0;
+        const needed = Math.max(0, REQUIRED_HITS_PER_ITEM - hits);
+        for (let r = 0; r < needed; r++) {
+          remainingPool.push(it);
+        }
+      });
+
+      // Kalan soru havuzunu karıştır
+      remainingPool.sort(() => 0.5 - Math.random());
 
       currentTarget = null;
       canClickCard = true;
@@ -1188,14 +1222,20 @@
       const badge = document.getElementById('stepBadgeText');
       if (badge) badge.textContent = `Adım ${step.step}: ${step.shortTitle || step.title}`;
 
-      // İlerleme Çubuğu Sıfırla
+      // İlerleme Çubuğunu Güncelle (Kayıtlı cevaplarla anında dolar)
       updateProgressBar();
+
+      // EKRANDA ADIMIN İÇİNDEKİ TÜM KARTLARI ÇİZ (Kayıtlı yıldızlar ekranda kalır!)
+      renderAllStepCards();
+
+      // Adım zaten tamamen tamamlanmışsa
+      if (solvedIds.size >= step.items.length) {
+        showFeedback('correct', '🏆 <strong>Tebrikler!</strong> Bu adımdaki tüm soruları 3 kez doğru bilerek tamamladın. Kartlara tıklayarak dinleyebilir veya adımı tekrar oynayabilirsin!');
+        return;
+      }
 
       // GERİ BİLDİRİM
       showFeedback('neutral', 'Hoparlördeki sesi dinle! Her harfi/kelimeyi 3 kez bularak adımı tamamla.');
-
-      // EKRANDA ADIMIN İÇİNDEKİ HER ŞEYİ 4'LÜ SÜTUN SEÇENEK OLARAK ÇİZ!
-      renderAllStepCards();
 
       // Sesi ilk kez otomatik çal
       pickNextTargetAndPlay();
@@ -1361,6 +1401,8 @@
 
         const currentHits = (itemHits[item.id] || 0) + 1;
         itemHits[item.id] = currentHits;
+        if (!stepMasteryData[currentStepNum]) stepMasteryData[currentStepNum] = {};
+        stepMasteryData[currentStepNum][item.id] = currentHits;
 
         // Kart Görsel Geri Bildirimi
         cardEl.classList.add('correct-flash');
@@ -1384,6 +1426,14 @@
         updateScoreBadge();
         saveProgress();
         updateProgressBar();
+
+        // Eğer adımdaki tüm kartlar tamamlandıysa kutlama yap!
+        if (solvedIds.size >= currentStepData.items.length) {
+          setTimeout(() => {
+            handleStepCompleted();
+          }, 600);
+          return;
+        }
 
         // Sıradaki sese geç
         setTimeout(() => {
@@ -1528,7 +1578,10 @@
     function replayCurrentStep() {
       const modal = document.getElementById('victoryModal');
       if (modal) modal.classList.remove('active');
-      loadStep(currentStepNum);
+      if (confirm('Bu adımdaki doğru cevapları sıfırlayıp baştan oynamak istiyor musunuz?')) {
+        loadStep(currentStepNum, true);
+        saveProgress();
+      }
     }
 
     // 10. Konfeti Animasyonu

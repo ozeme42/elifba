@@ -27,7 +27,9 @@
   let examTargetItem = null;
   let examCanAnswer = true;
 
-  // 1. LocalStorage Yükleme & Kaydetme
+  // 1. LocalStorage Yükleme & Kaydetme (Doğru Cevaplar Saklanır, Silinmez)
+  let stepExamHits = {}; // { [stepNum]: { [itemId]: count } }
+
   function loadStoredProgress() {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -44,6 +46,9 @@
         }
         if (typeof data.teacherModeUnlocked === 'boolean') {
           teacherModeUnlocked = data.teacherModeUnlocked;
+        }
+        if (data.stepExamHits && typeof data.stepExamHits === 'object') {
+          stepExamHits = data.stepExamHits;
         }
         if (typeof data.lastActiveStep === 'number' && isStepUnlocked(data.lastActiveStep)) {
           currentActiveStep = data.lastActiveStep;
@@ -62,6 +67,7 @@
         highestUnlockedStep: highestUnlockedStep,
         passedSteps: Array.from(passedStepsSet),
         trainedItems: Array.from(trainedItemsSet),
+        stepExamHits: stepExamHits,
         teacherModeUnlocked: teacherModeUnlocked,
         lastActiveStep: currentActiveStep,
         timestamp: Date.now()
@@ -461,18 +467,33 @@
   let examItemHits = {};
   const EXAM_REQUIRED_HITS = 3; // Her harf ve kelime 3 kez sorulup tamamlanır
 
-  function startExamEngine() {
+  function startExamEngine(reset = false) {
     const step = getStepData(currentActiveStep);
     if (!step || !step.items || step.items.length === 0) return;
 
-    // Her maddeyi 3 kez sorulacak şekilde havuza ekle ve karıştır
-    examItemHits = {};
-    step.items.forEach(it => { examItemHits[it.id] = 0; });
-
-    examQueue = [];
-    for (let r = 0; r < EXAM_REQUIRED_HITS; r++) {
-      examQueue.push(...[...step.items].sort(() => 0.5 - Math.random()));
+    // Bu adımın doğru cevaplarını hafızadan yükle veya başlat
+    if (!stepExamHits[currentActiveStep] || reset) {
+      stepExamHits[currentActiveStep] = {};
+      step.items.forEach(it => { stepExamHits[currentActiveStep][it.id] = 0; });
     }
+    step.items.forEach(it => {
+      if (typeof stepExamHits[currentActiveStep][it.id] !== 'number') {
+        stepExamHits[currentActiveStep][it.id] = 0;
+      }
+    });
+
+    examItemHits = stepExamHits[currentActiveStep];
+
+    // Soru havuzu: Sadece HENÜZ 3 kez bilinmemiş hedeflerin kalan haklarını ekle!
+    examQueue = [];
+    step.items.forEach(it => {
+      const hits = examItemHits[it.id] || 0;
+      const needed = Math.max(0, EXAM_REQUIRED_HITS - hits);
+      for (let r = 0; r < needed; r++) {
+        examQueue.push(it);
+      }
+    });
+    examQueue.sort(() => 0.5 - Math.random());
 
     currentExamIndex = 0;
     examCorrectCount = 0;
@@ -612,6 +633,9 @@
 
       const currentHits = (examItemHits[chosenId] || 0) + 1;
       examItemHits[chosenId] = currentHits;
+      if (!stepExamHits[currentActiveStep]) stepExamHits[currentActiveStep] = {};
+      stepExamHits[currentActiveStep][chosenId] = currentHits;
+      saveProgress();
 
       if (currentHits >= EXAM_REQUIRED_HITS) {
         if (feedback) {
@@ -852,6 +876,10 @@
       alert('Tüm kilitler ve ilerleme sıfırlandı. 1. Adım hazır!');
     }
   };
+
+  window.getExamTargetItem = () => examTargetItem;
+  window.setExamCanAnswer = (v) => { examCanAnswer = v; };
+  window.getStepExamHits = () => stepExamHits;
 
   window.resumeLastActiveStep = function() {
     window.loadStepDrills(currentActiveStep);
