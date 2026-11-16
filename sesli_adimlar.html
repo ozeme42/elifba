@@ -148,9 +148,9 @@
 
     /* Adım Gezinme Barı (Step Bar) */
     .step-control-bar {
-      max-width: 1200px;
-      margin: 14px auto 0 auto;
-      padding: 0 16px;
+      max-width: 100%;
+      margin: 8px 0 0 0;
+      padding: 0 10px;
       width: 100%;
       display: flex;
       align-items: center;
@@ -214,23 +214,26 @@
       border-color: #4361ee;
     }
 
-    /* Ana Oyun Konteyneri */
+    /* Ana Oyun Konteyneri: Kenarlarda Boşluk Kalmasın */
     main {
       flex: 1;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 14px 16px 40px 16px;
+      max-width: 100%;
+      margin: 0;
+      padding: 10px 0px 35px 0px;
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 12px;
     }
 
     /* SESLİ HEDEF KAHRAMAN ALANI (Audio Hero) */
     .audio-hero-card {
       background: white;
-      border-radius: 24px;
-      padding: 20px 24px;
+      border-radius: 16px;
+      padding: 16px 14px;
+      margin: 0 8px;
+      width: calc(100% - 16px);
+      max-width: 100%;
       box-shadow: 0 10px 30px rgba(67, 97, 238, 0.1);
       border: 2px solid #e0e7ff;
       display: flex;
@@ -410,10 +413,10 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 8px;
-      padding: 0 4px;
-      max-width: 860px;
-      margin: 12px auto 0 auto;
+      margin-top: 4px;
+      padding: 0 12px;
+      max-width: 100%;
+      margin: 4px 0 0 0;
       width: 100%;
     }
 
@@ -432,18 +435,20 @@
       font-weight: 700;
     }
 
-    /* 4'LÜ SÜTUN DÜZENİ: BİTİŞİK (BOŞLUKSUZ) VE DEV BOYUTLU KARTLAR */
+    /* 4'LÜ SÜTUN DÜZENİ: KENARLARDA VE ARALARINDA BOŞLUKSUZ, TAM GENİŞLİK */
     .options-grid-board {
       display: grid !important;
       grid-template-columns: repeat(4, 1fr) !important;
       gap: 0px !important; /* ARALARINDA BOŞLUK YOK! */
       direction: rtl; /* Arapça okuma yönü (sağdan sola) */
-      margin: 14px auto 0 auto;
-      max-width: 960px;
-      width: 100%;
+      margin: 4px 0 0 0 !important;
+      max-width: 100% !important; /* KENARLARDA BOŞLUK YOK! EKRANI TAM KAPLAR */
+      width: 100% !important;
       background: #e2e8f0; /* Hücre sınır çizgileri için */
-      border: 3px solid #334155; /* Klasik Elifba cüzü gibi sağlam dış çerçeve */
-      border-radius: 16px;
+      border: 3px solid #334155; /* Klasik Elifba cüzü çerçevesi */
+      border-left: none !important; /* Ekranın sol kenarına sıfır yapışır */
+      border-right: none !important; /* Ekranın sağ kenarına sıfır yapışır */
+      border-radius: 0px !important; /* Köşelerde boşluk kalmaz */
       overflow: hidden;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
       transition: opacity 0.2s ease, filter 0.2s ease;
@@ -456,28 +461,39 @@
     }
 
     @media (max-width: 640px) {
+      main {
+        padding: 4px 0 20px 0 !important;
+        gap: 8px !important;
+      }
+
+      .audio-hero-card {
+        margin: 0 4px !important;
+        width: calc(100% - 8px) !important;
+        padding: 12px 10px !important;
+      }
+
       .options-grid-board {
         grid-template-columns: repeat(4, 1fr) !important;
         gap: 0px !important;
-        margin-top: 8px;
-        border-width: 2px;
-        border-radius: 12px;
+        margin-top: 4px !important;
+        border-width: 2px 0 !important;
+        border-radius: 0px !important;
       }
 
       .item-card {
         border-radius: 0px !important;
         min-height: 90px !important;
-        padding: 2px !important;
+        padding: 1px 0px !important;
       }
 
       .item-card img {
-        max-width: 98% !important;
+        max-width: 100% !important;
         max-height: 80px !important;
-        transform: scale(1.15) !important;
+        transform: scale(1.12) !important;
       }
 
       .item-card .card-arabic-fallback {
-        font-size: 2.4rem !important;
+        font-size: 2.6rem !important;
       }
 
       .item-card .item-num-badge {
@@ -485,12 +501,12 @@
       }
     }
 
-    /* KART TASARIMI: BİTİŞİK VE BÜYÜK ALANLI */
+    /* KART TASARIMI: BİTİŞİK VE KENARLARDA BOŞLUK BIRAKMAYAN HÜCRELER */
     .item-card {
       background: white;
       border: 1px solid #cbd5e1; /* Bitişik ince hücre çizgisi */
       border-radius: 0px !important; /* Boşluksuz bitişik hücreler */
-      min-height: 135px;
+      min-height: 145px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -499,7 +515,8 @@
       position: relative;
       overflow: hidden;
       transition: background 0.15s ease, box-shadow 0.15s ease;
-      padding: 6px 4px;
+      padding: 2px 0px !important; /* Hücre kenarlarında boşluk yok */
+      margin: 0 !important;
     }
 
     .item-card:hover:not(.solved):not(.guess-disabled) {
@@ -512,30 +529,32 @@
       background: #dbeafe;
     }
 
-    /* HARF VE KELİME RESİMLERİ: KARTIN TAMAMINI KAPLAYAN DEV BOYUT */
+    /* HARF VE KELİME RESİMLERİ: KARTIN KENARLARINA KADAR DOLDURAN DEV BOYUT */
     .item-card img {
-      width: 100%;
-      height: 100%;
-      max-width: 98%;
-      max-height: 115px;
-      object-fit: contain;
+      width: 100% !important;
+      height: 100% !important;
+      max-width: 100% !important; /* Kenarlara kadar tam doldursun */
+      max-height: 125px !important;
+      object-fit: contain !important;
       pointer-events: none;
-      transform: scale(1.18); /* Harfi/kelimeyi büyüterek hücreyi doldurur */
+      transform: scale(1.15); /* Hücreyi doldurur */
       filter: drop-shadow(0 2px 4px rgba(0,0,0,0.08));
       transition: transform 0.2s ease;
     }
 
     .item-card:hover:not(.guess-disabled) img {
-      transform: scale(1.28);
+      transform: scale(1.22);
     }
 
     /* ARAPÇA METİN: DEV YAZITİPİ */
     .item-card .card-arabic-fallback {
       font-family: 'Amiri', serif;
-      font-size: 3.8rem;
+      font-size: 4.2rem !important;
       font-weight: 700;
       color: #0f172a;
-      line-height: 1.1;
+      line-height: 1;
+      margin: 0;
+      padding: 0;
     }
 
     .item-card .item-num-badge {

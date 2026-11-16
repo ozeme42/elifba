@@ -538,12 +538,12 @@
           <div class="exam-prompt-sub">Hoparlörden gelen sesi dinle, aşağıdaki 4'lü sütun seçenekler arasından doğru olanı bul!</div>
         </div>
 
-        <div style="margin: 12px auto 6px auto; max-width: 960px; font-weight: 800; font-size: 0.95rem; color: #475569; display: flex; justify-content: space-between; align-items: center; direction: rtl; flex-wrap: wrap; gap: 8px;">
+        <div style="margin: 8px 0 4px 0; width: 100%; max-width: 100%; font-weight: 800; font-size: 0.95rem; color: #475569; display: flex; justify-content: space-between; align-items: center; direction: rtl; flex-wrap: wrap; gap: 8px; padding: 0 4px;">
           <span>📋 4'lü Sütun Seçenek Tablosu (Boşluksuz):</span>
           <span style="font-size: 0.85rem; color: #92400e; background: #fef3c7; border: 1px solid #fde68a; padding: 2px 10px; border-radius: 999px;">⭐ Her Harf 3 Kez Sorulur & Yanlışlar Kapanmaz</span>
         </div>
 
-        <div class="exam-choices-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0px; direction: rtl; max-width: 960px; margin: 14px auto;">
+        <div class="exam-choices-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0px; direction: rtl; width: 100%; max-width: 100%; margin: 6px 0; border-radius: 0px; border-left: none; border-right: none;">
           ${choices.map((c) => {
             const hits = examItemHits[c.id] || 0;
             const isSolved = hits >= EXAM_REQUIRED_HITS;
