@@ -555,7 +555,7 @@
             return `
               <div class="exam-choice-card ${isSolved ? 'correct-answer' : ''}" id="exam_card_${c.id}" data-id="${c.id}" onclick="window.submitExamAnswer('${c.id}', this)">
                 ${starText ? `<span class="card-stars-badge" style="position:absolute; top:4px; right:4px; font-size:0.72rem; font-weight:900; background:${isSolved ? '#22c55e' : '#fef3c7'}; color:${isSolved ? '#fff' : '#92400e'}; border:1px solid ${isSolved ? '#16a34a' : '#fde68a'}; padding:1px 5px; border-radius:999px; z-index:2;">${starText}</span>` : ''}
-                ${c.img ? `<img src="${c.img}" alt="${c.alt || 'Seçenek'}" />` : `<span style="font-family:'Amiri'; font-size:3.8rem; font-weight:700;">${c.alt}</span>`}
+                ${c.img ? `<img src="${c.img}" alt="${c.alt || 'Seçenek'}" />` : `<span style="font-family:'Amiri'; font-size:3.5rem; font-weight:700;">${c.alt}</span>`}
               </div>
             `;
           }).join('')}
